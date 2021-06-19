@@ -13,6 +13,7 @@ use GuzzleHttp\Client;
 
 class AuthController extends Controller
 {
+    //tes
     protected function user_detail($nip){
         $work_date = date('Y-m-d');
         try{
