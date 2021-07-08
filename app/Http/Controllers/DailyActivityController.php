@@ -18,6 +18,8 @@ class DailyActivityController extends Controller
 
 
 
+
+
     public function tes_siap(Request $request)
     {
 

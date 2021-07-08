@@ -13,6 +13,8 @@ use GuzzleHttp\Client;
 
 class AuthController extends Controller
 {
+
+
     //tes
     protected function user_detail($nip){
         $work_date = date('Y-m-d');
@@ -64,6 +66,7 @@ class AuthController extends Controller
         ]);
         return new UserResource($user);
     }
+
     public function login(ValidateUserLogin $request)
     {
 
@@ -111,6 +114,7 @@ class AuthController extends Controller
             'data'  => $user_data
         ]);
     }
+
 
     public function user()
     {

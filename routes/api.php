@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DailyActivityController;
 use App\Http\Controllers\DailyReportController;
+use App\Http\Controllers\SimAsnController;
 
 
 use Illuminate\Http\Request;
@@ -17,12 +18,16 @@ Route::get('/me', [AuthController::class, 'user']);
 
 
 
+
 Route::middleware('auth:api')->get('/current_user', function (Request $request) {
     return $request->user();
 });
 
 
 Route::group(['prefix' => '/'/* ,'middleware'=> 'auth' */], function () {
+
+
+    Route::get('login_simpeg', [SimAsnController::class, 'tes']);
 
     //========================================================================================================//
 	//===========================             U    S    E     R           ====================================//
