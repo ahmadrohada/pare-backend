@@ -29,7 +29,7 @@ class SimAsnController extends Controller
                     'grant_type'    => "authorization_code",
                     'client_id'     => "93ce4ca9-b473-4f37-bd34-1a03c5c61e58",
                     'client_secret' => "SoA6lCpauKqXWPsgfAgUecKJlEpRruAcPAFi8jmEZGpLLS1f7x",
-                    'redirect_uri'  => 'http://localhost',
+                    'redirect_uri'  => 'https://api-pare-v3.bkpsdm.karawangkab.go.id/api/login_simpeg',
                     'code'          => $code
                 ],
             ]);
@@ -38,7 +38,7 @@ class SimAsnController extends Controller
             //$data = $arr_body;
             return $body;
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return $e;
+            return "error";
         }
     }
 
