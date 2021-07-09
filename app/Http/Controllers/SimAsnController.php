@@ -34,7 +34,7 @@ class SimAsnController extends Controller
                 ],
             ]);
             $body = $response->getBody();
-            $arr_body = json_decode($body);
+            $arr_body = json_encode($body);
             //$data = $arr_body;
             return $arr_body;
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
