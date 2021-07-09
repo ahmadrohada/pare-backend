@@ -20,8 +20,8 @@ class SimAsnController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 3, // Response timeout
-                'connect_timeout' => 3, // Connection timeout
+                'timeout' => 5, // Response timeout
+                'connect_timeout' => 5, // Connection timeout
                 'peer' => false
             ]);
             $response = $client->request('POST', '/oauth/token',[
@@ -34,9 +34,9 @@ class SimAsnController extends Controller
                 ],
             ]);
             $body = $response->getBody();
-            $arr_body = json_encode($body);
+            $arr_body = json_decode($body,true);
             //$data = $arr_body;
-            return $body;
+            return $arr_body;
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
         }
@@ -47,7 +47,7 @@ class SimAsnController extends Controller
     {
 
         $tes = $this::get_token($request->code);
-        return $tes->access_token;
+        return $tes;
     }
 
 
