@@ -36,7 +36,7 @@ class SimAsnController extends Controller
             $body = $response->getBody();
             $arr_body = json_decode($body);
             //$data = $arr_body;
-            return $body;
+            return $arr_body->acces_token;
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
         }
@@ -51,7 +51,7 @@ class SimAsnController extends Controller
 
 
 
-        
+
     }
 
 
