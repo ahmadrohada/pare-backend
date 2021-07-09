@@ -47,7 +47,11 @@ class SimAsnController extends Controller
     {
 
         $tes = $this::get_token($request->code);
-        return $tes;
+        //return $tes;
+
+
+
+        
     }
 
 

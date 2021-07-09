@@ -70,6 +70,8 @@ class AuthController extends Controller
     public function login(ValidateUserLogin $request)
     {
 
+        //login from sim-asn with nip
+
 
         $credentials = request(['username', 'password']);
         if (!$token = auth()->attempt($credentials)) {
