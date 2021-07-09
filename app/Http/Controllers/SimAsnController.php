@@ -76,7 +76,7 @@ class SimAsnController extends Controller
         $token = $this::get_token($request->code);
         if ( $token ){
             $profile = $this::user_profile($token);
-            return "Welcome ".$profile['name'];
+            return "Welcome ".$profile['name']." To PARE V3";
         }else{
             return "error_profil";
         }
