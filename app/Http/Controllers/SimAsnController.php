@@ -59,9 +59,11 @@ class SimAsnController extends Controller
             $response = $client->request('GET', '/api/profile',[
                 'headers' => $headers 
             ]);
-            $body = $response->getBody()->getContents();
+            //$body = $response->getBody()->getContents();
 
-            return $body;
+            $body = $response->getBody();
+            $arr_body = json_decode($body,true);
+            return $arr_body;
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
@@ -71,11 +73,11 @@ class SimAsnController extends Controller
 
     public function tes(Request $request)
     {
-        $tes = $this::get_token($request->code);
-        if ( $tes ){
-            return $this::user_profile($tes);
+        $token = $this::get_token($request->code);
+        if ( $token ){
+            return $this::user_profile($token);
         }else{
-            return "error";
+            return "error_profil";
         }
     }
 
