@@ -36,7 +36,7 @@ class SimAsnController extends Controller
             $body = $response->getBody();
             $arr_body = json_decode($body);
             //$data = $arr_body;
-            return $arr_body;
+            return $body;
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
         }
@@ -48,10 +48,6 @@ class SimAsnController extends Controller
 
         $tes = $this::get_token($request->code);
         return $tes;
-
-
-
-
     }
 
 
