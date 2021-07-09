@@ -15,6 +15,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/me', [AuthController::class, 'user']);
+Route::get('login_simpeg', [AuthController::class, 'login_simpeg']);
 
 
 
@@ -27,7 +28,7 @@ Route::middleware('auth:api')->get('/current_user', function (Request $request) 
 Route::group(['prefix' => '/'/* ,'middleware'=> 'auth' */], function () {
 
 
-    Route::get('login_simpeg', [SimAsnController::class, 'tes']);
+
 
     //========================================================================================================//
 	//===========================             U    S    E     R           ====================================//
