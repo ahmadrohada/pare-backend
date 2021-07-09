@@ -71,8 +71,6 @@ class AuthController extends Controller
     {
 
         //login from sim-asn with nip
-
-
         $credentials = request(['username', 'password']);
         if (!$token = auth()->attempt($credentials)) {
             return  response()->json([

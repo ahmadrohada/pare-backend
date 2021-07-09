@@ -20,12 +20,12 @@ class SimAsnController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 5, // Response timeout
-                'connect_timeout' => 5, // Connection timeout
+                'timeout' => 3, // Response timeout
+                'connect_timeout' => 3, // Connection timeout
                 'peer' => false
             ]);
-            $response = $client->request('POST', '/oauth/token',[
-                'form_params' => [
+            $response = $client->request('POST', '/oauth/token',
+                ['form_params' => [
                     'grant_type'    => "authorization_code",
                     'client_id'     => "93ce4ca9-b473-4f37-bd34-1a03c5c61e58",
                     'client_secret' => "SoA6lCpauKqXWPsgfAgUecKJlEpRruAcPAFi8jmEZGpLLS1f7x",
@@ -35,8 +35,34 @@ class SimAsnController extends Controller
             ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
-            //$data = $arr_body;
             return $arr_body['access_token'];
+        }catch(\GuzzleHttp\Exception\GuzzleException $e) {
+            return "error";
+        }
+    }
+
+    protected function user_profile($token){
+
+        $headers = [
+            'Authorization' => 'Bearer ' . $token,        
+            'Accept'        => 'application/json',
+        ];
+
+        try{
+            $client = new Client([
+                'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
+                'verify' => false,
+                'timeout' => 3, // Response timeout
+                'connect_timeout' => 3, // Connection timeout
+                'peer' => false
+            ]);
+            $response = $client->request('GET', '/api/profile',[
+                'headers' => $headers 
+            ]);
+            $body = $response->getBody()->getContents();
+
+            return $body;
+
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
         }
@@ -45,9 +71,12 @@ class SimAsnController extends Controller
 
     public function tes(Request $request)
     {
-
         $tes = $this::get_token($request->code);
-        return $tes;
+        if ( $tes ){
+            return $this::user_profile($tes);
+        }else{
+            return "error";
+        }
     }
 
 
