@@ -75,7 +75,8 @@ class SimAsnController extends Controller
     {
         $token = $this::get_token($request->code);
         if ( $token ){
-            return $this::user_profile($token);
+            $profile = $this::user_profile($token);
+            return "Welcome ".$profile->name;
         }else{
             return "error_profil";
         }
