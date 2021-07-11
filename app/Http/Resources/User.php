@@ -35,7 +35,7 @@ class User extends JsonResource
             'id' => $this->id,
             'username' => $this->username,
 
-            'user'      => $this->pegawai,
+            'pegawai'      => $this->pegawai,
 
             //cek index pada array pegawai
             /* 'nip' => Arr::exists($pegawai, 'nip') ? $pegawai['nip'] : "",

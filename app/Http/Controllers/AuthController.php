@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ValidateUserRegistration;
 use App\Http\Requests\ValidateUserLogin;
 use App\Models\User;
@@ -16,6 +17,15 @@ use GuzzleHttp\Client;
 
 class AuthController extends Controller
 {
+
+
+    //Redirect after login.
+
+    protected function redirectLoginSimpeg($state = 'login' , string $key, string $message):RedirectResponse{
+        $baseUrl = 'login' === $state ? 'http://localhost:3000/auth/login' : 'http://localhost:3000/profile';
+        return new RedirectResponse($baseUrl."?{$key}={$message}");
+    }
+
 
     //login with SIM ASN
     protected function get_token($code){
@@ -170,13 +180,15 @@ class AuthController extends Controller
 
         return response()->json([
             'type' => 'success',
-            'message' => 'Logged in.',
+            'message' => 'Logged in',
+            "token_type"=> "Bearer",
+            "expires_in"=> 1577923199,
             'token' => $token,
             'data'  => $user_data
         ]);
     }
 
-    public function login_simpeg(Request $request)
+    public function login_simpeg(Request $request):RedirectResponse
     {
         $token = $this::get_token($request->code);
         //return $token;
@@ -195,13 +207,17 @@ class AuthController extends Controller
                     ], 401);
                 }
 
-                $user_data = new UserResource($user);
-                return response()->json([
+               /*  $user_data = new UserResource($user);
+                $data = [
                         'type' => 'success',
                         'message' => 'Logged in.',
                         'token' => $userToken,
                         'data'  => $user_data
-                ]);
+                ]; */
+                return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
+
+
+
 
             }else{
                 return "nip tidak ditemukan";
