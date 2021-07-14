@@ -22,7 +22,7 @@ class AuthController extends Controller
     //Redirect after login.
 
     protected function redirectLoginSimpeg($state = 'login' , string $key, string $message):RedirectResponse{
-        $baseUrl = 'login' === $state ? 'httpa://pare-v3.bkpsdm.karawangkab.go.id/login' : 'https://pare-v3.bkpsdm.karawangkab.go.id/profile';
+        $baseUrl = 'login' === $state ? 'https://pare-v3.bkpsdm.karawangkab.go.id/login' : 'https://pare-v3.bkpsdm.karawangkab.go.id/profile';
         return new RedirectResponse($baseUrl."?{$key}={$message}");
     }
 
