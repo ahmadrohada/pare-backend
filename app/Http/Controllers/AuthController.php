@@ -188,7 +188,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login_simpeg(Request $request):RedirectResponse
+    public function login_simpeg(Request $request)
     {
         $token = $this::get_token($request->code);
         return $token;
