@@ -42,8 +42,8 @@ class AuthController extends Controller
                                         'grant_type'    => "authorization_code",
                                         'client_id'     => "93ce4ca9-b473-4f37-bd34-1a03c5c61e58",
                                         'client_secret' => "SoA6lCpauKqXWPsgfAgUecKJlEpRruAcPAFi8jmEZGpLLS1f7x",
-                                        //'redirect_uri'  => 'https://api-pare-v3.bkpsdm.karawangkab.go.id/api/login_simpeg',
-                                        'redirect_uri'  => 'http://localhost:8000/api/login_simpeg',
+                                        'redirect_uri'  => 'https://api-pare-v3.bkpsdm.karawangkab.go.id/api/login_simpeg',
+                                        //'redirect_uri'  => 'http://localhost:8000/api/login_simpeg',
                                         'code'          => $code
                                     ],
                   'header'      =>  [
@@ -188,12 +188,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login_simpeg(Request $request)
+    public function login_simpeg(Request $request):RedirectResponse
     {
         $token = $this::get_token($request->code);
-        return $token;
-        
-        /* if ( isset($token['access_token']) || $token['access_token'] != null  ){
+        //return $token;
+        if ( isset($token['access_token']) || $token['access_token'] != null  ){
             $profile = $this::user_profile($token['access_token']);
 
             if ( isset($profile['pegawai']['nip'])){
@@ -207,6 +206,14 @@ class AuthController extends Controller
                         ]
                     ], 401);
                 }
+
+               /*  $user_data = new UserResource($user);
+                $data = [
+                        'type' => 'success',
+                        'message' => 'Logged in.',
+                        'token' => $userToken,
+                        'data'  => $user_data
+                ]; */
                 return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
 
 
@@ -219,7 +226,7 @@ class AuthController extends Controller
 
         }else{
             return "error_profil";
-        } */
+        }
     }
 
 
