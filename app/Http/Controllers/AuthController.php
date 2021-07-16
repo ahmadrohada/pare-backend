@@ -22,7 +22,7 @@ class AuthController extends Controller
     //Redirect after login.
 
     protected function redirectLoginSimpeg($state = 'login' , string $key, string $message):RedirectResponse{
-        $baseUrl = 'login' === $state ? 'https://pare-v3.bkpsdm.karawangkab.go.id/login' : 'https://pare-v3.bkpsdm.karawangkab.go.id/profile';
+        $baseUrl = 'login' === $state ? (env('FRONTEND_URL').'/login') : (env('FRONTEND_URL').'/profile');
         return new RedirectResponse($baseUrl."?{$key}={$message}");
     }
 
@@ -42,8 +42,8 @@ class AuthController extends Controller
                                         'grant_type'    => "authorization_code",
                                         'client_id'     => "93ce4ca9-b473-4f37-bd34-1a03c5c61e58",
                                         'client_secret' => "SoA6lCpauKqXWPsgfAgUecKJlEpRruAcPAFi8jmEZGpLLS1f7x",
-                                        'redirect_uri'  => 'https://api-pare-v3.bkpsdm.karawangkab.go.id/api/login_simpeg',
-                                        //'redirect_uri'  => 'http://localhost:8000/api/login_simpeg',
+                                        //'redirect_uri'  => 'https://api-pare-v3.bkpsdm.karawangkab.go.id/api/login_simpeg',
+                                        'redirect_uri'  => (env('BACKEND_URL').'/api/login_simpeg'),
                                         'code'          => $code
                                     ],
                   'header'      =>  [
