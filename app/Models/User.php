@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable,
@@ -48,7 +49,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'pegawai' => 'array'
+        'pegawai'           => 'array'
     ];
 
 
@@ -72,7 +73,7 @@ class User extends Authenticatable implements JWTSubject
     // USER ROLES
     public function roles()
     {
-        return $this->belongsToMany('App\Models\Role')->withTimestamps();
+        return $this->hasMany('App\Models\RoleUser');
     }
 
     public function hasRole($name)

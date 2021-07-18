@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+
 use Illuminate\Support\Arr;
 
 
@@ -23,25 +24,16 @@ class User extends JsonResource
         } else {
             $pegawai = array(['tes' => 'tes']);
         }
-
-
-
-
-
-
-
-
         return [
-            'id' => $this->id,
-            'username' => $this->username,
-
-            'pegawai'      => $this->pegawai,
+            'id'            => $this->id,
+            'username'      => $this->username,
+            'pegawai'       => $this->pegawai,
+            'roles'         => $this->roles()->get('role_id'),
 
             //cek index pada array pegawai
             /* 'nip' => Arr::exists($pegawai, 'nip') ? $pegawai['nip'] : "",
             'nama' => Arr::exists($pegawai, 'nama') ? $pegawai['nama'] : "",
             'jabatan' => Arr::exists($pegawai, 'jabatan') ? $pegawai['jabatan'] : "", */
-
             //'nama' => $this->pegawai['nama'],
         ];
     }
