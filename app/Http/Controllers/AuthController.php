@@ -128,14 +128,14 @@ class AuthController extends Controller
 
     public function register(ValidateUserRegistration $request)
     {
-        $user = User::create([
+        /* $user = User::create([
             //'name' => $request->name,
             'username'      => $request->username,
             'password'      => bcrypt($request->password),
             'pegawai_id'    => $request->pegawai_id,
             'pegawai'       => $request->pegawai,
         ]);
-        return new UserResource($user);
+        return new UserResource($user); */
     }
 
     public function login(ValidateUserLogin $request)
@@ -144,14 +144,15 @@ class AuthController extends Controller
         $credentials = request(['username', 'password']);
         if (!$token = auth()->attempt($credentials)) {
             return  response()->json([
-                'errors' => [
-                    'msg' => ['Kesalahan username atau password']
-                ]
+                'message' => 'Kesalahan username atau password',
+                /* 'errors' => [
+                    'message' => ['Kesalahan username atau password']
+                ] */
             ], 401);
         }
 
-        //cek apakah pegawai detail kosong atau tidak, jika kosong ambil data dari SIAP API
-        $user_data = new UserResource(auth()->user());
+     /*    //cek apakah pegawai detail kosong atau tidak, jika kosong ambil data dari SIAP API
+
 
         //return $user_data->pegawai;
 
@@ -175,16 +176,31 @@ class AuthController extends Controller
             $update->pegawai         = $data;
             $update->save();
 
+        } */
+
+        $user_data = new UserResource(auth()->user());
+
+        if (  $user_data->profile === null ){
+            return  response()->json([
+                'message' => 'Profile Pegawai tidak ditemukan , silakan login dengan akun SIM-ASN',
+                /* 'errors' => [
+                    'message' => ['Profile Pegawai tidak ditemukan']
+                ] */
+            ], 401);
+        }else{
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Logged in',
+                "token_type"=> "Bearer",
+                /* "expires_in"=> 1577923199, */
+                'token' => $token,
+                'data'  => $user_data
+            ]);
         }
 
-        return response()->json([
-            'type' => 'success',
-            'message' => 'Logged in',
-            "token_type"=> "Bearer",
-            "expires_in"=> 1577923199,
-            'token' => $token,
-            'data'  => $user_data
-        ]);
+
+
+
     }
 
     public function login_simpeg(Request $request):RedirectResponse
@@ -195,36 +211,29 @@ class AuthController extends Controller
             $profile = $this::user_profile($token['access_token']);
 
             if ( isset($profile['pegawai']['nip'])){
-                $nip = $profile['pegawai']['nip'];
-                $user = User::WHERE('nip',$nip)->first();
+                $user = User::WHERE('nip',$profile['pegawai']['nip'])->first();
 
-                if (!$userToken=JWTAuth::fromUser($user)) {
-                    return  response()->json([
-                        'errors' => [
-                            'msg' => ['Kesalahan username atau password']
-                        ]
-                    ], 401);
+                if ($user){
+                    if (!$userToken = JWTAuth::fromUser($user)) {
+
+                        return $this->redirectLoginSimpeg($request->state, 'token', '' );
+                    }
+
+                    //UPDATE USER PARE with SIM-ASN
+                    $update             = User::find($user->id);
+                    $update->profile    = $profile;
+                    $update->save();
+                    //lOGIN SUKSES
+                    return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
+                }else{
+                    return $this->redirectLoginSimpeg($request->state, 'message', 'Login SIM-ASN gagal' );
                 }
 
-               /*  $user_data = new UserResource($user);
-                $data = [
-                        'type' => 'success',
-                        'message' => 'Logged in.',
-                        'token' => $userToken,
-                        'data'  => $user_data
-                ]; */
-                return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
-
-
-
-
             }else{
-                return "nip tidak ditemukan";
+                return $this->redirectLoginSimpeg($request->state, 'message', 'NIP tidak ditemukan' );
             }
-
-
         }else{
-            return "error_profil";
+            return $this->redirectLoginSimpeg($request->state, 'message', 'User Profile Error' );
         }
     }
 
