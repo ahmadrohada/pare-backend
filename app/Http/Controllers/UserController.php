@@ -10,6 +10,16 @@ use App\Models\Pegawai;
 class UserController extends Controller
 {
 
+    public function profile(Request $request)
+    {
+        return  User::SELECT(   'profile->pegawai->nama_lengkap AS nama_lengkap',
+                                'profile->skpd->nama AS skpd',
+                                'profile->unit_kerja->nama AS unit_kerja',
+                                'profile'
+                            )
+                        ->WHERE('id',$request->user_id)->first();
+    }
+
 
     public function user_update()
     {
@@ -43,11 +53,7 @@ class UserController extends Controller
         return  User::select(
             'username',
             'id',
-            'pegawai->nip AS nip',
-            'pegawai->nama AS nama',
-            'pegawai->jabatan AS jabatan',
-            'pegawai->pangkat AS pangkat',
-            'pegawai->golongan AS golongan'
+            'profile->nip AS nip',
         )
             ->paginate(10);
     }

@@ -33,6 +33,8 @@ Route::group(['prefix' => '/'/* ,'middleware'=> 'auth' */], function () {
     //========================================================================================================//
 	//===========================             U    S    E     R           ====================================//
 	//========================================================================================================//
+    Route::get('profile', [UserController::class, 'profile']);
+
     Route::get('data_user', [UserController::class, 'data_user']);
     Route::put('user_update', [UserController::class, 'user_update']);
 
