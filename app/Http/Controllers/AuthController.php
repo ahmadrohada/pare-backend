@@ -68,11 +68,11 @@ class AuthController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 6, // Response timeout
-                'connect_timeout' => 6, // Connection timeout
+                'timeout' => 10, // Response timeout
+                'connect_timeout' => 10, // Connection timeout
                 'peer' => false
             ]);
-            $response = $client->request('GET', '/api/profile',[
+            $response = $client->request('GET', '/api/me/pegawai',[
                 'headers' => $headers
             ]);
             //$body = $response->getBody()->getContents();
@@ -93,8 +93,8 @@ class AuthController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api-siap.silk.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 3, // Response timeout
-                'connect_timeout' => 3, // Connection timeout
+                'timeout' => 10, // Response timeout
+                'connect_timeout' => 10, // Connection timeout
                 'peer' => false
             ]);
             $response = $client->request('GET', '/absensi/summary/'.$nip.'/'.$work_date, [
@@ -151,33 +151,6 @@ class AuthController extends Controller
             ], 401);
         }
 
-     /*    //cek apakah pegawai detail kosong atau tidak, jika kosong ambil data dari SIAP API
-
-
-        //return $user_data->pegawai;
-
-        if ( $user_data->pegawai === null ){
-
-            //lakukan pengambilan data dari API SIAP
-            $d_peg =  $this::user_detail($user_data->nip);
-
-            foreach ($d_peg as $x) {
-                $data['name']       = $x->user->name;
-                $data['nip']        = $x->user->nip;
-                $data['gender']     = $x->user->gender;
-                $data['jabatan']    = $x->user->jabatan;
-                $data['golongan']   = $x->user->golongan;
-                $data['eselon']     = $x->user->eselon;
-                $data['skpd']       = $x->user->skpd;
-                $data['unit']       = $x->user->unit;
-            }
-
-            $update  = User::find($user_data->id);
-            $update->pegawai         = $data;
-            $update->save();
-
-        } */
-
         $user_data = new UserResource(auth()->user());
 
         if (  $user_data->profile === null ){
@@ -206,12 +179,14 @@ class AuthController extends Controller
     public function login_simpeg(Request $request):RedirectResponse
     {
         $token = $this::get_token($request->code);
-        //return $token;
+
         if ( isset($token['access_token']) || $token['access_token'] != null  ){
             $profile = $this::user_profile($token['access_token']);
 
-            if ( isset($profile['pegawai']['nip'])){
-                $user = User::WHERE('nip',$profile['pegawai']['nip'])->first();
+
+
+            if ( isset($profile['data']['nip'])){
+                $user = User::WHERE('nip',$profile['data']['nip'])->first();
 
                 if ($user){
                     if (!$userToken = JWTAuth::fromUser($user)) {
@@ -219,9 +194,42 @@ class AuthController extends Controller
                         return $this->redirectLoginSimpeg($request->state, 'token', '' );
                     }
 
+
+                    $pegawai = [
+                        "id"            => $profile['data']['id'],
+                        "nip"           => $profile['data']['nip'],
+                        "nama_lengkap"  => $profile['data']['nama_lengkap'],
+                        "photo"         => $profile['data']['photo']
+                    ];
+
+                    $jabatan = [
+                        "id"            => $profile['data']['jabatan'][0]['id'],
+                        "nama"          => $profile['data']['jabatan'][0]['nama'],
+                        "golongan"      => $profile['data']['golongan']['referensi']['golongan'],
+                        "pangkat"       => $profile['data']['golongan']['referensi']['pangkat']
+                    ];
+
+                    $skpd = [
+                        "id"            => $profile['data']['skpd']['id'],
+                        "nama"          => $profile['data']['skpd']['nama'],
+                        "singkatan"     => $profile['data']['skpd']['singkatan'],
+                        "logo"          => $profile['data']['skpd']['logo']
+                    ];
+
+                    $unit_kerja = [
+                        "id"            => $profile['data']['unit_kerja']['id'],
+                        "nama"          => $profile['data']['unit_kerja']['nama_lengkap']
+                    ];
+
                     //UPDATE USER PARE with SIM-ASN
-                    $update             = User::find($user->id);
-                    $update->profile    = $profile;
+                    $update                             = User::find($user->id);
+                    $update->pegawai                    = $pegawai;
+                    $update->jabatan                    = $jabatan;
+                    $update->skpd                       = $skpd;
+                    $update->unit_kerja                 = $unit_kerja;
+                    //$update->simpeg_id                  = '12';
+                    $update->simpeg_token               = $token['access_token'];
+                    $update->simpeg_refresh_token       = $token['refresh_token'];
                     $update->save();
                     //lOGIN SUKSES
                     return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
