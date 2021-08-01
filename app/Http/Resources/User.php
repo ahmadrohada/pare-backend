@@ -28,14 +28,12 @@ class User extends JsonResource
             'id'            => $this->id,
             'username'      => $this->username,
             'nip'           => $this->nip,
-            'profile'       => json_decode($this->profile),
+            'pegawai'       => $this->pegawai,
+            'jabatan'       => $this->jabatan,
+            'skpd'          => $this->skpd,
+            'unit_kerja'    => $this->unit_kerja,
             'roles'         => $this->roles()->get('role_id'),
 
-            //cek index pada array pegawai
-            /* 'nip' => Arr::exists($pegawai, 'nip') ? $pegawai['nip'] : "",
-            'nama' => Arr::exists($pegawai, 'nama') ? $pegawai['nama'] : "",
-            'jabatan' => Arr::exists($pegawai, 'jabatan') ? $pegawai['jabatan'] : "", */
-            //'nama' => $this->pegawai['nama'],
         ];
     }
 }
