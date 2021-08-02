@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DailyActivityController;
 use App\Http\Controllers\DailyReportController;
-use App\Http\Controllers\SimAsnController;
 
 
 use Illuminate\Http\Request;
@@ -25,7 +24,7 @@ Route::middleware('auth:api')->get('/current_user', function (Request $request) 
 });
 
 
-Route::group(['prefix' => '/'/* ,'middleware'=> 'auth' */], function () {
+Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
     Route::get('/me/profile', [UserController::class, 'profile_user_aktif']);
