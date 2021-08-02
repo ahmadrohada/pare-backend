@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ValidateUserRegistration;
 use App\Http\Requests\ValidateUserLogin;
 use App\Models\User;
+use App\Models\UserLogging;
 
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -20,7 +21,6 @@ class AuthController extends Controller
 
 
     //Redirect after login.
-
     protected function redirectLoginSimpeg($state = 'login' , string $key, string $message):RedirectResponse{
         $baseUrl = 'login' === $state ? (env('FRONTEND_URL').'/login') : (env('FRONTEND_URL').'/profile');
         return new RedirectResponse($baseUrl."?{$key}={$message}");
@@ -57,8 +57,9 @@ class AuthController extends Controller
         }
     }
 
-    protected function user_profile($token){
 
+    //MENDAPATKAN user profile from sim-ASN
+    protected function user_profile($token){
         $headers = [
             'Authorization' => 'Bearer ' . $token,
             'Accept'        => 'application/json',
@@ -72,11 +73,38 @@ class AuthController extends Controller
                 'connect_timeout' => 10, // Connection timeout
                 'peer' => false
             ]);
-            $response = $client->request('GET', '/api/me/pegawai',[
+            $response = $client->request('GET', '/api/me/',[
                 'headers' => $headers
             ]);
             //$body = $response->getBody()->getContents();
 
+            $body = $response->getBody();
+            $arr_body = json_decode($body,true);
+            return $arr_body;
+
+        }catch(\GuzzleHttp\Exception\GuzzleException $e) {
+            return "error";
+        }
+    }
+
+    //MENDAPATKAN peagwai detail from sim-ASN
+    protected function pegawai_detail($token){
+        $headers = [
+            'Authorization' => 'Bearer ' . $token,
+            'Accept'        => 'application/json',
+        ];
+
+        try{
+            $client = new Client([
+                'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
+                'verify' => false,
+                'timeout' => 10, // Response timeout
+                'connect_timeout' => 10, // Connection timeout
+                'peer' => false
+            ]);
+            $response = $client->request('GET', '/api/me/pegawai/',[
+                'headers' => $headers
+            ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
             return $arr_body;
@@ -183,55 +211,65 @@ class AuthController extends Controller
         if ( isset($token['access_token']) || $token['access_token'] != null  ){
             $profile = $this::user_profile($token['access_token']);
 
-
-
-            if ( isset($profile['data']['nip'])){
-                $user = User::WHERE('nip',$profile['data']['nip'])->first();
+            if ( isset($profile['pegawai']['nip'])){
+                $user = User::WHERE('nip',$profile['pegawai']['nip'])->first();
 
                 if ($user){
                     if (!$userToken = JWTAuth::fromUser($user)) {
-
                         return $this->redirectLoginSimpeg($request->state, 'token', '' );
                     }
 
-
+                    //GET DATA PROFILE PEGAWAI WITH
+                    $detail = $this::pegawai_detail($token['access_token']);
                     $pegawai = [
-                        "id"            => $profile['data']['id'],
-                        "nip"           => $profile['data']['nip'],
-                        "nama_lengkap"  => $profile['data']['nama_lengkap'],
-                        "photo"         => $profile['data']['photo']
+                        "id"            => $detail['data']['id'],
+                        "nip"           => $detail['data']['nip'],
+                        "nama_lengkap"  => $detail['data']['nama_lengkap'],
+                        "photo"         => $detail['data']['photo']
                     ];
 
                     $jabatan = [
-                        "id"            => $profile['data']['jabatan'][0]['id'],
-                        "nama"          => $profile['data']['jabatan'][0]['nama'],
-                        "golongan"      => $profile['data']['golongan']['referensi']['golongan'],
-                        "pangkat"       => $profile['data']['golongan']['referensi']['pangkat']
+                        "id"            => $detail['data']['jabatan'][0]['id'],
+                        "nama"          => $detail['data']['jabatan'][0]['nama'],
+                        "jenis"         => $detail['data']['jabatan'][0]['referensi']['jenis'],
+                        "golongan"      => $detail['data']['golongan']['referensi']['golongan'],
+                        "pangkat"       => $detail['data']['golongan']['referensi']['pangkat']
                     ];
 
                     $skpd = [
-                        "id"            => $profile['data']['skpd']['id'],
-                        "nama"          => $profile['data']['skpd']['nama'],
-                        "singkatan"     => $profile['data']['skpd']['singkatan'],
-                        "logo"          => $profile['data']['skpd']['logo']
+                        "id"            => $detail['data']['skpd']['id'],
+                        "nama"          => $detail['data']['skpd']['nama'],
+                        "singkatan"     => $detail['data']['skpd']['singkatan'],
+                        "logo"          => $detail['data']['skpd']['logo']
                     ];
 
                     $unit_kerja = [
-                        "id"            => $profile['data']['unit_kerja']['id'],
-                        "nama"          => $profile['data']['unit_kerja']['nama_lengkap']
+                        "id"            => $detail['data']['unit_kerja']['id'],
+                        "nama"          => $detail['data']['unit_kerja']['nama_lengkap']
                     ];
 
-                    //UPDATE USER PARE with SIM-ASN
+
+                    //UPDATE USER PARE with SIM-ASN PROFILE
                     $update                             = User::find($user->id);
                     $update->pegawai                    = $pegawai;
                     $update->jabatan                    = $jabatan;
                     $update->skpd                       = $skpd;
                     $update->unit_kerja                 = $unit_kerja;
-                    //$update->simpeg_id                  = '12';
+                    $update->simpeg_id                  = $profile['id'];
                     $update->simpeg_token               = $token['access_token'];
                     $update->simpeg_refresh_token       = $token['refresh_token'];
                     $update->save();
                     //lOGIN SUKSES
+
+                    //LOGGER
+                    $add_log = new UserLogging;
+                    $add_log->id_user           = $user->id;
+                    $add_log->module            = "authentication";
+                    $add_log->action            = "login";
+                    $add_log->label             = "Login melalui akun simpeg";
+                    $add_log->save();
+
+
                     return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
                 }else{
                     return $this->redirectLoginSimpeg($request->state, 'message', 'Login SIM-ASN gagal' );

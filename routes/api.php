@@ -25,15 +25,16 @@ Route::middleware('auth:api')->get('/current_user', function (Request $request) 
 });
 
 
-Route::group(['prefix' => '/'/* ,'middleware'=> 'auth' */], function () {
+Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
+    Route::get('/me/profile', [UserController::class, 'profile_user_aktif']);
 
 
     //========================================================================================================//
 	//===========================             U    S    E     R           ====================================//
 	//========================================================================================================//
-    Route::get('profile', [UserController::class, 'profile']);
+
 
     Route::get('data_user', [UserController::class, 'data_user']);
     Route::put('user_update', [UserController::class, 'user_update']);

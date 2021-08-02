@@ -5,19 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\User;
-use App\Models\Pegawai;
+
+use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
 {
 
-    public function profile(Request $request)
+    public function profile_user_aktif(Request $request)
     {
-        return  User::SELECT(   'profile->pegawai->nama_lengkap AS nama_lengkap',
-                                'profile->skpd->nama AS skpd',
-                                'profile->unit_kerja->nama AS unit_kerja',
-                                'profile'
-                            )
-                        ->WHERE('id',$request->user_id)->first();
+        return new UserResource(auth()->user());
     }
 
 
