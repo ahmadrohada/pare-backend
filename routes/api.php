@@ -25,7 +25,7 @@ Route::middleware('auth:api')->get('/current_user', function (Request $request) 
 });
 
 
-Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
+Route::group(['prefix' => '/'/* ,'middleware'=> 'auth' */], function () {
 
 
     Route::get('/me/profile', [UserController::class, 'profile_user_aktif']);
