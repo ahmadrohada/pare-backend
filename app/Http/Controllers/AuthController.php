@@ -181,7 +181,7 @@ class AuthController extends Controller
 
         $user_data = new UserResource(auth()->user());
 
-        if (  $user_data->profile === null ){
+        if (  $user_data->pegawai === null ){
             return  response()->json([
                 'message' => 'Profile Pegawai tidak ditemukan , silakan login dengan akun SIM-ASN',
                 /* 'errors' => [
