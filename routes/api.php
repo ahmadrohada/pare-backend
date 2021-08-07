@@ -28,6 +28,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
     Route::get('/me/profile', [UserController::class, 'profile_user_aktif']);
+    Route::get('/me/hirarki', [UserController::class, 'hirarki_user_aktif']);
 
 
     //========================================================================================================//

@@ -17,6 +17,23 @@ class UserController extends Controller
     }
 
 
+    public function hirarki_user_aktif(Request $request)
+    {
+
+        $data = auth()->user();
+        return [
+
+            'pegawai'                   => $data->pegawai,
+            'pejabat_penilai'           => $data->pejabat_penilai,
+            'atasan_pejabat_penilai'    => $data->atasan_pejabat_penilai,
+
+        ];
+
+
+    }
+
+
+
     public function user_update()
     {
         $data = User::leftjoin('pegawai AS pegawai', function ($join) {

@@ -88,7 +88,7 @@ class AuthController extends Controller
     }
 
     //MENDAPATKAN peagwai detail from sim-ASN
-    protected function pegawai_detail($token){
+    protected function detail_pegawai($token){
         $headers = [
             'Authorization' => 'Bearer ' . $token,
             'Accept'        => 'application/json',
@@ -114,30 +114,35 @@ class AuthController extends Controller
         }
     }
 
-    //tes
-    protected function user_detail($nip){
-        $work_date = date('Y-m-d');
+    //MENDAPATKAN detail atasan from sim-ASN
+    protected function detail_atasan($nip){
+        $token = env('SIMPEG_APP_TOKEN');
+        $headers = [
+            'Authorization' => 'Bearer ' . $token,
+            'Accept'        => 'application/json',
+        ];
+
         try{
             $client = new Client([
-                'base_uri' => 'https://api-siap.silk.bkpsdm.karawangkab.go.id',
+                'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 10, // Response timeout
-                'connect_timeout' => 10, // Connection timeout
+                'timeout' => 6, // Response timeout
+                'connect_timeout' => 6, // Connection timeout
                 'peer' => false
             ]);
-            $response = $client->request('GET', '/absensi/summary/'.$nip.'/'.$work_date, [
-                'form_params' => [
-                    'access_token'  => 'MjIzNTZmZjItNTJmOS00NjA1LTk5YWEtOGQwN2VhNmIwNjVm',
-                ],
+            $response = $client->request('GET', '/api/pegawai/'.$nip.'/hierarki',[
+                'headers' => $headers
             ]);
             $body = $response->getBody();
-            $arr_body = json_decode($body);
-            $data = $arr_body->dailyAbsensis;
-            return $data;
+            $arr_body = json_decode($body,true);
+            return $arr_body;
+
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
         }
     }
+
+
 
     public function __construct()
     {
@@ -220,41 +225,99 @@ class AuthController extends Controller
                     }
 
                     //GET DATA PROFILE PEGAWAI WITH
-                    $detail = $this::pegawai_detail($token['access_token']);
-                    $pegawai = [
-                        "id"            => $detail['data']['id'],
-                        "nip"           => $detail['data']['nip'],
-                        "nama_lengkap"  => $detail['data']['nama_lengkap'],
-                        "photo"         => $detail['data']['photo']
-                    ];
+                    $detail_pegawai = $this::detail_pegawai($token['access_token']);
+                    $detail_pejabat_penilai = $this::detail_atasan($profile['pegawai']['nip']);
+                    $detail_atasan_pejabat_penilai = $this::detail_atasan($detail_pejabat_penilai['atasan']['nip']);
 
-                    $jabatan = [
-                        "id"            => $detail['data']['jabatan'][0]['id'],
-                        "nama"          => $detail['data']['jabatan'][0]['nama'],
-                        "jenis"         => $detail['data']['jabatan'][0]['referensi']['jenis'],
-                        "golongan"      => $detail['data']['golongan']['referensi']['golongan'],
-                        "pangkat"       => $detail['data']['golongan']['referensi']['pangkat']
-                    ];
+                    $pegawai = array(
+                        "profile" => array(
+                            "id"            => $detail_pegawai['data']['id'],
+                            "nip"           => $detail_pegawai['data']['nip'],
+                            "nama_lengkap"  => $detail_pegawai['data']['nama_lengkap'],
+                            "photo"         => $detail_pegawai['data']['photo']
+                        ),
+                        "jabatan" => array(
+                            "id"            => $detail_pegawai['data']['jabatan'][0]['id'],
+                            "nama"          => $detail_pegawai['data']['jabatan'][0]['nama'],
+                            "jenis"         => $detail_pegawai['data']['jabatan'][0]['referensi']['jenis'],
+                            "golongan"      => $detail_pegawai['data']['golongan']['referensi']['golongan'],
+                            "pangkat"       => $detail_pegawai['data']['golongan']['referensi']['pangkat']
+                        ),
+                        "skpd" => array(
+                            "id"            => $detail_pegawai['data']['skpd']['id'],
+                            "nama"          => $detail_pegawai['data']['skpd']['nama'],
+                            "singkatan"     => $detail_pegawai['data']['skpd']['singkatan'],
+                            "logo"          => $detail_pegawai['data']['skpd']['logo']
+                        ),
+                        "unit_kerja" => array(
+                            "id"            => $detail_pegawai['data']['unit_kerja']['id'],
+                            "nama"          => $detail_pegawai['data']['unit_kerja']['nama_lengkap']
+                        )
+                    );
 
-                    $skpd = [
-                        "id"            => $detail['data']['skpd']['id'],
-                        "nama"          => $detail['data']['skpd']['nama'],
-                        "singkatan"     => $detail['data']['skpd']['singkatan'],
-                        "logo"          => $detail['data']['skpd']['logo']
-                    ];
+                    $pejabat_penilai = array(
+                        "profile" => array(
+                            "id"            => $detail_pejabat_penilai['atasan']['id'],
+                            "nip"           => $detail_pejabat_penilai['atasan']['nip'],
+                            "nama_lengkap"  => $detail_pejabat_penilai['atasan']['nama_lengkap'],
+                            "photo"         => $detail_pejabat_penilai['atasan']['photo']
+                        ),
+                        "jabatan" => array(
+                            "id"            => $detail_pejabat_penilai['atasan']['jabatan'][0]['id'],
+                            "nama"          => $detail_pejabat_penilai['atasan']['jabatan'][0]['nama'],
+                            "jenis"         => $detail_pejabat_penilai['atasan']['jabatan'][0]['referensi']['jenis'],
+                            "golongan"      => $detail_pejabat_penilai['atasan']['jabatan'][0]['golongan']['referensi']['golongan'],
+                            "pangkat"       => $detail_pejabat_penilai['atasan']['jabatan'][0]['golongan']['referensi']['pangkat']
+                        ),
+                        "skpd" => array(
+                            "id"            => $detail_pejabat_penilai['atasan']['jabatan'][0]['skpd']['id'],
+                            "nama"          => $detail_pejabat_penilai['atasan']['jabatan'][0]['skpd']['nama'],
+                            "singkatan"     => $detail_pejabat_penilai['atasan']['jabatan'][0]['skpd']['singkatan'],
+                            "logo"          => $detail_pejabat_penilai['atasan']['jabatan'][0]['skpd']['logo']
+                        ),
+                        "unit_kerja" => array(
+                            "id"            => $detail_pejabat_penilai['atasan']['jabatan'][0]['unit_kerja']['id'],
+                            "nama"          => $detail_pejabat_penilai['atasan']['jabatan'][0]['unit_kerja']['nama_lengkap']
+                        )
+                    );
 
-                    $unit_kerja = [
-                        "id"            => $detail['data']['unit_kerja']['id'],
-                        "nama"          => $detail['data']['unit_kerja']['nama_lengkap']
-                    ];
+
+                    $atasan_pejabat_penilai = array(
+                        "profile" => array(
+                            "id"            => $detail_atasan_pejabat_penilai['atasan']['id'],
+                            "nip"           => $detail_atasan_pejabat_penilai['atasan']['nip'],
+                            "nama_lengkap"  => $detail_atasan_pejabat_penilai['atasan']['nama_lengkap'],
+                            "photo"         => $detail_atasan_pejabat_penilai['atasan']['photo']
+                        ),
+                        "jabatan" => array(
+                            "id"            => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['id'],
+                            "nama"          => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['nama'],
+                            "jenis"         => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['referensi']['jenis'],
+                            "golongan"      => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['golongan']['referensi']['golongan'],
+                            "pangkat"       => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['golongan']['referensi']['pangkat']
+                        ),
+                        "skpd" => array(
+                            "id"            => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['skpd']['id'],
+                            "nama"          => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['skpd']['nama'],
+                            "singkatan"     => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['skpd']['singkatan'],
+                            "logo"          => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['skpd']['logo']
+                        ),
+                        "unit_kerja" => array(
+                            "id"            => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['unit_kerja']['id'],
+                            "nama"          => $detail_atasan_pejabat_penilai['atasan']['jabatan'][0]['unit_kerja']['nama_lengkap']
+                        )
+                    );
+
+
+
+
 
 
                     //UPDATE USER PARE with SIM-ASN PROFILE
                     $update                             = User::find($user->id);
                     $update->pegawai                    = $pegawai;
-                    $update->jabatan                    = $jabatan;
-                    $update->skpd                       = $skpd;
-                    $update->unit_kerja                 = $unit_kerja;
+                    $update->pejabat_penilai            = $pejabat_penilai;
+                    $update->atasan_pejabat_penilai     = $atasan_pejabat_penilai;
                     $update->simpeg_id                  = $profile['id'];
                     $update->simpeg_token               = $token['access_token'];
                     $update->simpeg_refresh_token       = $token['refresh_token'];

@@ -50,9 +50,11 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'pegawai'           => 'array',
-        'jabatan'           => 'array',
-        'skpd'              => 'array',
-        'unit_kerja'        => 'array'
+        'pejabat_penilai'   => 'array',
+        'atasan_pejabat_penilai'   => 'array',
+        //'jabatan'           => 'array',
+        //'skpd'              => 'array',
+        //'unit_kerja'        => 'array'
     ];
 
 

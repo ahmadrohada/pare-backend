@@ -18,20 +18,16 @@ class User extends JsonResource
     public function toArray($request)
     {
 
-        //profile
-        if ($this->profile) {
-            $profile = $this->profile;
-        } else {
-            $profile = array(['tes' => 'tes']);
-        }
+
+
         return [
             'id'            => $this->id,
             'username'      => $this->username,
             'nip'           => $this->nip,
-            'pegawai'       => $this->pegawai,
-            'jabatan'       => $this->jabatan,
-            'skpd'          => $this->skpd,
-            'unit_kerja'    => $this->unit_kerja,
+            'profile'       => $this->pegawai['profile'],
+            'jabatan'       => $this->pegawai['jabatan'],
+            'skpd'          => $this->pegawai['skpd'],
+            'unit_kerja'    => $this->pegawai['unit_kerja'],
             'roles'         => $this->roles()->get('role_id'),
 
         ];
