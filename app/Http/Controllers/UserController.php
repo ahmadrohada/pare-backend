@@ -66,7 +66,8 @@ class UserController extends Controller
         return  User::select(
             'username',
             'id',
-            'profile->nip AS nip',
+            'pegawai->nip AS nip',
+            'pegawai->nama_lengkap AS nama_lengkap',
         )
             ->paginate(10);
     }
