@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\User;
-
 use App\Http\Resources\User as UserResource;
+
+use Illuminate\Pagination\Paginator;
+
 
 class UserController extends Controller
 {
@@ -61,15 +62,43 @@ class UserController extends Controller
     }
 
 
-    public function data_user()
+    public function user_list(Request $request)
     {
-        return  User::select(
+
+        $page = ($request->page)? $request->page : 1 ;
+        $length = ($request->length)? $request->length : 10 ;
+
+        Paginator::currentPageResolver(fn() => $page );
+
+        $query =  User::select(
             'username',
             'id',
             'pegawai->nip AS nip',
             'pegawai->nama_lengkap AS nama_lengkap',
-        )
-            ->paginate(10);
+        );
+
+        if($request->search) {
+            $query->where('pegawai->nama_lengkap','LIKE', '%'.$request->search.'%');
+        }
+
+        $data = $query->paginate($length);
+
+
+        $pagination = array(
+            'current_page'  => $data->currentPage(),
+            'total_page'    => ( ($data->perPage() != 0 ) && ($data->total() != 0 )  ) ? Floor($data->total()/$data->count()) : 0,
+            'data_per_page' => $data->count(),
+            'limit'         => (int)$data->perPage(),
+            'total'         => $data->total(),
+        );
+
+        return [
+            'data'          => $data->items(),
+            'pagination'    => $pagination,
+
+        ];
+
+
     }
 
     /**
