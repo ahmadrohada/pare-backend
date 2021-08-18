@@ -26,6 +26,9 @@ Route::middleware('auth:api')->get('/current_user', function (Request $request) 
 
 Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
+    //============= persetasi sinkronisasi data simpeg ====================//
+    Route::get('/sync_percentage', [UserController::class, 'sync_percentage']);
+
 
     Route::get('/me/profile', [UserController::class, 'profile_user_aktif']);
     Route::get('/me/hirarki', [UserController::class, 'hirarki_user_aktif']);

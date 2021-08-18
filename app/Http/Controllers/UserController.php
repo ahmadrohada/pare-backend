@@ -212,6 +212,16 @@ class UserController extends Controller
 
     }
 
+    public function sync_percentage(Request $request)
+    {
+
+        $total_data = User::count();
+        $data_fill = User::WHERE('pegawai','!=',null)->count();
+       return number_format( ( $data_fill / $total_data ) * 100 , 2);
+
+
+    }
+
     /**
      * Show the form for creating a new resource.
      *
