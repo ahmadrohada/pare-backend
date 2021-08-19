@@ -129,7 +129,7 @@ class UserController extends Controller
     {
 
         $page = ($request->page)? $request->page : 1 ;
-        $length = ($request->length)? $request->length : 10 ;
+        $length = ($request->length)? $request->length : 50 ;
 
         $id_skpd = ($request->id_skpd)? $request->id_skpd : null ;
 
