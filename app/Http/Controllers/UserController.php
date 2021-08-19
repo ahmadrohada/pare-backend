@@ -131,6 +131,8 @@ class UserController extends Controller
         $page = ($request->page)? $request->page : 1 ;
         $length = ($request->length)? $request->length : 10 ;
 
+        $id_skpd = ($request->id_skpd)? $request->id_skpd : null ;
+
         Paginator::currentPageResolver(fn() => $page );
 
         $query =  User::select(
@@ -139,6 +141,10 @@ class UserController extends Controller
             'nip',
             'pegawai->nama_lengkap AS nama_lengkap',
         );
+
+        if($id_skpd != null ) {
+            $query->where('pegawai->skpd->id','=', $id_skpd );
+        }
 
         if($request->search) {
             $query->where('pegawai->nama_lengkap','LIKE', '%'.$request->search.'%');
