@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DailyActivityController;
 use App\Http\Controllers\DailyReportController;
+use App\Http\Controllers\SkpdController;
 
 
 use Illuminate\Http\Request;
@@ -67,6 +68,13 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('daily_activity', [DailyActivityController::class, 'daily_activity_list']);
     Route::get('daily_activity/{id}', [DailyActivityController::class, 'daily_activity_show']);
     Route::put('daily_activity', [DailyActivityController::class, 'daily_activity_update']);
+
+
+    //========================================================================================================//
+	//===========================                  SKPD                   ====================================//
+	//========================================================================================================//
+    Route::get('skpd', [SkpdController::class, 'list']);
+    Route::get('skpd/{id}', [SkpdController::class, 'detail']);
 
 
 });

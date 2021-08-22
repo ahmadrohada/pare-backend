@@ -108,7 +108,11 @@ class AuthController extends Controller
             ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
-            return $arr_body['data'];
+            if ( isset($arr_body['data']) && ($arr_body['data'] != null) ){
+                return $arr_body['data'];
+            }else{
+                return null;
+            }
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
@@ -136,7 +140,7 @@ class AuthController extends Controller
             ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
-            if ( $arr_body['atasan'] != null ){
+            if ( isset($arr_body['atasan']) && ($arr_body['atasan'] != null) ){
                 return $arr_body['atasan']['nip'];
             }else{
                 return null;

@@ -14,7 +14,7 @@ use GuzzleHttp\Client;
 class UserController extends Controller
 {
 
-    //MENDAPATKAN detail atasan from sim-ASN
+    //MENDAPATKAN detail PEGAWAI from sim-ASN
     protected function detail_pegawai($nip){
         $token = env('SIMPEG_APP_TOKEN');
         $headers = [
@@ -35,10 +35,14 @@ class UserController extends Controller
             ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
-            return $arr_body['data'];
+            if ( isset($arr_body['data']) && ($arr_body['data'] != null) ){
+                return $arr_body['data'];
+            }else{
+                return null;
+            }
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return "error";
+            return null;
         }
     }
 
@@ -63,7 +67,7 @@ class UserController extends Controller
             ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
-            if ( $arr_body['atasan'] != null ){
+            if ( isset($arr_body['atasan']) && ($arr_body['atasan'] != null) ){
                 return $arr_body['atasan']['nip'];
             }else{
                 return null;
@@ -71,7 +75,7 @@ class UserController extends Controller
 
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return "error";
+            return null;
         }
     }
 
@@ -129,7 +133,7 @@ class UserController extends Controller
     {
 
         $page = ($request->page)? $request->page : 1 ;
-        $length = ($request->length)? $request->length : 50 ;
+        $limit = ($request->limit)? $request->limit : 50 ;
 
         $id_skpd = ($request->id_skpd)? $request->id_skpd : null ;
 
@@ -150,7 +154,7 @@ class UserController extends Controller
             $query->where('pegawai->nama_lengkap','LIKE', '%'.$request->search.'%');
         }
 
-        $data = $query->paginate($length);
+        $data = $query->paginate($limit);
 
 
         $pagination = array(
@@ -178,10 +182,10 @@ class UserController extends Controller
 
         if ( $query['pegawai'] == null ){
             $detail_pegawai                 = $this::detail_pegawai($request->nip);
-            //nip pejabat penilai
             $nip_pejabat_penilai            = $this::nip_atasan($request->nip);
+
             if ( $nip_pejabat_penilai != null ){
-                //detail pejabata penilai
+                //detail pejabat penilai
                 $pejabat_penilai                = $this::detail_pegawai($nip_pejabat_penilai);
                 if ( $pejabat_penilai != null ){
                     //nip atasan pejabat penilai
