@@ -5,6 +5,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DailyActivityController;
 use App\Http\Controllers\DailyReportController;
 use App\Http\Controllers\SkpdController;
+use App\Http\Controllers\RenjaController;
+use App\Http\Controllers\RencanaKerjaTahunanController;
+use App\Http\Controllers\TimKerjaController;
+use App\Http\Controllers\PejabatController;
 
 
 use Illuminate\Http\Request;
@@ -75,6 +79,38 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//========================================================================================================//
     Route::get('skpd', [SkpdController::class, 'list']);
     Route::get('skpd/{id}', [SkpdController::class, 'detail']);
+
+
+    //========================================================================================================//
+	//===========================                  RENJA                   ====================================//
+	//========================================================================================================//
+    Route::get('renja', [RenjaController::class, 'list']);
+    Route::get('renja/{id}', [RenjaController::class, 'detail']);
+
+    //========================================================================================================//
+	//======================                  RENCANA KINERJA                   ==============================//
+	//========================================================================================================//
+    Route::get('rencana_kerja_tahunan_list', [RencanaKerjaTahunanController::class, 'list']);
+    Route::get('rencana_kerja_tahunan_tree', [RencanaKerjaTahunanController::class, 'treeView']);
+
+    Route::get('rencana_kerja_tahunan_level_0', [RencanaKerjaTahunanController::class, 'level_0']);
+    Route::get('rencana_kerja_tahunan_child', [RencanaKerjaTahunanController::class, 'child']);
+
+
+     //========================================================================================================//
+	//======================                      TIM KERJA                      ==============================//
+	//========================================================================================================//
+
+    Route::get('tim_kerja', [TimKerjaController::class, 'tim_kerja']);
+
+    Route::get('tim_kerja_level_0', [TimKerjaController::class, 'tim_kerja_level_0']);
+    Route::get('tim_kerja_child', [TimKerjaController::class, 'child']);
+
+      //========================================================================================================//
+	//======================                   PEJABAT                   ==============================//
+	//========================================================================================================//
+
+    Route::get('renja_pejabat', [PejabatController::class, 'list']);
 
 
 });
