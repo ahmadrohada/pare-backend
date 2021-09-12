@@ -60,6 +60,7 @@ class PejabatController extends Controller
                 $h['id']            = $x->id;
                 $h['label']         = $x->label;
                 $h['parent_id']     = $x->parent_id;
+                $h['renja_id']      = $x->renja_id;
                 //cek apakah node ini memiliki child atau tidak
                 $child = TimKerja::WHERE('parent_id','=',$x->id)->exists();
                 if ( $child ){

@@ -22,7 +22,6 @@ class TimKerjaController extends Controller
         $response['rencana_kinerja'] = array();
 
 
-
         $tim_kerja = TimKerja::
                                     WHERE('id','=',$request->id)
                                     ->SELECT(
@@ -31,7 +30,7 @@ class TimKerjaController extends Controller
                                                 'parent_id',
                                                 'renja_id'
                                             )
-                                    ->first();
+                                    ->get();
         $response['tim_kerja'] = $tim_kerja;
 
         $query = RenjaPejabat::SELECT(
@@ -102,6 +101,7 @@ class TimKerjaController extends Controller
             $h['id']            = $x->id;
             $h['label']         = $x->label;
             $h['parent_id']     = $x->parent_id;
+            $h['renja_id']     = $x->renja_id;
 
             //cek apakah node ini memiliki child atau tidak
             $child = TimKerja::WHERE('parent_id','=',$x->id)->exists();
@@ -135,6 +135,7 @@ class TimKerjaController extends Controller
         foreach( $query AS $x ){
                 $h['id']            = $x->id;
                 $h['label']         = $x->label;
+                $h['renja_id']      = $x->renja_id;
                 $h['parent_id']     = $x->parent_id;
                 //cek apakah node ini memiliki child atau tidak
                 $child = TimKerja::WHERE('parent_id','=',$x->id)->exists();
