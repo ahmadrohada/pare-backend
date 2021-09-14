@@ -150,7 +150,51 @@ class TimKerjaController extends Controller
         return $response;
     }
 
+    public function add_tim_kerja(Request $request)
+    {
 
+
+        $messages = [
+            'daily_report_id.required'  => 'Harus diisi',
+            'kegiatan.required'         => 'Harus diisi',
+            'start.required'            => 'Harus diisi',
+            'end.required'              => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'daily_report_id'           => 'required',
+                'kegiatan'                  => 'required',
+                'start_time'                => 'required|date_format:H:i|after:'.$jam_masuk,
+                'end_time'                  => 'required|date_format:H:i||after:start_time|before:'.$jam_pulang,
+
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+
+        $ah    = new DailyActivity;
+        $ah->daily_report_id    = $request->daily_report_id;
+        $ah->title              = $request->kegiatan;
+        $ah->hasil              = $request->hasil;
+        $ah->start_time         = $request->start_time;
+        $ah->end_time           = $request->end_time;
+
+        if ($ah->save()) {
+            return \Response::make('succesful', 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
 
 
 

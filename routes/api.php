@@ -106,6 +106,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('tim_kerja_level_0', [TimKerjaController::class, 'tim_kerja_level_0']);
     Route::get('tim_kerja_child', [TimKerjaController::class, 'child']);
 
+    Route::post('add_tim_kerja', [TimKerjaController::class, 'add_tim_kerja']);
+
       //========================================================================================================//
 	//======================                   PEJABAT                   ==============================//
 	//========================================================================================================//
