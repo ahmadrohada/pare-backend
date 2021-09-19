@@ -290,10 +290,18 @@ class UserController extends Controller
             return new UserResource($query);
         }
 
+    }
 
+    public function user_hirarki(Request $request)
+    {
+        $data = User::WHERE('nip','=',$request->nip)->first();
+        return [
 
+            'pegawai'                   => $data->pegawai,
+            'pejabat_penilai'           => $data->pejabat_penilai,
+            'atasan_pejabat_penilai'    => $data->atasan_pejabat_penilai,
 
-
+        ];
     }
 
     public function sync_percentage(Request $request)

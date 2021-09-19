@@ -44,6 +44,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//========================================================================================================//
     Route::get('user', [UserController::class, 'user_list']);
     Route::get('user/{nip}', [UserController::class, 'user_detail']);
+    Route::get('user/{nip}/hirarki', [UserController::class, 'user_hirarki']);
 
 
     Route::put('user_update', [UserController::class, 'user_update']);
