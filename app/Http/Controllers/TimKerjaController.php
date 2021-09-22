@@ -27,6 +27,10 @@ class TimKerjaController extends Controller
                 break;
             case '4': $data = "V" ;
                 break;
+            case '5': $data = "VI" ;
+                break;
+            case '6': $data = "VII" ;
+                break;
             default : $data = "";
         }
         return $data;
@@ -49,7 +53,7 @@ class TimKerjaController extends Controller
                                                 'parent_id',
                                                 'renja_id'
                                             )
-                                    ->get();
+                                    ->first();
         $response['tim_kerja'] = $tim_kerja;
 
         $query = RenjaPejabat::SELECT(
@@ -120,7 +124,8 @@ class TimKerjaController extends Controller
             $h['id']            = $x->id;
             $h['label']         = $x->label;
             $h['parent_id']     = $x->parent_id;
-            $h['renja_id']     = $x->renja_id;
+            $h['renja_id']      = $x->renja_id;
+            $h['anggota']       = TimKerja::WHERE('id','=',$x->id)->WHERE('label','LIKE','ANGGOTA%')->exists();
 
             //cek apakah node ini memiliki child atau tidak
             $child = TimKerja::WHERE('parent_id','=',$x->id)->exists();
@@ -156,6 +161,7 @@ class TimKerjaController extends Controller
                 $h['label']         = $x->label;
                 $h['renja_id']      = $x->renja_id;
                 $h['parent_id']     = $x->parent_id;
+                $h['anggota']       = TimKerja::WHERE('id','=',$x->id)->WHERE('label','LIKE','ANGGOTA%')->exists();
                 //cek apakah node ini memiliki child atau tidak
                 $child = TimKerja::WHERE('parent_id','=',$x->id)->exists();
                 if ( $child ){
@@ -239,7 +245,14 @@ class TimKerjaController extends Controller
         $ah->parent_id       = $request->parentId;
 
         if ($ah->save()) {
-            return \Response::make('succesful', 200);
+            $data = array(
+                        'id'        => $ah->id,
+                        'label'     => $ah->label,
+                        'child'     => "[]",
+                        'renja_id'  => $ah->renja_id,
+                    );
+
+            return \Response::make($data, 200);
         } else {
             return \Response::make('error', 500);
         }
