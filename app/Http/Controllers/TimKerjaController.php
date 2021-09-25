@@ -31,6 +31,12 @@ class TimKerjaController extends Controller
                 break;
             case '6': $data = "VII" ;
                 break;
+            case '7': $data = "VIII" ;
+                break;
+            case '8': $data = "IX" ;
+                break;
+            case '9': $data = "X" ;
+                break;
             default : $data = "";
         }
         return $data;
@@ -171,7 +177,7 @@ class TimKerjaController extends Controller
                 }
                 array_push($response, $h);
         }
-        $response = collect($response)->sortBy('id')->values();
+        $response = collect($response)->sortBy('label')->values();
         return $response;
     }
 
@@ -257,6 +263,40 @@ class TimKerjaController extends Controller
             return \Response::make('error', 500);
         }
     }
+
+
+    public function destroy(Request $request)
+    {
+
+        $messages = [
+            'id.required'   => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'id'   => 'required',
+                        ),
+                        $messages
+        );
+        if ( $validator->fails() ){
+            //$messages = $validator->messages();
+            return response()->json(['errors'=>$validator->messages()],422);
+
+        }
+
+        $sr    = TimKerja::find($request->id);
+        if (is_null($sr)) {
+            return $this->sendError('Tim Kerja tidak ditemukan.');
+        }
+        if ( $sr->delete()){
+            return \Response::make('sukses', 200);
+        }else{
+            return \Response::make('error', 500);
+        }
+
+
+    }
+
 
 
 
