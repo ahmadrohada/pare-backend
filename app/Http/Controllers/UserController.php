@@ -248,6 +248,62 @@ class UserController extends Controller
 
     }
 
+    public function select_user_list(Request $request)
+    {
+
+
+        $id_skpd = ($request->id_skpd)? $request->id_skpd : null ;
+
+        $query =  User::
+                        select(
+                            'users.username AS username',
+                            'users.id AS id_user',
+                            'users.nip AS nip',
+                            'users.pegawai->nama_lengkap AS nama_lengkap',
+                            'users.pegawai->jabatan AS jabatan',
+
+                        )
+                        ->orderBY('users.pegawai->jabatan->referensi->id_referensi', 'asc');
+
+        if($id_skpd != null ) {
+            $query->where('pegawai->skpd->id','=', $id_skpd );
+        }
+
+        if($request->search) {
+            $query->where('pegawai->nama_lengkap','LIKE', '%'.$request->search.'%');
+        }
+
+        $response = array();
+        foreach( $query->get() AS $x ){
+            $h['value']			= $x->nama_lengkap.' - NIP.'.$x->nip;
+            $h['link']          = $x->id_user;
+            $h['id']            = $x->id_user;
+            array_push($response, $h);
+        }
+
+        return $response;
+
+
+    }
+
+    public function user_jabatan_list(Request $request)
+    {
+
+        //kita akan coba update user yang tidak ada id sim asn nya
+        $query =  User::WHERE('id','=',$request->id)->first();
+
+        $detail_pegawai                 = $this::detail_pegawai($query->nip);
+
+        $response = array();
+        foreach( $detail_pegawai['jabatan'] AS $x ){
+            $h['value']			= $x['id'];
+            $h['label']         = $x['nama'];
+            array_push($response, $h);
+        }
+
+        return $response;
+    }
+
     public function user_detail(Request $request)
     {
 

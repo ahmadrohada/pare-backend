@@ -283,6 +283,7 @@ class TimKerjaController extends Controller
             return response()->json(['errors'=>$validator->messages()],422);
 
         }
+        
 
         $sr    = TimKerja::find($request->id);
         if (is_null($sr)) {
