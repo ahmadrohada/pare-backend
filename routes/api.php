@@ -119,11 +119,14 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
 
-      //========================================================================================================//
-	//======================                   PEJABAT                   ==============================//
+    //========================================================================================================//
+	//======================                   TIM KERJA PEJABAT                 ==============================//
 	//========================================================================================================//
 
     Route::get('renja_pejabat', [PejabatController::class, 'list']);
+    Route::get('tim_kerja_pejabat', [PejabatController::class, 'tim_kerja_pejabat']);
 
+    Route::post('add_pejabat_tim_kerja', [PejabatController::class, 'store']);
+    Route::delete('hapus_pejabat_tim_kerja', [PejabatController::class, 'destroy']);
 
 });

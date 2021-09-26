@@ -64,10 +64,11 @@ class TimKerjaController extends Controller
 
         $query = RenjaPejabat::SELECT(
                                         'id',
+                                        'user_id',
                                         'nama_lengkap',
                                         'jabatan',
-                                        'pegawai->nip AS nip',
-                                        'pegawai->photo AS photo'
+                                        'nip',
+                                        'pegawai_detail->photo AS photo'
                                     )
                                     ->WHERE('tim_kerja_id','=',$request->id)
                                     ->GET();
@@ -99,6 +100,7 @@ class TimKerjaController extends Controller
             $r['id']            = $y->id;
             $r['label']         = $y->label;
             $r['parent_id']     = $y->parent_id;
+            $r['child_count']   = RencanaKinerja::WHERE('parent_id','=',$y->id)->count();
             $r['added_by']      = $y->added_by;
 
             array_push($response['rencana_kinerja'], $r);
@@ -219,6 +221,7 @@ class TimKerjaController extends Controller
     {
 
 
+
         $messages = [
             'renjaId.required'         => 'Harus diisi',
             'label.required'            => 'Harus diisi',
@@ -283,7 +286,7 @@ class TimKerjaController extends Controller
             return response()->json(['errors'=>$validator->messages()],422);
 
         }
-        
+
 
         $sr    = TimKerja::find($request->id);
         if (is_null($sr)) {
