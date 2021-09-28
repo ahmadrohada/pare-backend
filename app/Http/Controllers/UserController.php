@@ -295,13 +295,22 @@ class UserController extends Controller
         $detail_pegawai                 = $this::detail_pegawai($query->nip);
 
         $response = array();
-        foreach( $detail_pegawai['jabatan'] AS $x ){
-            $h['value']			= $x['id'];
-            $h['label']         = $x['nama'];
-            array_push($response, $h);
+        if ( $detail_pegawai != null ){
+            foreach( $detail_pegawai['jabatan'] AS $x ){
+                $h['value']			= $x['id'];
+                $h['label']         = $x['nama'];
+                array_push($response, $h);
+            }
+
+            return $detail_pegawai;
+        }else{
+            $data = array(
+                'message' => 'API SIM-ASN tidak dapat diakses',
+            );
+
+            return \Response::make($data, 503);
         }
 
-        return $response;
     }
 
     public function user_detail(Request $request)

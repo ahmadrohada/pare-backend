@@ -9,6 +9,7 @@ use App\Http\Controllers\RenjaController;
 use App\Http\Controllers\RencanaKerjaTahunanController;
 use App\Http\Controllers\TimKerjaController;
 use App\Http\Controllers\PejabatController;
+use App\Http\Controllers\RencanaKinerjaController;
 
 
 use Illuminate\Http\Request;
@@ -94,13 +95,16 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('renja/{id}', [RenjaController::class, 'detail']);
 
     //========================================================================================================//
-	//======================                  RENCANA KINERJA                   ==============================//
+	//===================               RENCANA KERJA TAHUNAN                   ==============================//
 	//========================================================================================================//
     Route::get('rencana_kerja_tahunan_list', [RencanaKerjaTahunanController::class, 'list']);
     Route::get('rencana_kerja_tahunan_tree', [RencanaKerjaTahunanController::class, 'treeView']);
 
     Route::get('rencana_kerja_tahunan_level_0', [RencanaKerjaTahunanController::class, 'level_0']);
     Route::get('rencana_kerja_tahunan_child', [RencanaKerjaTahunanController::class, 'child']);
+
+    //Route::get('create_rencana_kinerja', [RencanaKerjaTahunanController::class, 'create']);
+
 
 
      //========================================================================================================//
@@ -118,6 +122,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('hapus_tim_kerja', [TimKerjaController::class, 'destroy']);
 
 
+    Route::get('tim_kerja_rencana_kinerja_parent', [TimKerjaController::class, 'TimKerjaRencanaKinerjaParent']);
+
 
     //========================================================================================================//
 	//======================                   TIM KERJA PEJABAT                 ==============================//
@@ -126,7 +132,19 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('renja_pejabat', [PejabatController::class, 'list']);
     Route::get('tim_kerja_pejabat', [PejabatController::class, 'tim_kerja_pejabat']);
 
+
+
+
     Route::post('add_pejabat_tim_kerja', [PejabatController::class, 'store']);
     Route::delete('hapus_pejabat_tim_kerja', [PejabatController::class, 'destroy']);
+
+
+    //========================================================================================================//
+	//==========================               RENCANA   KINERJA                 =============================//
+	//========================================================================================================//
+
+    Route::post('create_rencana_kinerja', [RencanaKinerjaController::class, 'store']);
+
+
 
 });

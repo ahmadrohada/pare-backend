@@ -34,9 +34,9 @@ class RencanaKinerjaController extends Controller
 
 
         $messages = [
-            'renjaId.required'         => 'Harus diisi',
-            'label.required'            => 'Harus diisi',
-            'parentId.required'        => 'Harus diisi',
+            'timKerjaId.required'                   => 'Harus diisi',
+            'rencanaKinerjaLabel.required'          => 'Harus diisi',
+            'rencanaKinerjaAtasanId.required'       => 'Harus diisi',
 
         ];
 
@@ -45,9 +45,9 @@ class RencanaKinerjaController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'renjaId'              => 'required',
-                'label'                 => 'required',
-                'parentId'             => 'required',
+                'timKerjaId'              => 'required',
+                'rencanaKinerjaLabel'     => 'required',
+                'rencanaKinerjaAtasanId'  => 'required',
 
             ],
             $messages
@@ -59,17 +59,16 @@ class RencanaKinerjaController extends Controller
         }
 
 
-        $ah    = new TimKerja;
-        $ah->renja_id        = $request->renjaId;
-        $ah->label           = $request->label;
-        $ah->parent_id       = $request->parentId;
+        $ah    = new RencanaKinerja;
+        $ah->tim_kerja_id        = $request->timKerjaId;
+        $ah->label               = $request->rencanaKinerjaLabel;
+        $ah->parent_id           = $request->rencanaKinerjaAtasanId;
+        $ah->added_by            = "admin skpd";
+
 
         if ($ah->save()) {
             $data = array(
                         'id'        => $ah->id,
-                        'label'     => $ah->label,
-                        'child'     => "[]",
-                        'renja_id'  => $ah->renja_id,
                     );
 
             return \Response::make($data, 200);

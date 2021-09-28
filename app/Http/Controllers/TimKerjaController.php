@@ -217,6 +217,18 @@ class TimKerjaController extends Controller
         ];
     }
 
+
+    public function TimKerjaRencanaKinerjaParent(Request $request)
+    {
+
+
+        $data = TimKerja::with('RencanaKinerja')->WHERE('id',$request->parent_id)->first();
+        return $data;
+
+
+    }
+
+
     public function store(Request $request)
     {
 
