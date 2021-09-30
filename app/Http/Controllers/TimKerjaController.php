@@ -85,11 +85,13 @@ class TimKerjaController extends Controller
             array_push($response['pejabat'], $h);
         }
 
-        $query2 = RencanaKinerja::SELECT(
+        $query2 = RencanaKinerja::with('TimKerja')
+                                    ->SELECT(
                                         'id',
                                         'label',
                                         'parent_id',
-                                        'added_by'
+                                        'added_by',
+                                        'tim_kerja_id'
                                     )
                                     ->WHERE('tim_kerja_id','=',$request->id)
                                     ->GET();
@@ -102,6 +104,7 @@ class TimKerjaController extends Controller
             $r['parent_id']     = $y->parent_id;
             $r['child_count']   = RencanaKinerja::WHERE('parent_id','=',$y->id)->count();
             $r['added_by']      = $y->added_by;
+            $r['tim_kerja']     = $y->TimKerja;
 
             array_push($response['rencana_kinerja'], $r);
         }

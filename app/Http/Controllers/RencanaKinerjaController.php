@@ -16,7 +16,24 @@ class RencanaKinerjaController extends Controller
 {
 
 
+    public function rencana_kinerja(Request $request)
+    {
 
+        $rencana_kinerja = RencanaKinerja::with('parent')
+                                    ->WHERE('id','=',$request->id)
+                                    ->SELECT(
+                                                'id',
+                                                'label',
+                                                'parent_id',
+                                                'tim_kerja_id'
+                                            )
+                                    ->first();
+
+
+
+        return $rencana_kinerja;
+
+    }
 
 
 
@@ -77,6 +94,54 @@ class RencanaKinerjaController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+
+
+
+        $messages = [
+            'rencanaKinerjaId.required'             => 'Harus diisi',
+            'rencanaKinerjaLabel.required'          => 'Harus diisi',
+            'rencanaKinerjaAtasanId.required'       => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'rencanaKinerjaId'        => 'required',
+                'rencanaKinerjaLabel'     => 'required',
+                'rencanaKinerjaAtasanId'  => 'required',
+
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+
+        $ah  = RencanaKinerja::find($request->rencanaKinerjaId);
+
+        $ah->label               = $request->rencanaKinerjaLabel;
+        $ah->parent_id           = $request->rencanaKinerjaAtasanId;
+
+
+        if ($ah->save()) {
+            $data = array(
+                        'id'        => $request->rencanaKinerjaId,
+                    );
+
+            return \Response::make($data, 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
+
 
     public function destroy(Request $request)
     {
@@ -98,9 +163,9 @@ class RencanaKinerjaController extends Controller
         }
 
 
-        $sr    = TimKerja::find($request->id);
+        $sr    = RencanaKinerja::find($request->id);
         if (is_null($sr)) {
-            return $this->sendError('Tim Kerja tidak ditemukan.');
+            return $this->sendError('Rencana Kinerja tidak ditemukan.');
         }
         if ( $sr->delete()){
             return \Response::make('sukses', 200);

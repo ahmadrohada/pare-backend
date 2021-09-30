@@ -143,7 +143,11 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//==========================               RENCANA   KINERJA                 =============================//
 	//========================================================================================================//
 
-    Route::post('create_rencana_kinerja', [RencanaKinerjaController::class, 'store']);
+    Route::get('rencana_kinerja', [RencanaKinerjaController::class, 'rencana_kinerja']);
+    Route::post('rencana_kinerja', [RencanaKinerjaController::class, 'store']);
+    Route::put('rencana_kinerja', [RencanaKinerjaController::class, 'update']);
+    Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'destroy']);
+
 
 
 
