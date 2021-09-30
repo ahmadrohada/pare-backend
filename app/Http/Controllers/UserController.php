@@ -302,7 +302,7 @@ class UserController extends Controller
                 array_push($response, $h);
             }
 
-            return $detail_pegawai;
+            return $response;
         }else{
             $data = array(
                 'message' => 'API SIM-ASN tidak dapat diakses',
