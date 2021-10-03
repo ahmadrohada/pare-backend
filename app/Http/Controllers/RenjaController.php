@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Renja;
+use App\Models\RenjaPejabat;
 
 use Illuminate\Pagination\Paginator;
 
@@ -44,6 +45,51 @@ class RenjaController extends Controller
 
         if($request->search) {
             $query->where('skpd_id','LIKE', '%'.$request->search.'%');
+        }
+
+        $data = $query->paginate($limit);
+
+        $pagination = array(
+            'current_page'  => $data->currentPage(),
+            'total_page'    => ( ($data->perPage() != 0 ) && ($data->total() != 0 )  ) ? Floor($data->total()/$data->count()) : 0,
+            'data_per_page' => $data->count(),
+            'limit'         => (int)$data->perPage(),
+            'total'         => $data->total(),
+        );
+
+        $data = $data->items();
+
+
+        return [
+
+            'data'                 => $data,
+            'pagination'           => $pagination
+
+        ];
+    }
+
+    public function personal_renja_list(Request $request)
+    {
+        $page = ($request->page)? $request->page : 1 ;
+        $limit = ($request->limit)? $request->limit : 50 ;
+        $user_id = ($request->user_id)? $request->user_id : null ;
+        Paginator::currentPageResolver(fn() => $page );
+
+        $query = RenjaPejabat::with(array('tim_kerja' => function($query) {
+                                    $query->select('id','renja_id','label','parent_id')
+                                    ->with('renja:id,periode->tahun AS periode,status');
+                                }))
+                                ->SELECT(
+                                        'nama_lengkap',
+                                        'user_id',
+                                        'tim_kerja_id',
+                                        'jabatan'
+                                        )
+                                ->WHERE('user_id',$user_id);
+
+
+        if($request->search) {
+            $query->where('nama_lengkap','LIKE', '%'.$request->search.'%');
         }
 
         $data = $query->paginate($limit);

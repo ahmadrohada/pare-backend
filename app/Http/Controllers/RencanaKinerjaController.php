@@ -167,6 +167,12 @@ class RencanaKinerjaController extends Controller
         if (is_null($sr)) {
             return $this->sendError('Rencana Kinerja tidak ditemukan.');
         }
+
+        if (RencanaKinerja::where('parent_id', '=',$request->id)->exists()) {
+            return \Response::make(['message'=>'Tidak dapat menghapus Rencana Kinerja yang masih memilik child'],422);
+        }
+
+
         if ( $sr->delete()){
             return \Response::make('sukses', 200);
         }else{

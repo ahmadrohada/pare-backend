@@ -37,5 +37,10 @@ class TimKerja extends Model
     return $this->hasMany(RencanaKinerja::class, 'tim_kerja_id');
     }
 
+    public function renja()
+    {
+        return $this->belongsTo('App\Models\Renja');
+    }
+
 
 }

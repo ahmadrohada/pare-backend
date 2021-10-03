@@ -71,7 +71,7 @@ class TimKerjaController extends Controller
                                         'pegawai_detail->photo AS photo'
                                     )
                                     ->WHERE('tim_kerja_id','=',$request->id)
-                                    ->GET();
+                                    ->get();
 
 
 
@@ -272,8 +272,9 @@ class TimKerjaController extends Controller
             $data = array(
                         'id'        => $ah->id,
                         'label'     => $ah->label,
-                        'child'     => "[]",
+                        'child'     => null,
                         'renja_id'  => $ah->renja_id,
+                        'anggota'   => TimKerja::WHERE('id','=',$ah->id)->WHERE('label','LIKE','ANGGOTA%')->exists(),
                     );
 
             return \Response::make($data, 200);
@@ -305,12 +306,22 @@ class TimKerjaController extends Controller
 
         $sr    = TimKerja::find($request->id);
         if (is_null($sr)) {
-            return $this->sendError('Tim Kerja tidak ditemukan.');
+            return response()->json(['message'=>'Tim Kerja tidak ditemukan'],422);
         }
+        //tim kerja yg bisa dihapus adalah yg tidak punya child dan tidak memiliki rencana kinerja
+        if (TimKerja::where('parent_id', '=',$request->id)->exists()) {
+            return \Response::make(['message'=>'Tidak dapat menghapus tim kerja yang masih memiliki bawahan'],422);
+        }
+        if (RencanaKinerja::where('tim_kerja_id', '=',$request->id)->exists()) {
+            return \Response::make(['message'=>'Tidak dapat menghapus tim kerja yang sudah memiliki Rencana Kinerja'],422);
+        }
+
+
+
         if ( $sr->delete()){
-            return \Response::make('sukses', 200);
+            return \Response::make(['message'=>'Sukses'], 200);
         }else{
-            return \Response::make('error', 500);
+            return \Response::make(['message'=>'Error'], 500);
         }
 
 

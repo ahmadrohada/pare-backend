@@ -56,8 +56,8 @@ class PejabatController extends Controller
                                     'id',
                                     'nama_lengkap',
                                     'jabatan',
-                                    'pegawai->nip AS nip',
-                                    'pegawai->photo AS photo'
+                                    'pegawai_detail->nip AS nip',
+                                    'pegawai_detail->photo AS photo'
                                 )
                                 ->WHERE('tim_kerja_id','=',$tim_kerja_id)
                                 ->GET();

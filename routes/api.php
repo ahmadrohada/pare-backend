@@ -92,6 +92,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//===========================                  RENJA                   ====================================//
 	//========================================================================================================//
     Route::get('renja', [RenjaController::class, 'list']);
+
+    Route::get('personal_renja', [RenjaController::class, 'personal_renja_list']);
+
     Route::get('renja/{id}', [RenjaController::class, 'detail']);
 
     //========================================================================================================//
