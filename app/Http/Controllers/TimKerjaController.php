@@ -155,6 +155,47 @@ class TimKerjaController extends Controller
         return $response;
     }
 
+    public function self(Request $request)
+    {
+        $renja_id = ($request->renja_id)? $request->renja_id : null ;
+
+        $query = TimKerja::
+                                    WHERE('id','=',$request->id)
+                                    ->SELECT(
+                                                'id',
+                                                'label',
+                                                'parent_id',
+                                                'renja_id'
+                                            );
+        if($renja_id != null ) {
+            $query->where('renja_id','=', $renja_id );
+        }
+
+        $response = array();
+        foreach( $query->get() AS $x ){
+            $h['id']            = $x->id;
+            $h['label']         = $x->label;
+            $h['parent_id']     = $x->parent_id;
+            $h['renja_id']      = $x->renja_id;
+            $h['anggota']       = TimKerja::WHERE('id','=',$x->id)->WHERE('label','LIKE','ANGGOTA%')->exists();
+
+            //cek apakah node ini memiliki child atau tidak
+            $child = TimKerja::WHERE('parent_id','=',$x->id)->exists();
+            if ( $child ){
+                $h['leaf']      = false;
+            }else{
+                $h['leaf']      = true;
+            }
+
+
+            array_push($response, $h);
+        }
+
+        $response = collect($response)->sortBy('id')->values();
+
+        return $response;
+    }
+
     public function child(Request $request)
     {
         $query = TimKerja::
