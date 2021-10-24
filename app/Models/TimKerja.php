@@ -32,7 +32,7 @@ class TimKerja extends Model
     }
 
     //RENCANA KINERJA
-    public function RencanaKinerja()
+    public function rencanaKinerja()
     {
     return $this->hasMany(RencanaKinerja::class, 'tim_kerja_id');
     }

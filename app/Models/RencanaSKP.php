@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RenjaPejabat extends Model
+class RencanaSKP extends Model
 {
-    protected $table = "renja_pejabat";
+    protected $table = "rencana_skp";
     protected $hidden = array('created_at', 'updated_at','deleted_at');
     use HasFactory;
 
 
-
-
-    public function timKerja()
+    public function TimKerja()
     {
-        return $this->belongsTo('App\Models\TimKerja');
+    return $this->belongsTo(TimKerja::class);
     }
+
+
 }

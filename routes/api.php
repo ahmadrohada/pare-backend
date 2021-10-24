@@ -10,6 +10,8 @@ use App\Http\Controllers\RencanaKerjaTahunanController;
 use App\Http\Controllers\TimKerjaController;
 use App\Http\Controllers\PejabatController;
 use App\Http\Controllers\RencanaKinerjaController;
+use App\Http\Controllers\PeranHasilController;
+use App\Http\Controllers\RencanaSKPController;
 
 
 use Illuminate\Http\Request;
@@ -153,6 +155,16 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'destroy']);
 
 
+    //========================================================================================================//
+	//==========================           MATRIKS     PERAN DAN HASIL           =============================//
+	//========================================================================================================//
+    Route::get('matrik_peran_hasil', [PeranHasilController::class, 'matrik']);
 
+
+    //========================================================================================================//
+	//===========================               RENCANA   SKP                 ================================//
+	//========================================================================================================//
+    Route::get('create_rencana_skp', [RencanaSKPController::class, 'create']);
+    Route::post('create_rencana_skp', [RencanaSKPController::class, 'store']);
 
 });

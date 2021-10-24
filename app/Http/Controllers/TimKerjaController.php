@@ -119,7 +119,7 @@ class TimKerjaController extends Controller
         $renja_id = ($request->renja_id)? $request->renja_id : null ;
 
         $query = TimKerja::
-                                    WHERE('parent_id','=','0')
+                                    WHERE('label','=','KETUA')
                                     ->SELECT(
                                                 'id',
                                                 'label',

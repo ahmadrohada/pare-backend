@@ -75,11 +75,12 @@ class RenjaController extends Controller
         $user_id = ($request->user_id)? $request->user_id : null ;
         Paginator::currentPageResolver(fn() => $page );
 
-        $query = RenjaPejabat::with(array('tim_kerja' => function($query) {
+        $query = RenjaPejabat::with(array('timKerja' => function($query) {
                                     $query->select('id','renja_id','label','parent_id')
                                     ->with('renja:id,periode->tahun AS periode,skpd->id AS id_skpd,skpd->nama AS nama_skpd,status');
                                 }))
                                 ->SELECT(
+                                        'id',
                                         'nama_lengkap',
                                         'user_id',
                                         'tim_kerja_id',
