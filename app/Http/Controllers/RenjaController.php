@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Renja;
 use App\Models\RenjaPejabat;
+use App\Models\Periode;
 
 use Illuminate\Pagination\Paginator;
 
@@ -116,14 +117,62 @@ class RenjaController extends Controller
 
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
+        //get active periode
+
+
+        //return $request->skpd_id;
+
+        $periodes = Periode::SELECT('id AS id','tahun AS label')->get()->toArray();
+        $periode_active = Periode::WHERE('status','=','1')->SELECT('id')->first();
+
+        /* $parent_id = ( $data_1->timKerja->parent->id )? $data_1->timKerja->parent->id : 0 ;
+        $data_2 = RenjaPejabat::WHERE('tim_kerja_id',$parent_id)
+                            ->SELECT(
+                                    'id',
+                                    'tim_kerja_id',
+                                    'pegawai_detail->nama_lengkap as nama_lengkap',
+                                    'pegawai_detail->nip as nip',
+                                    'jabatan_detail->nama as jabatan',
+                                    'jabatan_detail->skpd->nama AS skpd'
+
+                                )
+                            ->first();
+
+
+
+        $detailRencanaSKP = [
+            ['title' => 'RENJA', 'label' => 'Periode '.$data_1->timKerja->renja->periode],
+            ['title' => 'PERAN PADA TIM KERJA', 'label' => $data_1->timKerja->label],
+            ['title' => 'SKPD', 'label' => $data_1->timKerja->renja->nama_skpd],
+        ];
+
+        $pegawai = [
+            ['title' => 'NAMA LENGKAP', 'label' => $data_1->nama_lengkap],
+            ['title' => 'NIP', 'label' => $data_1->nip],
+            ['title' => 'JABATAN', 'label' => $data_1->jabatan],
+            ['title' => 'SKPD', 'label' => $data_1->skpd],
+        ];
+        */
+        $detailRenja = [
+            ['title' => 'SKPD', 'label' => 'NAMA SKPD LENGKAP'],
+        ];
+
+
+
+
+        return [
+            'skpdId'             => $request->skpd_id,
+            'periodeList'        => $periodes,
+            'detailRenja'        => $detailRenja,
+            'periodeAktifId'     => $periode_active->id,
+            //'detailRencanaSKP'   => $detailRencanaSKP,
+            //'pegawai'            => $pegawai,
+            //'pejabatPenilai'     => $pejabatPenilai,
+
+        ];
     }
 
     /**
