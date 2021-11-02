@@ -6,14 +6,16 @@ use Illuminate\Http\Request;
 use App\Models\Renja;
 use App\Models\RenjaPejabat;
 use App\Models\Periode;
+use App\Models\User;
+use App\Http\Traits\SotkRequest;
 
 use Illuminate\Pagination\Paginator;
-
-use GuzzleHttp\Client;
+use Validator;
 
 class RenjaController extends Controller
 {
 
+    use SotkRequest;
 
 
 
@@ -120,57 +122,22 @@ class RenjaController extends Controller
     public function create(Request $request)
     {
 
+
+
         //get active periode
-
-
-        //return $request->skpd_id;
-
         $periodes = Periode::SELECT('id AS id','tahun AS label')->get()->toArray();
         $periode_active = Periode::WHERE('status','=','1')->SELECT('id')->first();
 
-        /* $parent_id = ( $data_1->timKerja->parent->id )? $data_1->timKerja->parent->id : 0 ;
-        $data_2 = RenjaPejabat::WHERE('tim_kerja_id',$parent_id)
-                            ->SELECT(
-                                    'id',
-                                    'tim_kerja_id',
-                                    'pegawai_detail->nama_lengkap as nama_lengkap',
-                                    'pegawai_detail->nip as nip',
-                                    'jabatan_detail->nama as jabatan',
-                                    'jabatan_detail->skpd->nama AS skpd'
-
-                                )
-                            ->first();
-
-
-
-        $detailRencanaSKP = [
-            ['title' => 'RENJA', 'label' => 'Periode '.$data_1->timKerja->renja->periode],
-            ['title' => 'PERAN PADA TIM KERJA', 'label' => $data_1->timKerja->label],
-            ['title' => 'SKPD', 'label' => $data_1->timKerja->renja->nama_skpd],
-        ];
-
-        $pegawai = [
-            ['title' => 'NAMA LENGKAP', 'label' => $data_1->nama_lengkap],
-            ['title' => 'NIP', 'label' => $data_1->nip],
-            ['title' => 'JABATAN', 'label' => $data_1->jabatan],
-            ['title' => 'SKPD', 'label' => $data_1->skpd],
-        ];
-        */
         $detailRenja = [
-            ['title' => 'SKPD', 'label' => 'NAMA SKPD LENGKAP'],
+            ['title' => 'SKPD', 'label' => $this->Skpd($request->skpd_id)['nama'] ],
         ];
-
-
-
 
         return [
             'skpdId'             => $request->skpd_id,
             'periodeList'        => $periodes,
             'detailRenja'        => $detailRenja,
             'periodeAktifId'     => $periode_active->id,
-            //'detailRencanaSKP'   => $detailRencanaSKP,
-            //'pegawai'            => $pegawai,
-            //'pejabatPenilai'     => $pejabatPenilai,
+            'userId'             => auth()->user()->id
 
         ];
     }
@@ -183,8 +150,53 @@ class RenjaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $messages = [
+            'periodeId.required'    => 'Harus diisi',
+            'skpdId.required'       => 'Harus diisi',
+            'userId.required'       => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'periodeId'         => 'required',
+                'skpdId'            => 'required',
+                'userId'            => 'required',
+
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        //cari  detail pejabat dan jabatan pada SIM-ASN
+        $admin  =  User::WHERE('id','=',$request->userId)->first();
+        $skpd   =  $this->Skpd($request->skpdId);
+
+        $rp    = new Renja;
+        $rp->skpd_id             = $request->skpdId;
+        $rp->periode_id          = $request->periodeId;
+        $rp->periode             = json_encode(Periode::WHERE('id',$request->periodeId)->first());
+        $rp->skpd                = json_encode($skpd);
+        $rp->kepala_skpd         = null;
+        $rp->admin               = json_encode($admin);
+
+        if ($rp->save()) {
+            return \Response::make('sukses', 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+
+
+
     }
+
 
     /**
      * Display the specified resource.

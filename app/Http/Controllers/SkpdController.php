@@ -14,13 +14,12 @@ class SkpdController extends Controller
 
     //LIST SKPD FROM SOTK APP
     protected function skpd_list($page,$limit){
+        $token = env('SIMPEG_APP_TOKEN');
         $headers = [
+            'Authorization' => 'Bearer ' . $token,
             'Accept'        => 'application/json',
         ];
-        $auth  = [
-                'J6DBAK218MHLTFQEY4ZV',
-                'HSn6V9qYzx0EZdm8AMX1pCR3vuIbcyeBwrTFhjta7DWUKOGPNi'
-        ];
+
         $query = [
                'page' => $page,
                'limit' => $limit
@@ -29,20 +28,24 @@ class SkpdController extends Controller
 
         try{
             $client = new Client([
-                'base_uri' => 'https://api.sotk.bkpsdm.karawangkab.go.id',
+                'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
                 'timeout' => 10, // Response timeout
                 'connect_timeout' => 10, // Connection timeout
                 'peer' => false
             ]);
-            $response = $client->request('GET', '/skpd',[
+            $response = $client->request('GET', '/api/sotk/skpd',[
                 'headers'   => $headers,
-                'auth'      => $auth,
                 'query'     => $query,
             ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
-                return $arr_body;
+            return $arr_body;
+           /*  if ( isset($arr_body['data']) && ($arr_body['data'] != null) ){
+                return $arr_body['data'];
+            }else{
+                return null;
+            } */
 
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
@@ -50,31 +53,30 @@ class SkpdController extends Controller
         }
     }
 
-     //DETAIL SKPD FROM SOTK APP
-     protected function skpd_detail($id){
+    //DETAIL SKPD FROM SOTK APP
+    protected function skpd_detail($id){
+
+        $token = env('SIMPEG_APP_TOKEN');
         $headers = [
+            'Authorization' => 'Bearer ' . $token,
             'Accept'        => 'application/json',
-        ];
-        $auth  = [
-                'J6DBAK218MHLTFQEY4ZV',
-                'HSn6V9qYzx0EZdm8AMX1pCR3vuIbcyeBwrTFhjta7DWUKOGPNi'
         ];
 
 
         try{
             $client = new Client([
-                'base_uri' => 'https://api.sotk.bkpsdm.karawangkab.go.id',
+                'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
                 'timeout' => 10, // Response timeout
                 'connect_timeout' => 10, // Connection timeout
                 'peer' => false
             ]);
-            $response = $client->request('GET', '/skpd/'.$id,[
-                'headers'   => $headers,
-                'auth'      => $auth,
+            $response = $client->request('GET', '/api/sotk/skpd/'.$id,[
+                'headers'   => $headers
             ]);
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
+
             if ( isset($arr_body['data']) && ($arr_body['data'] != null) ){
                 return $arr_body['data'];
             }else{
@@ -93,6 +95,8 @@ class SkpdController extends Controller
         $limit  = ($request->limit)? $request->limit : 10 ;
 
         $skpd_list = $this::skpd_list($page,$limit);
+
+        return $skpd_list;
 
         $data = array();
         foreach ($skpd_list['data'] as $x) {

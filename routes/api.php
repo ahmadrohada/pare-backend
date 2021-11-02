@@ -101,6 +101,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('personal_renja', [RenjaController::class, 'personal_renja_list']);
 
     Route::get('renja/{id}', [RenjaController::class, 'detail']);
+    Route::post('renja', [RenjaController::class, 'store']);
 
     //========================================================================================================//
 	//===================               RENCANA KERJA TAHUNAN                   ==============================//

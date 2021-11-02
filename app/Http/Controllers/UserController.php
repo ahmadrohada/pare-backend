@@ -43,7 +43,7 @@ class UserController extends Controller
             }
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return null;
+            return $e;
         }
     }
 
