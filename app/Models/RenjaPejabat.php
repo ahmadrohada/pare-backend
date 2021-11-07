@@ -18,4 +18,10 @@ class RenjaPejabat extends Model
     {
         return $this->belongsTo('App\Models\TimKerja');
     }
+
+    public function rencanaSkp()
+    {
+        return $this->hasone('App\Models\RencanaSKP');
+    }
+
 }

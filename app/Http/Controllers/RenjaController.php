@@ -7,6 +7,7 @@ use App\Models\Renja;
 use App\Models\RenjaPejabat;
 use App\Models\Periode;
 use App\Models\User;
+use App\Models\TimKerja;
 use App\Http\Traits\SotkRequest;
 
 use Illuminate\Pagination\Paginator;
@@ -81,6 +82,9 @@ class RenjaController extends Controller
         $query = RenjaPejabat::with(array('timKerja' => function($query) {
                                     $query->select('id','renja_id','label','parent_id')
                                     ->with('renja:id,periode->tahun AS periode,skpd->id AS id_skpd,skpd->nama AS nama_skpd,status');
+                                }))
+                                ->with(array('rencanaSkp' => function($query) {
+                                    $query->select('id','renja_pejabat_id');
                                 }))
                                 ->SELECT(
                                         'id',
@@ -175,6 +179,11 @@ class RenjaController extends Controller
             return response()->json(['errors' => $validator->messages()], 422);
         }
 
+        //cek apakah pernah ada id skpd dan id periode yang sama pada db
+        if (Renja::WHERE('periode_id','=',$request->periodeId)->WHERE('skpd_id','=',$request->skpdId)->exists()) {
+            return \Response::make(['message'=>'Renja pada periode ini sudah dibuat'],422);
+        }
+
         //cari  detail pejabat dan jabatan pada SIM-ASN
         $admin  =  User::WHERE('id','=',$request->userId)->first();
         $skpd   =  $this->Skpd($request->skpdId);
@@ -188,7 +197,7 @@ class RenjaController extends Controller
         $rp->admin               = json_encode($admin);
 
         if ($rp->save()) {
-            return \Response::make('sukses', 200);
+            return \Response::make($rp->id, 200);
         } else {
             return \Response::make('error', 500);
         }
@@ -238,8 +247,39 @@ class RenjaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $messages = [
+            'id.required'   => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'id'   => 'required',
+                        ),
+                        $messages
+        );
+        if ( $validator->fails() ){
+            //$messages = $validator->messages();
+            return response()->json(['errors'=>$validator->messages()],422);
+
+        }
+
+
+        $sr    = Renja::find($request->id);
+        if (is_null($sr)) {
+            return $this->sendError('Renja tidak ditemukan.');
+        }
+
+        if (TimKerja::where('renja_id', '=',$request->id)->exists()) {
+            return \Response::make(['message'=>'Tidak dapat menghapus Renja yang sudah memiliki Tim Kerja'],422);
+        }
+
+
+        if ( $sr->delete()){
+            return \Response::make('sukses', 200);
+        }else{
+            return \Response::make('error', 500);
+        }
     }
 }

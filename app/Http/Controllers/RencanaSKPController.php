@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RenjaPejabat;
 use App\Models\User;
-use App\Models\RencanaSkp;
+use App\Models\RencanaSKP;
 
 use Illuminate\Pagination\Paginator;
 
@@ -108,50 +108,16 @@ class RencanaSKPController extends Controller
             return response()->json(['errors' => $validator->messages()], 422);
         }
 
-        //cari  detail pejabat dan jabatan pada SIM-ASN
-        $query =  User::WHERE('id','=',$request->userId)->first();
-
-        return $query;
-
-        /* //DETAIL PEGAWAI
-        $pegawai_detail = array(
-            'user_id'       => $request->userId,
-            'simpeg_id'     => $simpeg['nip'],
-            'jenis'         => $simpeg['jenis'],
-            'pns_id'        => $simpeg['pns_id'],
-            'nip_lama'      => $simpeg['nip_lama'],
-            'nip'           => $simpeg['nip'],
-            'photo'         => $simpeg['photo'],
-
-            'nama_lengkap'  => $simpeg['nama_lengkap'],
-
-        );
-
-        //DETAIL JABATAN
-        $jabatan_detail = array();
-        $jabatan = "";
-        foreach( $simpeg['jabatan'] AS $x ){
-            if($x['id'] == $request->jabatanId){
-                $jabatan_detail = $x;
-                $jabatan = $x['nama'];
-            }
-        }
 
 
-        $rp    = new RenjaPejabat;
-        $rp->user_id             = $request->userId;
-        $rp->tim_kerja_id        = $request->timKerjaId;
-        $rp->nama_lengkap        = $simpeg['nama_lengkap'];
-        $rp->nip                 = $simpeg['nip'];
-        $rp->jabatan             = $jabatan;
-        $rp->pegawai_detail      = json_encode($pegawai_detail);
-        $rp->jabatan_detail      = json_encode($jabatan_detail);
+        $rp    = new RencanaSKP;
+        $rp->renja_pejabat_id    = $request->renjaPejabatId;
 
         if ($rp->save()) {
-            return \Response::make('sukses', 200);
+            return \Response::make( $rp->id, 200);
         } else {
             return \Response::make('error', 500);
-        } */
+        }
 
 
 
