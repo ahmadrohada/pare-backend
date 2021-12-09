@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\TimKerja;
 use App\Http\Traits\SotkRequest;
 
+use App\Services\Datatables\RenjaDataTable;
+
 use Illuminate\Pagination\Paginator;
 use Validator;
 
@@ -17,6 +19,14 @@ class RenjaController extends Controller
 {
 
     use SotkRequest;
+
+    public function Renja(Request $request)
+    {
+        $searchDatas = new RenjaDataTable($request->all());
+        $data = $searchDatas->search();
+        //return PerjanjianKinerjaResource::collection($data);
+        return $data;
+    }
 
 
 

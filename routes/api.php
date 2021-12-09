@@ -12,6 +12,7 @@ use App\Http\Controllers\PejabatController;
 use App\Http\Controllers\RencanaKinerjaController;
 use App\Http\Controllers\PeranHasilController;
 use App\Http\Controllers\RencanaSKPController;
+use App\Http\Controllers\PerjanjianKinerjaController;
 
 
 use Illuminate\Http\Request;
@@ -96,13 +97,30 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::get('create_renja', [RenjaController::class, 'create']);
 
-    Route::get('renja', [RenjaController::class, 'list']);
+    Route::get('renja', [RenjaController::class, 'Renja']);
 
     Route::get('personal_renja', [RenjaController::class, 'personal_renja_list']);
 
     Route::get('renja/{id}', [RenjaController::class, 'detail']);
     Route::post('renja', [RenjaController::class, 'store']);
     Route::delete('renja', [RenjaController::class, 'destroy']);
+
+
+     //========================================================================================================//
+	//===========================           PERJANJIAN KINERJA                ================================//
+	//========================================================================================================//
+    //Route::get('sasaran_strategis_skpd', [PerjanjianKinerjaController::class, 'SasaranStrategisSKPD']);
+
+    Route::post('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisStore']);
+
+    Route::post('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisStore']);
+
+
+    Route::get('sasaran_strategis_skpd', [PerjanjianKinerjaController::class, 'SasaranStrategisSKPD']);
+    Route::get('sasaran_strategis_select_list', [PerjanjianKinerjaController::class, 'SasaranStrategisSelectList']);
+
+
+
 
     //========================================================================================================//
 	//===================               RENCANA KERJA TAHUNAN                   ==============================//
@@ -154,7 +172,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//==========================               RENCANA   KINERJA                 =============================//
 	//========================================================================================================//
 
-    Route::get('rencana_kinerja', [RencanaKinerjaController::class, 'rencana_kinerja']);
+    Route::get('rencana_kinerja_skp', [RencanaKinerjaController::class, 'RencanaKinerjaSKP']);
     Route::post('rencana_kinerja', [RencanaKinerjaController::class, 'store']);
     Route::put('rencana_kinerja', [RencanaKinerjaController::class, 'update']);
     Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'destroy']);

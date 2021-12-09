@@ -12,27 +12,19 @@ use Illuminate\Pagination\Paginator;
 use GuzzleHttp\Client;
 use Validator;
 
+use App\Services\Datatables\RencanaKinerjaSKPDataTable;
+use App\Services\Datatables\RencanaKinerjaDraftDataTable;
+
 class RencanaKinerjaController extends Controller
 {
 
 
-    public function rencana_kinerja(Request $request)
+
+    public function RencanaKinerjaSKP(Request $request)
     {
-
-        $rencana_kinerja = RencanaKinerja::with('parent')
-                                    ->WHERE('id','=',$request->id)
-                                    ->SELECT(
-                                                'id',
-                                                'label',
-                                                'parent_id',
-                                                'tim_kerja_id'
-                                            )
-                                    ->first();
-
-
-
-        return $rencana_kinerja;
-
+        $searchDatas = new RencanaKinerjaDraftDataTable($request->all());
+        $data = $searchDatas->search();
+        return $data;
     }
 
 

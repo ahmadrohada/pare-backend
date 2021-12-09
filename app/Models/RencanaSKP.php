@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RencanaSKP extends Model
 {
-    protected $table = "rencana_skp";
+    protected $table = "skp";
     protected $hidden = array('created_at', 'updated_at','deleted_at');
     use HasFactory;
 
