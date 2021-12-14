@@ -2,7 +2,7 @@
 namespace App\Http\Traits;
 use App\Models\SasaranStrategis;
 
-trait PerjanjianKinerja
+trait PerjanjianKinerjaTrait
 {
 
 

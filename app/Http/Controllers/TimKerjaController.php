@@ -7,9 +7,6 @@ use App\Models\TimKerja;
 use App\Models\RenjaPejabat;
 use App\Models\RencanaKinerja;
 
-use Illuminate\Pagination\Paginator;
-
-use GuzzleHttp\Client;
 use Validator;
 
 class TimKerjaController extends Controller
@@ -57,7 +54,7 @@ class TimKerjaController extends Controller
                                                 'id',
                                                 'label',
                                                 'parent_id',
-                                                'renja_id'
+                                                'perjanjian_kinerja_id'
                                             )
                                     ->first();
         $response['tim_kerja'] = $tim_kerja;
@@ -124,10 +121,10 @@ class TimKerjaController extends Controller
                                                 'id',
                                                 'label',
                                                 'parent_id',
-                                                'renja_id'
+                                                'perjanjian_kinerja_id'
                                             );
         if($renja_id != null ) {
-            $query->where('renja_id','=', $renja_id );
+            $query->where('perjanjian_kinerja_id','=', $renja_id );
         }
 
         $response = array();
@@ -135,7 +132,7 @@ class TimKerjaController extends Controller
             $h['id']            = $x->id;
             $h['label']         = $x->label;
             $h['parent_id']     = $x->parent_id;
-            $h['renja_id']      = $x->renja_id;
+            $h['perjanjian_kinerja_id']      = $x->renja_id;
             $h['anggota']       = TimKerja::WHERE('id','=',$x->id)->WHERE('label','LIKE','ANGGOTA%')->exists();
 
             //cek apakah node ini memiliki child atau tidak
@@ -165,10 +162,10 @@ class TimKerjaController extends Controller
                                                 'id',
                                                 'label',
                                                 'parent_id',
-                                                'renja_id'
+                                                'perjanjian_kinerja_id'
                                             );
         if($renja_id != null ) {
-            $query->where('renja_id','=', $renja_id );
+            $query->where('perjanjian_kinerja_id','=', $renja_id );
         }
 
         $response = array();
@@ -176,7 +173,7 @@ class TimKerjaController extends Controller
             $h['id']            = $x->id;
             $h['label']         = $x->label;
             $h['parent_id']     = $x->parent_id;
-            $h['renja_id']      = $x->renja_id;
+            $h['perjanjian_kinerja_id']      = $x->renja_id;
             $h['anggota']       = TimKerja::WHERE('id','=',$x->id)->WHERE('label','LIKE','ANGGOTA%')->exists();
 
             //cek apakah node ini memiliki child atau tidak
@@ -204,14 +201,14 @@ class TimKerjaController extends Controller
                                         'id',
                                         'label',
                                         'parent_id',
-                                        'renja_id'
+                                        'perjanjian_kinerja_id'
                                     )
                                     ->get();
         $response = array();
         foreach( $query AS $x ){
                 $h['id']            = $x->id;
                 $h['label']         = $x->label;
-                $h['renja_id']      = $x->renja_id;
+                $h['perjanjian_kinerja_id']      = $x->renja_id;
                 $h['parent_id']     = $x->parent_id;
                 $h['anggota']       = TimKerja::WHERE('id','=',$x->id)->WHERE('label','LIKE','ANGGOTA%')->exists();
                 //cek apakah node ini memiliki child atau tidak
@@ -236,7 +233,7 @@ class TimKerjaController extends Controller
                                         'id',
                                         'label',
                                         'parent_id',
-                                        'renja_id'
+                                        'perjanjian_kinerja_id'
                                     )
                                     ->first();
 
@@ -279,7 +276,7 @@ class TimKerjaController extends Controller
 
 
         $messages = [
-            'renjaId.required'         => 'Harus diisi',
+            'perjanjianKinerjaId.required'         => 'Harus diisi',
             'label.required'            => 'Harus diisi',
             'parentId.required'        => 'Harus diisi',
 
@@ -290,7 +287,7 @@ class TimKerjaController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'renjaId'              => 'required',
+                'perjanjianKinerjaId'              => 'required',
                 'label'                 => 'required',
                 'parentId'             => 'required',
 
@@ -305,7 +302,7 @@ class TimKerjaController extends Controller
 
 
         $ah    = new TimKerja;
-        $ah->renja_id        = $request->renjaId;
+        $ah->perjanjian_kinerja_id        = $request->perjanjianKinerjaId;
         $ah->label           = $request->label;
         $ah->parent_id       = $request->parentId;
 
@@ -314,7 +311,7 @@ class TimKerjaController extends Controller
                         'id'        => $ah->id,
                         'label'     => $ah->label,
                         'child'     => null,
-                        'renja_id'  => $ah->renja_id,
+                        'perjanjian_kinerja_id'  => $ah->perjanjian_kinerja_id,
                         'anggota'   => TimKerja::WHERE('id','=',$ah->id)->WHERE('label','LIKE','ANGGOTA%')->exists(),
                     );
 

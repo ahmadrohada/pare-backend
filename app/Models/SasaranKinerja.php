@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SasaranStrategis extends Model
+class SasaranKinerja extends Model
 {
-    protected $table = "renja_sasaran_strategis";
+    use SoftDeletes;
+    protected $table = "sasaran_kinerja";
     use HasFactory;
+    protected $dates = ['deleted_at'];
 
-    public function Indikator()
+/*     public function Indikator()
     {
     return $this->hasMany(IndikatorSasaranStrategis::class);
     }
@@ -19,7 +22,7 @@ class SasaranStrategis extends Model
     {
         return $this->belongsTo(Periode::class);
     }
-
+ */
 
 
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\RencanaKinerjaController;
 use App\Http\Controllers\PeranHasilController;
 use App\Http\Controllers\RencanaSKPController;
 use App\Http\Controllers\PerjanjianKinerjaController;
+use App\Http\Controllers\SasaranKinerjaController;
 
 
 use Illuminate\Http\Request;
@@ -95,7 +96,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//===========================                  RENJA                   ====================================//
 	//========================================================================================================//
 
-    Route::get('create_renja', [RenjaController::class, 'create']);
+    /* Route::get('create_renja', [RenjaController::class, 'create']);
 
     Route::get('renja', [RenjaController::class, 'Renja']);
 
@@ -103,21 +104,45 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::get('renja/{id}', [RenjaController::class, 'detail']);
     Route::post('renja', [RenjaController::class, 'store']);
-    Route::delete('renja', [RenjaController::class, 'destroy']);
+    Route::delete('renja', [RenjaController::class, 'destroy']); */
 
 
      //========================================================================================================//
 	//===========================           PERJANJIAN KINERJA                ================================//
 	//========================================================================================================//
-    //Route::get('sasaran_strategis_skpd', [PerjanjianKinerjaController::class, 'SasaranStrategisSKPD']);
 
-    Route::post('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisStore']);
+    // =======     P  K      ===============//
+    Route::get('create_perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaCreate']);
+    Route::post('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaStore']);
+    Route::get('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaList']);
+    Route::delete('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaDestroy']);
 
-    Route::post('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisStore']);
 
-
-    Route::get('sasaran_strategis_skpd', [PerjanjianKinerjaController::class, 'SasaranStrategisSKPD']);
+    // ======= SASARAN STRATEGIS ===============//
+    Route::get('sasaran_strategis_skpd', [PerjanjianKinerjaController::class, 'SasaranStrategis']);
     Route::get('sasaran_strategis_select_list', [PerjanjianKinerjaController::class, 'SasaranStrategisSelectList']);
+    Route::get('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisDetail']);
+    Route::post('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisStore']);
+    Route::put('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisUpdate']);
+    Route::delete('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisDestroy']);
+
+    // ======= INDIKATOR SASARAN STRATEGIS ===============//
+    Route::get('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisDetail']);
+    Route::post('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisStore']);
+    Route::delete('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisDestroy']);
+    Route::put('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisUpdate']);
+
+
+    //========================================================================================================//
+	//===========================             SASARAN KINERJA                 ================================//
+	//========================================================================================================//
+    Route::get('sasaran_kinerja_list', [SasaranKinerjaController::class, 'SasaranKinerjaList']);
+    Route::get('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDetail']);
+    Route::post('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaStore']);
+    Route::put('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaUpdate']);
+    Route::delete('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDestroy']);
+
+
 
 
 
@@ -189,5 +214,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//========================================================================================================//
     Route::get('create_rencana_skp', [RencanaSKPController::class, 'create']);
     Route::post('create_rencana_skp', [RencanaSKPController::class, 'store']);
+
+
+
 
 });

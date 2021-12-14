@@ -1,9 +1,9 @@
 <?php
 namespace App\Services\Datatables;
 
-use App\Models\PerjanjianKinerja;
+use App\Models\SasaranStrategis;
 
-class PerjanjianKinerjaDataTable {
+class SasaranStrategisDataTable {
     private $search;
     private $take;
     private $orderBy;
@@ -13,18 +13,12 @@ class PerjanjianKinerjaDataTable {
     public function __construct( $parameters )
     {
         $this->setLocalParameters( $parameters );
-        $this->query = PerjanjianKinerja::SELECT(   'id AS perjanjian_kinerja_id',
-                                        'periode->tahun AS periode',
-                                        'skpd->id AS skpd_id',
-                                        'skpd->nama AS nama_skpd',
-                                        'skpd->singkatan AS singkatan_skpd',
-                                        'status AS status',
-                                        'created_at AS created_at');
+       $this->query = SasaranStrategis::with(['Indikator']);
     }
 
     private function setLocalParameters( $parameters )
     {
-        $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : 0;
+        $this->renjaId = isset( $parameters['renja_id'] ) ? $parameters['renja_id'] : 0;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
@@ -33,9 +27,9 @@ class PerjanjianKinerjaDataTable {
     // ... Other methods and set up
     public function search()
     {
-    $this->applySkpdId();
     $this->applySearch();
     $this->applyOrder();
+    $this->applyRenjaId();
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
@@ -49,17 +43,41 @@ class PerjanjianKinerjaDataTable {
     $data = $cafes->getCollection();
     $response['data'] = array();
     $no = 0;
+    $id_sasaran = null;
 
     foreach( $data AS $x ){
         $no = $no+1;
+        //jika indikator nya tidak null
+        if ( sizeof($x->indikator) ){
+            foreach( $x->indikator AS $y ){
+                $primary = 1 ;
+                if ( $id_sasaran == $x->id){
+                    $primary = 0;
+                }
 
-        $i['id']            = $x->perjanjian_kinerja_id;
-        $i['periode']       = $x->periode;
-        $i['nama_skpd']     = $x->nama_skpd;
-        $i['singkatan_skpd']= $x->singkatan_skpd;
-        $i['status']        = $x->status;
-        $i['created_at']    = $x->created_at;
-        array_push($response['data'], $i);
+
+                $i['id']                        = $x->id;
+                $i['sasaran_strategis']         = $x->label;
+                $i['indikator_id']              = $y->id;
+                $i['indikator']                 = $y->label;
+                $i['target']                    = $y->target;
+                $i['satuan_target']             = $y->satuan_target;
+                $i['primary']                   = $primary;
+                array_push($response['data'], $i);
+                $id_sasaran = $x->id;
+            }
+        }else{
+
+            $i['id']                        = $x->id;
+            $i['sasaran_strategis']         = $x->label;
+            $i['indikator_id']              = "";
+            $i['indikator']                 = "";
+            $i['target']                    = "";
+            $i['satuan_target']             = "";
+            $i['primary']                   = 1;
+            array_push($response['data'], $i);
+        }
+
 
 
     }
@@ -73,14 +91,13 @@ class PerjanjianKinerjaDataTable {
 
     }
     // ... Other methods and set up
-    private function applySkpdId()
+    private function applyRenjaId()
     {
-        if( $this->skpdId != '' ){
-            $skpdId = urldecode( $this->skpdId );
+        if( $this->renjaId != '' ){
+            $renjaId = urldecode( $this->renjaId );
 
-            $this->query->where(function( $query ) use ( $skpdId ){
-                $query->where('skpd_id', '=', $skpdId );
-                      //->orWhere('username', 'LIKE', '%'.$search.'%');
+            $this->query->where(function( $query ) use ( $renjaId ){
+                $query->where('renja_id', '=', $renjaId );
             });
         }
     }

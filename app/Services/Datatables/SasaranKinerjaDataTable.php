@@ -1,9 +1,9 @@
 <?php
 namespace App\Services\Datatables;
 
-use App\Models\Renja;
+use App\Models\SasaranKinerja;
 
-class RenjaDataTable {
+class SasaranKinerjaDataTable {
     private $search;
     private $take;
     private $orderBy;
@@ -13,14 +13,7 @@ class RenjaDataTable {
     public function __construct( $parameters )
     {
         $this->setLocalParameters( $parameters );
-        //$this->query = Renja::with(['Periode']);
-        $this->query = Renja::SELECT(   'id AS renja_id',
-                                        'periode->tahun AS periode',
-                                        'skpd->id AS skpd_id',
-                                        'skpd->nama AS nama_skpd',
-                                        'skpd->singkatan AS singkatan_skpd',
-                                        'status AS status',
-                                        'created_at AS created_at');
+       $this->query = SasaranKinerja::query();
     }
 
     private function setLocalParameters( $parameters )
@@ -34,9 +27,9 @@ class RenjaDataTable {
     // ... Other methods and set up
     public function search()
     {
-    $this->applySkpdId();
     $this->applySearch();
     $this->applyOrder();
+    $this->applySkpdId();
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
@@ -50,17 +43,41 @@ class RenjaDataTable {
     $data = $cafes->getCollection();
     $response['data'] = array();
     $no = 0;
+    $id_sasaran = null;
 
     foreach( $data AS $x ){
         $no = $no+1;
+        //jika indikator nya tidak null
+        if ( sizeof($x->indikator) ){
+            foreach( $x->indikator AS $y ){
+                $primary = 1 ;
+                if ( $id_sasaran == $x->id){
+                    $primary = 0;
+                }
 
-        $i['id']            = $x->renja_id;
-        $i['periode']       = $x->periode;
-        $i['nama_skpd']     = $x->nama_skpd;
-        $i['singkatan_skpd']= $x->singkatan_skpd;
-        $i['status']        = $x->status;
-        $i['created_at']    = $x->created_at;
-        array_push($response['data'], $i);
+
+                $i['id']                        = $x->id;
+                $i['sasaran_strategis']         = $x->label;
+                $i['indikator_id']              = $y->id;
+                $i['indikator']                 = $y->label;
+                $i['target']                    = $y->target;
+                $i['satuan_target']             = $y->satuan_target;
+                $i['primary']                   = $primary;
+                array_push($response['data'], $i);
+                $id_sasaran = $x->id;
+            }
+        }else{
+
+            $i['id']                        = $x->id;
+            $i['sasaran_strategis']         = $x->label;
+            $i['indikator_id']              = "";
+            $i['indikator']                 = "";
+            $i['target']                    = "";
+            $i['satuan_target']             = "";
+            $i['primary']                   = 1;
+            array_push($response['data'], $i);
+        }
+
 
 
     }
@@ -80,8 +97,8 @@ class RenjaDataTable {
             $skpdId = urldecode( $this->skpdId );
 
             $this->query->where(function( $query ) use ( $skpdId ){
-                $query->where('skpd_id', '=', $skpdId );
-                      //->orWhere('username', 'LIKE', '%'.$search.'%');
+                $query->whereJsonContains('pegawai_yang_dinilai->skpd->id', 28 );
+                //$query->where('skpd_id', '=', $skpdId );
             });
         }
     }

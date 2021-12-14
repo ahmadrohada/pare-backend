@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TimKerja extends Model
 {
-    protected $table = "renja_tim_kerja";
+    protected $table = "perjanjian_kinerja_tim_kerja";
     protected $hidden = array('created_at', 'updated_at','deleted_at');
     use HasFactory;
 
@@ -37,9 +37,9 @@ class TimKerja extends Model
     return $this->hasMany(RencanaKinerja::class, 'tim_kerja_id');
     }
 
-    public function renja()
+    public function pernjanjianKinerja()
     {
-        return $this->belongsTo('App\Models\Renja');
+        return $this->belongsTo('App\Models\PerjanjianKinerja');
     }
 
 

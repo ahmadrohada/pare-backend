@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Renja;
+use App\Models\PerjanjianKinerja;
 use App\Models\RenjaPejabat;
 use App\Models\Periode;
 use App\Models\User;

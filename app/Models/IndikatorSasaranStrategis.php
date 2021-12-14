@@ -13,7 +13,7 @@ class IndikatorSasaranStrategis extends Model
 
     public function SasaranStrategis()
     {
-        return $this->belongsTo(SasaranStrategis::class,'id');
+        return $this->belongsTo(SasaranStrategis::class);
     }
 
 
