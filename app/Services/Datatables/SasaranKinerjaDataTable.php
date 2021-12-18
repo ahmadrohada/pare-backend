@@ -48,37 +48,13 @@ class SasaranKinerjaDataTable {
     foreach( $data AS $x ){
         $no = $no+1;
         //jika indikator nya tidak null
-        if ( sizeof($x->indikator) ){
-            foreach( $x->indikator AS $y ){
-                $primary = 1 ;
-                if ( $id_sasaran == $x->id){
-                    $primary = 0;
-                }
 
+        $i['id']                        = $x->id;
+        $i['periode']                   = $x->periode_id;
+        $i['jenis_jabatan']             = $x->jenis_jabatan;
+        $i['created_at']                = $x->created_at;
 
-                $i['id']                        = $x->id;
-                $i['sasaran_strategis']         = $x->label;
-                $i['indikator_id']              = $y->id;
-                $i['indikator']                 = $y->label;
-                $i['target']                    = $y->target;
-                $i['satuan_target']             = $y->satuan_target;
-                $i['primary']                   = $primary;
-                array_push($response['data'], $i);
-                $id_sasaran = $x->id;
-            }
-        }else{
-
-            $i['id']                        = $x->id;
-            $i['sasaran_strategis']         = $x->label;
-            $i['indikator_id']              = "";
-            $i['indikator']                 = "";
-            $i['target']                    = "";
-            $i['satuan_target']             = "";
-            $i['primary']                   = 1;
-            array_push($response['data'], $i);
-        }
-
-
+        array_push($response['data'], $i);
 
     }
 
@@ -97,8 +73,8 @@ class SasaranKinerjaDataTable {
             $skpdId = urldecode( $this->skpdId );
 
             $this->query->where(function( $query ) use ( $skpdId ){
-                $query->whereJsonContains('pegawai_yang_dinilai->skpd->id', 28 );
-                //$query->where('skpd_id', '=', $skpdId );
+                //$query->whereJsonContains('pegawai_yang_dinilai->skpd->id', 28 );
+                $query->where('skpd_id', '=', $skpdId );
             });
         }
     }
