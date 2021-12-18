@@ -14,6 +14,7 @@ use App\Http\Controllers\PeranHasilController;
 use App\Http\Controllers\RencanaSKPController;
 use App\Http\Controllers\PerjanjianKinerjaController;
 use App\Http\Controllers\SasaranKinerjaController;
+use App\Http\Controllers\PegawaiController;
 
 
 use Illuminate\Http\Request;
@@ -55,8 +56,20 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::put('user_update', [UserController::class, 'user_update']);
 
-    Route::get('user_jabatan_list', [UserController::class, 'user_jabatan_list']);
+    Route::get('user_jabatan_list', [UserController::class, 'UserJabatanList']);
+    Route::get('user_jabatan_detail', [UserController::class, 'UserJabatanDetail']);
 
+    //========================================================================================================//
+	//===========================           PEGAWAI FROM SIM ASN          ====================================//
+	//========================================================================================================//
+
+    Route::get('pegawai_detail', [PegawaiController::class, 'PegawaiDetail']);
+
+     //========================================================================================================//
+	//==================================           JABATAN        =============================================//
+	//========================================================================================================//
+
+    Route::get('jabatan_detail', [UserController::class, 'JabatanDetail']);
 
 
 
