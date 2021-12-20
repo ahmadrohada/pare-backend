@@ -15,6 +15,8 @@ use App\Http\Controllers\RencanaSKPController;
 use App\Http\Controllers\PerjanjianKinerjaController;
 use App\Http\Controllers\SasaranKinerjaController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PeriodeController;
+
 
 
 use Illuminate\Http\Request;
@@ -106,6 +108,11 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
     //========================================================================================================//
+	//===========================                   PERIODE               ====================================//
+	//========================================================================================================//
+    Route::get('periode', [PeriodeController::class, 'PeriodeDetail']);
+
+    //========================================================================================================//
 	//===========================                  RENJA                   ====================================//
 	//========================================================================================================//
 
@@ -125,6 +132,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//========================================================================================================//
 
     // =======     P  K      ===============//
+    Route::get('perjanjian_kinerja_detail', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaDetail']);
     Route::get('create_perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaCreate']);
     Route::post('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaStore']);
     Route::get('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaList']);

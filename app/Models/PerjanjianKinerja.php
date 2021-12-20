@@ -13,4 +13,11 @@ class PerjanjianKinerja extends Model
     use HasFactory;
 
     protected $dates = ['deleted_at'];
+
+    public function Periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+
 }

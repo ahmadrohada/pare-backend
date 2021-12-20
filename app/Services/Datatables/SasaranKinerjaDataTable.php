@@ -13,7 +13,13 @@ class SasaranKinerjaDataTable {
     public function __construct( $parameters )
     {
         $this->setLocalParameters( $parameters );
-       $this->query = SasaranKinerja::query();
+       $this->query = SasaranKinerja::SELECT(   'id AS id',
+                                                'periode_penilaian->tahun AS periode_tahun',
+                                                'pegawai_yang_dinilai->nama AS nama_pegawai',
+                                                'pegawai_yang_dinilai->nip AS nip_pegawai',
+                                                'jenis_jabatan_skp',
+                                                'status AS status',
+                                                'created_at AS created_at');
     }
 
     private function setLocalParameters( $parameters )
@@ -50,8 +56,11 @@ class SasaranKinerjaDataTable {
         //jika indikator nya tidak null
 
         $i['id']                        = $x->id;
-        $i['periode']                   = $x->periode_id;
-        $i['jenis_jabatan']             = $x->jenis_jabatan;
+        $i['periode_id']                = $x->periode_pk_id;
+        $i['periode_tahun']             = $x->periode_tahun;
+        $i['nama_pegawai']              = $x->nama_pegawai;
+        $i['nip_pegawai']               = $x->nip_pegawai;
+        $i['jenis_jabatan_skp']         = $x->jenis_jabatan_skp;
         $i['created_at']                = $x->created_at;
 
         array_push($response['data'], $i);

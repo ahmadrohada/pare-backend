@@ -52,6 +52,8 @@ class SasaranKinerjaController extends Controller
                     //'nipPejabatPenilaiKinerja.required'             => 'Harus diisi',
                     //'pangkatPegawaiYangDinilai'  => 'Harus diisi',
                     //'pangkatPejabatPenilaiKinerja'  => 'Harus diisi',
+                    'namaLengkapPegawaiYangDinilai.required'        => 'Harus diisi',
+                    'namaLengkapPejabatPenilaiKinerja.required'     => 'Harus diisi',
 
         ];
 
@@ -87,6 +89,8 @@ class SasaranKinerjaController extends Controller
                     //'nipPejabatPenilaiKinerja'              => 'required',
                     //'pangkatPegawaiYangDinilai'           => 'required',
                     //'pangkatPejabatPenilaiKinerja'        => 'required',
+                    'namaLengkapPegawaiYangDinilai'         => 'required',
+                    'namaLengkapPejabatPenilaiKinerja'      => 'required',
 
             ],
             $messages
@@ -98,12 +102,13 @@ class SasaranKinerjaController extends Controller
 
         $periode_penilaian = [
             "periode_pk"        => $request->periodePkId,
+            "tahun"             => $request->periodeLabel,
             "tgl_mulai"         => date('Y-m-d', strtotime($request->dateFrom)),
             "tgl_selesai"       => date('Y-m-d', strtotime($request->dateTo)),
         ];
 
         $pegawai_yang_dinilai = [
-            "nama"              => $request->namaPegawaiYangDinilai,
+            "nama"              => $request->namaLengkapPegawaiYangDinilai,
             "nip"               => $request->nipPegawaiYangDinilai,
             "jabatan"           => $request->jabatanPegawaiYangDinilai,
             "jabatan_id"        => $request->jabatanSimAsnPegawaiYangDinilaiId,
@@ -113,7 +118,7 @@ class SasaranKinerjaController extends Controller
         ];
 
         $pejabat_penilai_kinerja = [
-            "nama"              => $request->namaPejabatPenilaiKinerja,
+            "nama"              => $request->namaLengkapPejabatPenilaiKinerja,
             "nip"               => $request->nipPejabatPenilaiKinerja,
             "jabatan"           => $request->jabatanPejabatPenilaiKinerja,
             "jabatan_id"        => $request->jabatanSimAsnPejabatPenilaiKinerjaId,

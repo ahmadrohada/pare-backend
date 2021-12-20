@@ -351,6 +351,19 @@ class PerjanjianKinerjaController extends Controller
         ];
     }
 
+    public function PerjanjianKinerjaDetail(Request $request)
+    {
+        $pk = PerjanjianKinerja::with(array('Periode' => function($query) {
+                //$query->select('id','label');
+            }))
+            ->WHERE('id', $request->id)
+            ->first();
+
+
+
+        return $pk;
+    }
+
     public function PerjanjianKinerjaStore(Request $request)
     {
         $messages = [
