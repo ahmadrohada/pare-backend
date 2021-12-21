@@ -148,10 +148,45 @@ class SasaranKinerjaController extends Controller
 
             return \Response::make($ah, 200);
         } else {
-            return \Response::make(['messages' => "Terjadi kesalahan saat menyimpan SKP"], 500);
+            return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
         }
     }
 
+
+    public function SasaranKinerjaDestroy(Request $request)
+    {
+
+        $messages = [
+            'id.required'   => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'id'   => 'required',
+                        ),
+                        $messages
+        );
+        if ( $validator->fails() ){
+            //$messages = $validator->messages();
+            return response()->json(['errors'=>$validator->messages()],422);
+
+        }
+
+
+        $sr    = SasaranKinerja::find($request->id);
+        if (is_null($sr)) {
+            return \Response::make(['message' => "Sasaran Kinerja tidak ditemukan"], 500);
+        }
+
+
+        if ( $sr->delete()){
+            return \Response::make('sukses', 200);
+        }else{
+            return \Response::make('error', 500);
+        }
+
+
+    }
 
 
 
