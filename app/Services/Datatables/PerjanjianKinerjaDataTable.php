@@ -25,6 +25,7 @@ class PerjanjianKinerjaDataTable {
     private function setLocalParameters( $parameters )
     {
         $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : 0;
+        $this->status = isset( $parameters['status'] ) ? $parameters['status'] : null;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
@@ -36,6 +37,7 @@ class PerjanjianKinerjaDataTable {
     $this->applySkpdId();
     $this->applySearch();
     $this->applyOrder();
+    $this->applyStatus();
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
@@ -81,6 +83,17 @@ class PerjanjianKinerjaDataTable {
             $this->query->where(function( $query ) use ( $skpdId ){
                 $query->where('skpd_id', '=', $skpdId );
                       //->orWhere('username', 'LIKE', '%'.$search.'%');
+            });
+        }
+    }
+
+    private function applyStatus()
+    {
+        if( $this->status != null ){
+            $status = $this->status;
+
+            $this->query->where(function( $query ) use ( $status ){
+                $query->where('status', '=', $status );
             });
         }
     }

@@ -1,9 +1,9 @@
 <?php
 namespace App\Services\Datatables;
 
-use App\Models\SasaranStrategis;
+use App\Models\RencanaKinerja;
 
-class RencanaKinerjaDraftDataTable {
+class RencanaKinerjaDataTable {
     private $search;
     private $take;
     private $orderBy;
@@ -13,23 +13,26 @@ class RencanaKinerjaDraftDataTable {
     public function __construct( $parameters )
     {
         $this->setLocalParameters( $parameters );
-        $this->query = SasaranStrategis::with(['Indikator']);
+        $this->query = RencanaKinerja::with(['IndikatorKinerjaIndividu']);
+        //$this->query = RencanaKinerja::query();
     }
 
     private function setLocalParameters( $parameters )
     {
-        $this->renjaId = isset( $parameters['perjanjian_kinerja_id'] ) ? $parameters['perjanjian_kinerja_id'] : 0;
+        $this->sasaranKinerjaId = isset( $parameters['sasaran_kinerja_id'] ) ? $parameters['sasaran_kinerja_id'] : 0;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';
+        $this->jenis = isset( $parameters['jenis_rencana_kinerja'] ) ? $parameters['jenis_rencana_kinerja'] : 0;
     }
     // ... Other methods and set up
     public function search()
     {
-        $this->applySearch();
-        $this->applyOrder();
-        $this->applyRenjaId();
+    $this->applySearch();
+    $this->applyOrder();
+    $this->applySasaranKinerjaId();
+    $this->applyJenis();
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
@@ -44,32 +47,50 @@ class RencanaKinerjaDraftDataTable {
     $response['data'] = array();
     $no = 0;
 
+
+
     foreach( $data AS $x ){
         $no = $no+1;
         //jika indikator nya tidak null
-        if ( sizeof($x->indikator) ){
-            foreach( $x->indikator AS $y ){
+        if ( sizeof($x->IndikatorKinerjaIndividu) ){
+            foreach( $x->IndikatorKinerjaIndividu AS $y ){
+
+                //type target
+                if ( $y->type_target == '1' ){
+                    $target = $y->target_max.' '.$y->satuan_target;
+                }else if ( $y->type_target == '2' ){
+                    $target = $y->target_min.' - '.$y->target_max.' '.$y->satuan_target;
+                }
+
                 $i['id']                        = $x->id;
+                $i['no']                        = $no;
                 $i['rencana_kinerja']           = $x->label;
+                $i['indikator_id']              = $y->id;
                 $i['indikator_kinerja_individu']= $y->label;
-                $i['target']                    = $y->target;
+                $i['target']                    = $target;
                 $i['satuan_target']             = $y->satuan_target;
-                $i['row']                       = 3;
+                $i['target_min']                = $y->target_min;
+                $i['target_max']                = $y->target_max;
                 array_push($response['data'], $i);
             }
         }else{
+
             $i['id']                        = $x->id;
+            $i['no']                        = $no;
             $i['rencana_kinerja']           = $x->label;
+            $i['indikator_id']              = "";
             $i['indikator_kinerja_individu']= "";
             $i['target']                    = "";
             $i['satuan_target']             = "";
-            $i['row']                       = 3;
+            $i['target_min']                = "";
+            $i['target_max']                = "";
             array_push($response['data'], $i);
         }
 
 
 
     }
+
 
     return [
         'data'          => $response['data'],
@@ -80,17 +101,26 @@ class RencanaKinerjaDraftDataTable {
 
     }
     // ... Other methods and set up
-    private function applyRenjaId()
+    private function applySasaranKinerjaId()
     {
-        if( $this->renjaId != '' ){
-            $renjaId = urldecode( $this->renjaId );
+        if( $this->sasaranKinerjaId != '' ){
+            $sasaranKinerjaId = urldecode( $this->sasaranKinerjaId );
 
-            $this->query->where(function( $query ) use ( $renjaId ){
-                $query->where('renja_id', '=', $renjaId );
-                      //->orWhere('username', 'LIKE', '%'.$search.'%');
+            $this->query->where(function( $query ) use ( $sasaranKinerjaId ){
+                $query->where('skp_id', '=', $sasaranKinerjaId );
             });
         }
     }
+
+    private function applyJenis()
+    {
+          if( $this->jenis != '' ){
+            $jenis = urldecode( $this->jenis );
+            $this->query->where(function( $query ) use ( $jenis ){
+                $query->where('jenis_rencana_kinerja', '=', $jenis );
+            });
+          }
+      }
 
     private function applyOrder()
     {

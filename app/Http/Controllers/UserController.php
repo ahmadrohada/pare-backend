@@ -10,6 +10,8 @@ use App\Http\Resources\User as UserResource;
 
 use Illuminate\Pagination\Paginator;
 
+use App\Services\Datatables\UserDataTable;
+
 use GuzzleHttp\Client;
 
 class UserController extends Controller
@@ -162,8 +164,12 @@ class UserController extends Controller
         return "berhasil update data sebanyak : " . $no;
     }
 
-
-    public function user_list(Request $request)
+    public function UserList(Request $request){
+        $searchDatas = new UserDataTable($request->all());
+        $data = $searchDatas->search();
+        return $data;
+    }
+    /* public function user_list(Request $request)
     {
 
         $page = ($request->page)? $request->page : 1 ;
@@ -279,7 +285,7 @@ class UserController extends Controller
         ];
 
 
-    }
+    }*/
 
     public function select_user_list(Request $request)
     {

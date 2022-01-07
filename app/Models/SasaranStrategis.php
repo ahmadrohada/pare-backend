@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SasaranStrategis extends Model
 {
-    protected $table = "renja_sasaran_strategis";
+    protected $table = "perjanjian_kinerja_sasaran_strategis";
     use HasFactory;
 
     public function Indikator()

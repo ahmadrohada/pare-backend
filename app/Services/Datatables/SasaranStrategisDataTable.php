@@ -18,11 +18,12 @@ class SasaranStrategisDataTable {
 
     private function setLocalParameters( $parameters )
     {
-        $this->renjaId = isset( $parameters['renja_id'] ) ? $parameters['renja_id'] : 0;
+        $this->renjaId = isset( $parameters['perjanjian_kinerja_id'] ) ? $parameters['perjanjian_kinerja_id'] : 0;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';
+
     }
     // ... Other methods and set up
     public function search()
@@ -30,6 +31,7 @@ class SasaranStrategisDataTable {
     $this->applySearch();
     $this->applyOrder();
     $this->applyRenjaId();
+
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
@@ -50,31 +52,37 @@ class SasaranStrategisDataTable {
         //jika indikator nya tidak null
         if ( sizeof($x->indikator) ){
             foreach( $x->indikator AS $y ){
-                $primary = 1 ;
-                if ( $id_sasaran == $x->id){
-                    $primary = 0;
+
+                //type target
+                if ( $y->type_target == '1' ){
+                    $target = $y->target_max.' '.$y->satuan_target;
+                }else if ( $y->type_target == '2' ){
+                    $target = $y->target_min.' - '.$y->target_max.' '.$y->satuan_target;
                 }
 
-
                 $i['id']                        = $x->id;
+                $i['no']                        = $no;
                 $i['sasaran_strategis']         = $x->label;
                 $i['indikator_id']              = $y->id;
                 $i['indikator']                 = $y->label;
-                $i['target']                    = $y->target;
+                $i['target']                    = $target;
                 $i['satuan_target']             = $y->satuan_target;
-                $i['primary']                   = $primary;
+                $i['target_min']                = $y->target_min;
+                $i['target_max']                = $y->target_max;
                 array_push($response['data'], $i);
                 $id_sasaran = $x->id;
             }
         }else{
 
             $i['id']                        = $x->id;
+            $i['no']                        = $no;
             $i['sasaran_strategis']         = $x->label;
             $i['indikator_id']              = "";
             $i['indikator']                 = "";
             $i['target']                    = "";
             $i['satuan_target']             = "";
-            $i['primary']                   = 1;
+            $i['target_min']                = "";
+            $i['target_max']                = "";
             array_push($response['data'], $i);
         }
 
@@ -97,10 +105,11 @@ class SasaranStrategisDataTable {
             $renjaId = urldecode( $this->renjaId );
 
             $this->query->where(function( $query ) use ( $renjaId ){
-                $query->where('renja_id', '=', $renjaId );
+                $query->where('perjanjian_kinerja_id', '=', $renjaId );
             });
         }
     }
+
 
     private function applyOrder()
     {

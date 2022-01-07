@@ -36,7 +36,7 @@ class PerjanjianKinerjaController extends Controller
         $response = array();
         $response['sasaran_strategis'] = array();
 
-        $data = SasaranStrategis::WHERE('renja_id',$request->renja_id)->get();
+        $data = SasaranStrategis::WHERE('perjanjian_kinerja_id',$request->perjanjian_kinerja_id)->get();
         foreach( $data AS $y ){
             $r['id']            = $y->id;
             $r['label']         = $y->label;
@@ -79,12 +79,12 @@ class PerjanjianKinerjaController extends Controller
     {
         $messages = [
             'sasaranStrategisLabel.required'    => 'Harus diisi',
-            'renjaId.required'                  => 'Harus diisi',
+            'perjanjianKinerjaId.required'                  => 'Harus diisi',
         ];
         $validator = Validator::make(
             $request->all(),
             [
-                'renjaId'                   => 'required',
+                'perjanjianKinerjaId'                   => 'required',
                 'sasaranStrategisLabel'     => 'required',
             ],
             $messages
@@ -94,8 +94,8 @@ class PerjanjianKinerjaController extends Controller
             return response()->json(['errors' => $validator->messages()], 422);
         }
         $ah    = new SasaranStrategis;
-        $ah->renja_id            = $request->renjaId;
-        $ah->label               = $request->sasaranStrategisLabel;
+        $ah->perjanjian_kinerja_id            = $request->perjanjianKinerjaId;
+        $ah->label                            = $request->sasaranStrategisLabel;
 
         if ($ah->save()) {
             $data = array(
@@ -160,7 +160,7 @@ class PerjanjianKinerjaController extends Controller
 
         $sr    = SasaranStrategis::find($request->id);
         if (is_null($sr)) {
-            return $this->sendError('Sasaran Strategis tidak ditemukan.');
+            return \Response::make(['message' => "ID Sasaran Strategis tidak ditemukan"], 500);
         }
 
 
@@ -174,7 +174,7 @@ class PerjanjianKinerjaController extends Controller
     public function IndikatorSasaranStrategisDetail(Request $request)
     {
         $indikator = IndikatorSasaranStrategis::with(array('SasaranStrategis' => function($query) {
-                $query->select('id','renja_id','label');
+                $query->select('id','perjanjian_kinerja_id','label');
                 //->with('parent:id,label')
                 //->with('renja:id,periode->tahun AS periode,skpd->id AS id_skpd,skpd->nama AS nama_skpd,status');
             }))
@@ -182,7 +182,9 @@ class PerjanjianKinerjaController extends Controller
                 'id',
                 'sasaran_strategis_id',
                 'label',
-                'target',
+                'type_target',
+                'target_min',
+                'target_max',
                 'satuan_target',
 
             )
@@ -194,9 +196,11 @@ class PerjanjianKinerjaController extends Controller
             $h['id']                    = $indikator->id;
             $h['sasaran_strategis_id']  = $indikator->sasaran_strategis_id;
             $h['label']                 = $indikator->label;
-            $h['target']                = $indikator->target;
+            $h['type_target']           = $indikator->type_target;
+            $h['target_min']            = $indikator->target_min;
+            $h['target_max']            = $indikator->target_max;
             $h['satuan_target']         = $indikator->satuan_target;
-            $h['renja_id']              = $indikator->SasaranStrategis->renja_id;
+            $h['perjanjian_kinerja_id'] = $indikator->SasaranStrategis->perjanjian_kinerja_id;
 
         } else {
             $h = null;
@@ -209,18 +213,22 @@ class PerjanjianKinerjaController extends Controller
     public function IndikatorSasaranStrategisStore(Request $request)
     {
         $messages = [
-            'indikatorSasaranStrategisLabel.required'    => 'Harus diisi',
-            'sasaranStrategisId.required'                => 'Harus diisi',
-            'target.required'                            => 'Harus diisi',
-            'satuanTarget.required'                      => 'Harus diisi',
+            'indikatorSasaranStrategisLabel.required'       => 'Harus diisi',
+            'sasaranStrategisId.required'                   => 'Harus diisi',
+            'typeTarget.required'                           => 'Harus diisi',
+            'targetMin.required'                            => 'Harus diisi',
+            'targetMax.required'                            => 'Harus diisi',
+            'satuanTarget.required'                         => 'Harus diisi',
         ];
         $validator = Validator::make(
             $request->all(),
             [
                 'sasaranStrategisId'                    => 'required',
                 'indikatorSasaranStrategisLabel'        => 'required',
-                'target'                    => 'required',
-                'satuanTarget'                    => 'required',
+                'typeTarget'                            => 'required',
+                'targetMin'                             => 'required',
+                'targetMax'                             => 'required',
+                'satuanTarget'                          => 'required',
             ],
             $messages
         );
@@ -231,7 +239,9 @@ class PerjanjianKinerjaController extends Controller
         $ah    = new IndikatorSasaranStrategis;
         $ah->sasaran_strategis_id            = $request->sasaranStrategisId;
         $ah->label                           = $request->indikatorSasaranStrategisLabel;
-        $ah->target                          = $request->target;
+        $ah->type_target                     = $request->typeTarget;
+        $ah->target_min                      = $request->targetMin;
+        $ah->target_max                      = $request->targetMax;
         $ah->satuan_target                   = $request->satuanTarget;
 
         if ($ah->save()) {
@@ -250,7 +260,9 @@ class PerjanjianKinerjaController extends Controller
             'indikatorId'                                => 'Harus diisi',
             'sasaranStrategisId.required'                => 'Harus diisi',
             'indikatorSasaranStrategisLabel.required'    => 'Harus diisi',
-            'target.required'                            => 'Harus diisi',
+            'typeTarget.required'                        => 'Harus diisi',
+            'targetMin.required'                         => 'Harus diisi',
+            'targetMax.required'                         => 'Harus diisi',
             'satuanTarget.required'                      => 'Harus diisi',
         ];
         $validator = Validator::make(
@@ -259,7 +271,9 @@ class PerjanjianKinerjaController extends Controller
                 'indikatorId'                           => 'required',
                 'sasaranStrategisId'                    => 'required',
                 'indikatorSasaranStrategisLabel'        => 'required',
-                'target'                                => 'required',
+                'typeTarget'                            => 'required',
+                'targetMin'                             => 'required',
+                'targetMax'                             => 'required',
                 'satuanTarget'                          => 'required',
             ],
             $messages
@@ -273,7 +287,9 @@ class PerjanjianKinerjaController extends Controller
 
         $update->sasaran_strategis_id            = $request->sasaranStrategisId;
         $update->label                           = $request->indikatorSasaranStrategisLabel;
-        $update->target                          = $request->target;
+        $update->type_target                     = $request->typeTarget;
+        $update->target_min                      = $request->targetMin;
+        $update->target_max                      = $request->targetMax;
         $update->satuan_target                   = $request->satuanTarget;
 
         if ($update->save()) {
@@ -351,17 +367,68 @@ class PerjanjianKinerjaController extends Controller
         ];
     }
 
+    public function PerjanjianKinerjaSubmit(Request $request)
+    {
+        $messages = [
+            'id'                                => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'id'                           => 'required',
+            ],
+            $messages
+        );
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = PerjanjianKinerja::find($request->id);
+
+        $update->status            = 'close';
+
+        if ($update->save()) {
+            $data = array(
+                        'id'        => $update->id,
+                    );
+            return \Response::make($data, 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
+
     public function PerjanjianKinerjaDetail(Request $request)
     {
         $pk = PerjanjianKinerja::with(array('Periode' => function($query) {
                 //$query->select('id','label');
             }))
+            ->SELECT(
+                'perjanjian_kinerja.periode->tahun AS periodePk',
+                'perjanjian_kinerja.skpd->nama AS namaSkpd',
+                'perjanjian_kinerja.kepala_skpd->pegawai->nama_lengkap AS namaKepalaSkpd',
+                'perjanjian_kinerja.jabatan_kepala_skpd->nama AS jabatanKepalaSkpd',
+                'perjanjian_kinerja.admin->pegawai->nama_lengkap AS createdBy',
+                'perjanjian_kinerja.created_at AS createdAt',
+                'perjanjian_kinerja.status'
+            )
             ->WHERE('id', $request->id)
             ->first();
 
 
 
-        return $pk;
+        $h['id']                    = $request->id;
+        $h['periodePk']             = $pk->periodePk;
+        $h['namaSkpd']              = $pk->namaSkpd;
+        $h['namaKepalaSkpd']        = $pk->namaKepalaSkpd;
+        $h['jabatanKepalaSkpd']     = $pk->jabatanKepalaSkpd;
+        $h['createdBy']             = $pk->createdBy;
+        $h['createdAt']             = $pk->createdAt;
+        $h['status']                = $pk->status;
+        $h['jumlahSasaranStrategis']= SasaranStrategis::WHERE('perjanjian_kinerja_id','=',$request->id)->count();
+
+        return $h;
+
     }
 
     public function PerjanjianKinerjaStore(Request $request)
@@ -370,6 +437,7 @@ class PerjanjianKinerjaController extends Controller
             'periodeId.required'    => 'Harus diisi',
             'skpdId.required'       => 'Harus diisi',
             'userId.required'       => 'Harus diisi',
+            'kepalaSkpdId.required' => 'Harus diisi',
 
         ];
 
@@ -381,6 +449,7 @@ class PerjanjianKinerjaController extends Controller
                 'periodeId'         => 'required',
                 'skpdId'            => 'required',
                 'userId'            => 'required',
+                'kepalaSkpdId'      => 'required',
 
             ],
             $messages
@@ -391,21 +460,37 @@ class PerjanjianKinerjaController extends Controller
             return response()->json(['errors' => $validator->messages()], 422);
         }
 
+
+
         //cek apakah pernah ada id skpd dan id periode yang sama pada db
         if (PerjanjianKinerja::WHERE('periode_id','=',$request->periodeId)->WHERE('skpd_id','=',$request->skpdId)->exists()) {
-            return \Response::make(['message'=>'Renja pada periode ini sudah dibuat'],422);
+            return \Response::make(['message'=>'PK pada periode ini sudah dibuat'],422);
         }
 
         //cari  detail pejabat dan jabatan pada SIM-ASN
         $admin  =  User::WHERE('id','=',$request->userId)->first();
+        $kepala_skpd  =  User::WHERE('id','=',$request->kepalaSkpdId)->first();
         $skpd   =  $this->Skpd($request->skpdId);
+
+        $jabatanKepalaSKPD = null ;
+        //cari jabatannya kepala SKPD
+        if ( $this->Pegawai($kepala_skpd->nip) != null ){
+            foreach( $this->Pegawai($kepala_skpd->nip)['jabatan'] AS $x ){
+                //jika jabatan id nya jabatanId
+                if ( $x['id'] == $request->jabatanId ){
+                    $jabatanKepalaSKPD = json_encode($x);
+                }
+            }
+        }
+
 
         $rp    = new PerjanjianKinerja;
         $rp->skpd_id             = $request->skpdId;
         $rp->periode_id          = $request->periodeId;
         $rp->periode             = json_encode(Periode::WHERE('id',$request->periodeId)->first());
         $rp->skpd                = json_encode($skpd);
-        $rp->kepala_skpd         = null;
+        $rp->kepala_skpd         = json_encode($kepala_skpd);
+        $rp->jabatan_kepala_skpd = $jabatanKepalaSKPD;
         $rp->admin               = json_encode($admin);
 
         if ($rp->save()) {

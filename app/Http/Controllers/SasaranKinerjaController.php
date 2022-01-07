@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SasaranKinerja;
+use App\Models\RencanaKinerja;
+use App\Models\IndikatorKinerjaIndividu;
+use App\Models\SasaranStrategis;
+
+use App\Http\Resources\SasaranKinerja as SasaranKinerjaResource;
+
 
 use App\Services\Datatables\SasaranKinerjaDataTable;
 
@@ -19,6 +25,13 @@ class SasaranKinerjaController extends Controller
         return $data;
     }
 
+
+    public function SasaranKinerjaDetail(Request $request)
+    {
+        $data = SasaranKinerja::WHERE('id',$request->id)->first();
+
+        return new SasaranKinerjaResource($data);
+    }
 
     public function SasaranKinerjaStore(Request $request)
     {
@@ -100,9 +113,17 @@ class SasaranKinerjaController extends Controller
             return response()->json(['message' => $validator->messages()], 422);
         }
 
+        //cek apakah punya sasaran strategis pada PK nta
+        $sasaran = SasaranStrategis::WHERE('perjanjian_kinerja_id','=',$request->periodePkId )->get();
+
+        if ($sasaran == null ) {
+            return response()->json(['message' => "sasaran strategis tidak ditemukan"], 422);
+        }
+
+
         $periode_penilaian = [
             "periode_pk"        => $request->periodePkId,
-            "tahun"             => $request->periodeLabel,
+            "tahun"             => date('Y', strtotime($request->dateFrom)),
             "tgl_mulai"         => date('Y-m-d', strtotime($request->dateFrom)),
             "tgl_selesai"       => date('Y-m-d', strtotime($request->dateTo)),
         ];
@@ -137,7 +158,7 @@ class SasaranKinerjaController extends Controller
         $ah->unit_kerja_id              = $request->unitKerjaId;
         $ah->simpeg_id                  = $request->simpegId;
         $ah->pns_id                     = $request->pnsId;
-        $ah->periode_pk_id              = $request->periodePkId;
+        $ah->perjanjian_kinerja_id      = $request->periodePkId;
         $ah->jenis_jabatan_skp          = $request->jenisJabatanSkp;
         $ah->periode_penilaian          = json_encode($periode_penilaian);
         $ah->pegawai_yang_dinilai       = json_encode($pegawai_yang_dinilai);
@@ -146,7 +167,47 @@ class SasaranKinerjaController extends Controller
 
         if ($ah->save()) {
 
-            return \Response::make($ah, 200);
+            //JIKA JENIS JABATN JPT atau UNIT KERJA,  abuskeun semua PK nya ke SKP tahunan
+            if (($ah->jenis_jabatan_skp == "PEJABAT PIMPINAN TINGGI")|($ah->jenis_jabatan_skp == "PIMPINAN UNIT KERJA MANDIRI")){
+                $pk_id = $ah->perjanjian_kinerja_id;
+                //SELECT SEMUA data sasaran strategis nya
+                $sasaran = SasaranStrategis::WITH(['Indikator'])->WHERE('perjanjian_kinerja_id','=',$pk_id )->get();
+
+                foreach( $sasaran AS $x ){
+
+                    $rk    = new RencanaKinerja;
+                    $rk->skp_id                  = $ah->id;
+                    $rk->label                   = $x->label;
+                    $rk->jenis_rencana_kinerja   = "kinerja_utama";
+                    $rk->type_kinerja_utama      = "perjanjian_kinerja";
+                    $rk->parent_id               = $x->id;
+                    $rk->save();
+
+                    if ( sizeof($x->indikator) ){
+                        foreach( $x->indikator AS $y ){
+                            $iki   = new IndikatorKinerjaIndividu;
+                            $iki->rencana_kinerja_id      = $rk->id;
+                            $iki->label                   = $y->label;
+                            $iki->type_target             = $y->type_target;
+                            $iki->target_min              = $y->target_min;
+                            $iki->target_max              = $y->target_max;
+                            $iki->satuan_target           = $y->satuan_target;
+                            $iki->keterangan_target       = "";
+                            $iki->save();
+                        }
+
+                    }
+
+
+                }
+
+
+            }
+
+
+
+
+            return \Response::make($sasaran, 200);
         } else {
             return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
         }

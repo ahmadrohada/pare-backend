@@ -15,7 +15,7 @@ class CreateRenjaPeranTable extends Migration
     {
         Schema::create('renja_peran', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('renja_id');
+            $table->integer('perjanjian_kinerja_id');
             $table->integer('peran_id');
             $table->integer('jabatan_id');
             $table->string('jabatan_label');

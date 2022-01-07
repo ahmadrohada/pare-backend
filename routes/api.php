@@ -5,7 +5,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DailyActivityController;
 use App\Http\Controllers\DailyReportController;
 use App\Http\Controllers\SkpdController;
-use App\Http\Controllers\RenjaController;
 use App\Http\Controllers\RencanaKerjaTahunanController;
 use App\Http\Controllers\TimKerjaController;
 use App\Http\Controllers\PejabatController;
@@ -16,6 +15,7 @@ use App\Http\Controllers\PerjanjianKinerjaController;
 use App\Http\Controllers\SasaranKinerjaController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\IndikatorKinerjaIndividuController;
 
 
 
@@ -50,7 +50,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     //========================================================================================================//
 	//===========================             U    S    E     R           ====================================//
 	//========================================================================================================//
-    Route::get('user', [UserController::class, 'user_list']);
+    Route::get('user', [UserController::class, 'UserList']);
     Route::get('user/{nip}', [UserController::class, 'user_detail']);
     Route::get('user/{nip}/hirarki', [UserController::class, 'user_hirarki']);
 
@@ -136,6 +136,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('create_perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaCreate']);
     Route::post('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaStore']);
     Route::get('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaList']);
+    Route::put('submit_perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaSubmit']);
     Route::delete('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaDestroy']);
 
 
@@ -163,6 +164,31 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::put('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaUpdate']);
     Route::delete('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDestroy']);
 
+    //========================================================================================================//
+	//======================           SASARAN KINERJA - RENCANA KINERJA       ================================//
+	//========================================================================================================//
+    Route::get('sasaran_kinerja_rencana_kinerja', [RencanaKinerjaController::class, 'List']);
+    Route::get('rencana_kinerja_select_list', [RencanaKinerjaController::class, 'SelectList']);
+    Route::post('rencana_kinerja', [RencanaKinerjaController::class, 'Store']);
+    Route::put('rencana_kinerja', [RencanaKinerjaController::class, 'Update']);
+    Route::get('rencana_kinerja', [RencanaKinerjaController::class, 'Detail']);
+    Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'Destroy']);
+
+
+    //========================================================================================================//
+	//======================      SASARAN KINERJA - INDIKATOR KINERJA INDIVIDU ( IKI )   =====================//
+	//========================================================================================================//
+    Route::delete('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Destroy']);
+    Route::get('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Detail']);
+    Route::put('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Update']);
+    //========================================================================================================//
+	//==========================               RENCANA   KINERJA                 =============================//
+	//========================================================================================================//
+
+    //Route::get('rencana_kinerja_skp', [RencanaKinerjaController::class, 'RencanaKinerjaSKP']);
+    //Route::post('rencana_kinerja', [RencanaKinerjaController::class, 'store']);
+    //Route::put('rencana_kinerja', [RencanaKinerjaController::class, 'update']);
+    //Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'destroy']);
 
 
 
@@ -214,14 +240,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('hapus_pejabat_tim_kerja', [PejabatController::class, 'destroy']);
 
 
-    //========================================================================================================//
-	//==========================               RENCANA   KINERJA                 =============================//
-	//========================================================================================================//
 
-    Route::get('rencana_kinerja_skp', [RencanaKinerjaController::class, 'RencanaKinerjaSKP']);
-    Route::post('rencana_kinerja', [RencanaKinerjaController::class, 'store']);
-    Route::put('rencana_kinerja', [RencanaKinerjaController::class, 'update']);
-    Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'destroy']);
 
 
     //========================================================================================================//

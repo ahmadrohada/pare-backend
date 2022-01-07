@@ -15,7 +15,7 @@ class CreateRencanaKerjaTahunanTable extends Migration
     {
         Schema::create('rencana_kerja_tahunan', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('renja_id');
+            $table->integer('perjanjian_kinerja_id');
             $table->string('label');
             $table->enum('level',['s0','s1','s2','s3','s4']);
             $table->enum('type',['tujuan','sasaran','program','kegiatan','subkegiatan']);

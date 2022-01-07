@@ -6,11 +6,11 @@ trait PerjanjianKinerjaTrait
 {
 
 
-    protected function TraitSasaranStrategisSKPD($renja_id){
+    protected function TraitSasaranStrategisSKPD($perjanjian_kinerja_id){
 
         $sasaran = SasaranStrategis::with(['Indikator'])
-                    /* ->WhereHas('Tujuan', function($q) use($renja_id){
-                        $q->where('renja_id',$renja_id);
+                    /* ->WhereHas('Tujuan', function($q) use($perjanjian_kinerja_id){
+                        $q->where('perjanjian_kinerja_id',$perjanjian_kinerja_id);
                         $q->whereNull('deleted_at');
                     }) */
                     ->WhereHas('Indikator', function($q){
