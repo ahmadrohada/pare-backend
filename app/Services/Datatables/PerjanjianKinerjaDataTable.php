@@ -18,6 +18,8 @@ class PerjanjianKinerjaDataTable {
                                         'skpd->id AS skpd_id',
                                         'skpd->nama AS nama_skpd',
                                         'skpd->singkatan AS singkatan_skpd',
+                                        'kepala_skpd->pegawai->nama_lengkap AS nama_kepala_skpd',
+                                        'admin->pegawai->nama_lengkap AS nama_admin',
                                         'status AS status',
                                         'created_at AS created_at');
     }
@@ -55,12 +57,14 @@ class PerjanjianKinerjaDataTable {
     foreach( $data AS $x ){
         $no = $no+1;
 
-        $i['id']            = $x->perjanjian_kinerja_id;
-        $i['periode']       = $x->periode;
-        $i['nama_skpd']     = $x->nama_skpd;
-        $i['singkatan_skpd']= $x->singkatan_skpd;
-        $i['status']        = $x->status;
-        $i['created_at']    = $x->created_at;
+        $i['id']                = $x->perjanjian_kinerja_id;
+        $i['periode']           = $x->periode;
+        $i['nama_skpd']         = $x->nama_skpd;
+        $i['nama_kepala_skpd']  = $x->nama_kepala_skpd;
+        $i['nama_admin']        = $x->nama_admin;
+        $i['singkatan_skpd']    = $x->singkatan_skpd;
+        $i['status']            = $x->status;
+        $i['created_at']        = $x->created_at;
         array_push($response['data'], $i);
 
 
@@ -117,8 +121,8 @@ class PerjanjianKinerjaDataTable {
             $search = urldecode( $this->search );
 
             $this->query->where(function( $query ) use ( $search ){
-                $query->where('label', 'LIKE', '%'.$search.'%');
-                      //->orWhere('username', 'LIKE', '%'.$search.'%');
+                $query->where('kepala_skpd->pegawai->nama_lengkap', 'LIKE', '%'.$search.'%')
+                      ->orWhere('periode->tahun', 'LIKE', '%'.$search.'%');
             });
         }
     }

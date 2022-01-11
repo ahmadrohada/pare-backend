@@ -122,6 +122,10 @@ class UserDataTable {
     $response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
     $response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
 
+
+
+
+
     return [
         'data'          => $response['data'],
         'pagination'    => $pagination,
@@ -161,7 +165,7 @@ class UserDataTable {
             $search = urldecode( $this->search );
 
             $this->query->where(function( $query ) use ( $search ){
-                $query->where('label', 'LIKE', '%'.$search.'%');
+                $query->where('users.pegawai->nama_lengkap', 'LIKE', '%'.$search.'%');
                       //->orWhere('username', 'LIKE', '%'.$search.'%');
             });
         }
