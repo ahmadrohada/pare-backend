@@ -24,6 +24,7 @@ class SasaranKinerjaDataTable {
 
     private function setLocalParameters( $parameters )
     {
+        $this->userId = isset( $parameters['user_id'] ) ? $parameters['user_id'] : 0;
         $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : 0;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
@@ -36,6 +37,7 @@ class SasaranKinerjaDataTable {
     $this->applySearch();
     $this->applyOrder();
     $this->applySkpdId();
+    $this->applyUserId();
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
@@ -49,11 +51,9 @@ class SasaranKinerjaDataTable {
     $data = $cafes->getCollection();
     $response['data'] = array();
     $no = 0;
-    $id_sasaran = null;
 
     foreach( $data AS $x ){
         $no = $no+1;
-        //jika indikator nya tidak null
 
         $i['id']                        = $x->id;
         $i['periode_id']                = $x->periode_pk_id;
@@ -62,6 +62,7 @@ class SasaranKinerjaDataTable {
         $i['nip_pegawai']               = $x->nip_pegawai;
         $i['jenis_jabatan_skp']         = $x->jenis_jabatan_skp;
         $i['created_at']                = $x->created_at;
+        $i['status']                    = $x->status;
 
         array_push($response['data'], $i);
 
@@ -76,6 +77,17 @@ class SasaranKinerjaDataTable {
 
     }
     // ... Other methods and set up
+    private function applyUserId()
+    {
+        if( $this->userId != '' ){
+            $userId = urldecode( $this->userId );
+
+            $this->query->where(function( $query ) use ( $userId ){
+                $query->where('user_id', '=', $userId );
+            });
+        }
+    }
+
     private function applySkpdId()
     {
         if( $this->skpdId != '' ){
@@ -107,7 +119,7 @@ class SasaranKinerjaDataTable {
             $search = urldecode( $this->search );
 
             $this->query->where(function( $query ) use ( $search ){
-                $query->where('label', 'LIKE', '%'.$search.'%');
+                $query->where('periode_penilaian->tahun', 'LIKE', '%'.$search.'%');
                       //->orWhere('username', 'LIKE', '%'.$search.'%');
             });
         }

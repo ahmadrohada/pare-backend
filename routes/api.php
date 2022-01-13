@@ -159,6 +159,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//===========================             SASARAN KINERJA                 ================================//
 	//========================================================================================================//
     Route::get('sasaran_kinerja_list', [SasaranKinerjaController::class, 'SasaranKinerjaList']);
+    Route::put('submit_sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaSubmit']);
     Route::get('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDetail']);
     Route::post('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaStore']);
     Route::put('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaUpdate']);

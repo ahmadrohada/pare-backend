@@ -33,6 +33,37 @@ class SasaranKinerjaController extends Controller
         return new SasaranKinerjaResource($data);
     }
 
+    public function SasaranKinerjaSubmit(Request $request)
+    {
+        $messages = [
+            'id'                                => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'id'                           => 'required',
+            ],
+            $messages
+        );
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = SasaranKinerja::find($request->id);
+
+        $update->status            = '2';
+
+        if ($update->save()) {
+            $data = array(
+                        'id'        => $update->id,
+                    );
+            return \Response::make($data, 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
+
     public function SasaranKinerjaStore(Request $request)
     {
 

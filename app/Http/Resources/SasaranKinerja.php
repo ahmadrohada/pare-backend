@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\RencanaKinerja;
 
 use Illuminate\Support\Arr;
 
@@ -28,6 +29,7 @@ class SasaranKinerja extends JsonResource
             'periodePenilaian'          => json_decode($this->periode_penilaian),
             'pegawaiYangDinilai'        => json_decode($this->pegawai_yang_dinilai),
             'pejabatPenilaiKinerja'     => json_decode($this->pejabat_penilai_kinerja),
+            'jumlahRencanaKinerja'      => RencanaKinerja::WHERE('skp_id','=',$this->id)->count(),
 
             /* 'username'      => $this->username,
             'nip'           => $this->nip,
