@@ -57,10 +57,11 @@ class RencanaKinerjaController extends Controller
         }
 
         $rk    = new RencanaKinerja;
-        $rk->skp_id                  = $request->sasaranKinerjaId;
-        $rk->label                   = $request->rencanaKinerjaLabel;
-        $rk->jenis_rencana_kinerja   = $request->jenisRencanaKinerja;
-        $rk->type_kinerja_utama      = $request->typeKinerjaUtama;
+        $rk->skp_id                                 = $request->sasaranKinerjaId;
+        $rk->label                                  = $request->rencanaKinerjaLabel;
+        $rk->jenis_rencana_kinerja                  = $request->jenisRencanaKinerja;
+        $rk->lingkup_penugasan_kinerja_tambahan     = $request->lingkupPenugasan;
+        $rk->type_kinerja_utama                     = $request->typeKinerjaUtama;
         $rk->save();
 
 
@@ -80,17 +81,19 @@ class RencanaKinerjaController extends Controller
                                                         'id',
                                                         'label',
                                                         'jenis_rencana_kinerja',
-                                                        'type_kinerja_utama'
+                                                        'type_kinerja_utama',
+                                                        'lingkup_penugasan_kinerja_tambahan'
                                                     )
                                                     ->WHERE('id', $request->id)
                                                     ->first();
 
 
         if ($sk) {
-            $h['id']                    = $sk->id;
-            $h['label']                 = $sk->label;
-            $h['jenis_rencana_kinerja'] = $sk->jenis_rencana_kinerja;
-            $h['type_kinerja_utama']    = $sk->type_kinerja_utama;
+            $h['id']                                    = $sk->id;
+            $h['label']                                 = $sk->label;
+            $h['jenis_rencana_kinerja']                 = $sk->jenis_rencana_kinerja;
+            $h['type_kinerja_utama']                    = $sk->type_kinerja_utama;
+            $h['lingkup_penugasan_kinerja_tambahan']    = $sk->lingkup_penugasan_kinerja_tambahan;
 
 
 
@@ -127,9 +130,10 @@ class RencanaKinerjaController extends Controller
             return \Response::make(['message' => "ID Rencana Kinerja tidak ditemukan"], 500);
         }
 
-        $update->label                     = $request->rencanaKinerjaLabel;
-        $update->jenis_rencana_kinerja     = $request->jenisRencanaKinerja;
-        $update->type_kinerja_utama        = $request->typeKinerjaUtama;
+        $update->label                                  = $request->rencanaKinerjaLabel;
+        $update->jenis_rencana_kinerja                  = $request->jenisRencanaKinerja;
+        $update->type_kinerja_utama                     = $request->typeKinerjaUtama;
+        $update->lingkup_penugasan_kinerja_tambahan     = $request->lingkupPenugasan;
 
         if ($update->save()) {
             $data = array(

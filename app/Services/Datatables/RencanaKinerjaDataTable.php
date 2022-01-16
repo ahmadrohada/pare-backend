@@ -2,6 +2,7 @@
 namespace App\Services\Datatables;
 
 use App\Models\RencanaKinerja;
+use App\Models\ManualIndikatorKinerja;
 
 class RencanaKinerjaDataTable {
     private $search;
@@ -55,6 +56,14 @@ class RencanaKinerjaDataTable {
         if ( sizeof($x->IndikatorKinerjaIndividu) ){
             foreach( $x->IndikatorKinerjaIndividu AS $y ){
 
+                //id MAnual indikator
+                $manual = ManualIndikatorKinerja::WHERE('indikator_kinerja_id','=',$y->id)->Select('id')->first();
+                if ($manual){
+                    $manual_indikator_id = $manual->id;
+                }else{
+                    $manual_indikator_id = 0;
+                }
+
                 //type target
                 if ( $y->type_target == '1' ){
                     $target = $y->target_max.' '.$y->satuan_target;
@@ -62,28 +71,30 @@ class RencanaKinerjaDataTable {
                     $target = $y->target_min.' - '.$y->target_max.' '.$y->satuan_target;
                 }
 
-                $i['id']                        = $x->id;
-                $i['no']                        = $no;
-                $i['rencana_kinerja']           = $x->label;
-                $i['indikator_id']              = $y->id;
-                $i['indikator_kinerja_individu']= $y->label;
-                $i['target']                    = $target;
-                $i['satuan_target']             = $y->satuan_target;
-                $i['target_min']                = $y->target_min;
-                $i['target_max']                = $y->target_max;
+                $i['id']                            = $x->id;
+                $i['no']                            = $no;
+                $i['rencana_kinerja']               = $x->label;
+                $i['indikator_id']                  = $y->id;
+                $i['indikator_kinerja_individu']    = $y->label;
+                $i['manual_indikator_kinerja_id']   = $manual_indikator_id;
+                $i['target']                        = $target;
+                $i['satuan_target']                 = $y->satuan_target;
+                $i['target_min']                    = $y->target_min;
+                $i['target_max']                    = $y->target_max;
                 array_push($response['data'], $i);
             }
         }else{
 
-            $i['id']                        = $x->id;
-            $i['no']                        = $no;
-            $i['rencana_kinerja']           = $x->label;
-            $i['indikator_id']              = "";
-            $i['indikator_kinerja_individu']= "";
-            $i['target']                    = "";
-            $i['satuan_target']             = "";
-            $i['target_min']                = "";
-            $i['target_max']                = "";
+            $i['id']                            = $x->id;
+            $i['no']                            = $no;
+            $i['rencana_kinerja']               = $x->label;
+            $i['indikator_id']                  = "";
+            $i['indikator_kinerja_individu']    = "";
+            $i['manual_indikator_kinerja_id']   = "disabled";
+            $i['target']                        = "";
+            $i['satuan_target']                 = "";
+            $i['target_min']                    = "";
+            $i['target_max']                    = "";
             array_push($response['data'], $i);
         }
 

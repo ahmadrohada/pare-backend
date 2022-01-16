@@ -4,36 +4,37 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\IndikatorKinerjaIndividu;
+use App\Models\ManualIndikatorKinerja;
 
 
 use Validator;
 
-class IndikatorKinerjaIndividuController extends Controller
+class ManualIndikatorKinerjaController extends Controller
 {
 
 
 
     public function Detail(Request $request)
     {
-        $indikator = IndikatorKinerjaIndividu::with(array('RencanaKinerja' => function($query) {
-                $query->select('id','skp_id','label');
+        $manual_indikator = ManualIndikatorKinerja::with(array('IndikatorKinerjaIndividu' => function($query) {
+                $query->select('id','rencana_kinerja_id','label');
             }))
             ->SELECT(
-                'id',
-                'rencana_kinerja_id',
+                'id'
+                /* 'rencana_kinerja_id',
                 'label',
                 'type_target',
                 'target_min',
                 'target_max',
-                'satuan_target',
+                'satuan_target', */
 
             )
             ->WHERE('id', $request->id)
             ->first();
 
+        return $manual_indikator;
 
-        if ($indikator) {
+      /*   if ($indikator) {
             $h['id']                    = $indikator->id;
             $h['rencana_kinerja_id']    = $indikator->rencana_kinerja_id;
             $h['label']                 = $indikator->label;
@@ -42,49 +43,48 @@ class IndikatorKinerjaIndividuController extends Controller
             $h['target_max']            = $indikator->target_max;
             $h['satuan_target']         = $indikator->satuan_target;
             $h['sasaran_kinerja_id']    = $indikator->RencanaKinerja->skp_id;
-            $h['rencana_kinerja']       = json_decode($indikator->RencanaKinerja);
 
         } else {
             $h = null;
         }
 
-        return $h;
+        return $h; */
     }
 
     public function Store(Request $request)
     {
 
         $messages = [
-            'indikatorKinerjaIndividuLabel.required'       => 'Harus diisi',
-            'rencanaKinerjaId.required'                   => 'Harus diisi',
-            'typeTarget.required'                           => 'Harus diisi',
-            'targetMin.required'                            => 'Harus diisi',
-            'targetMax.required'                            => 'Harus diisi',
-            'satuanTarget.required'                         => 'Harus diisi',
+            'skpId.required'                            => 'Harus diisi',
+            'rencanaKinerjaId.required'                 => 'Harus diisi',
+            'indikatorKinerjaId.required'               => 'Harus diisi',
         ];
         $validator = Validator::make(
             $request->all(),
             [
-                'rencanaKinerjaId'                    => 'required',
-                'indikatorKinerjaIndividuLabel'        => 'required',
-                'typeTarget'                            => 'required',
-                'targetMin'                             => 'required',
-                'targetMax'                             => 'required',
-                'satuanTarget'                          => 'required',
+                'skpId'                                 => 'required',
+                'rencanaKinerjaId'                      => 'required',
+                'indikatorKinerjaId'                    => 'required',
             ],
             $messages
         );
         if ($validator->fails()) {
-            //$messages = $validator->messages();
             return response()->json(['errors' => $validator->messages()], 422);
         }
-        $ah    = new IndikatorKinerjaIndividu;
-        $ah->rencana_kinerja_id              = $request->rencanaKinerjaId;
-        $ah->label                           = $request->indikatorKinerjaIndividuLabel;
-        $ah->type_target                     = $request->typeTarget;
-        $ah->target_min                      = $request->targetMin;
-        $ah->target_max                      = $request->targetMax;
-        $ah->satuan_target                   = $request->satuanTarget;
+        $ah    = new ManualIndikatorKinerja;
+        $ah->skp_id                             = $request->skpId;
+        $ah->rencana_kinerja_id                 = $request->rencanaKinerjaId;
+        $ah->indikator_kinerja_id               = $request->indikatorKinerjaId;
+        $ah->deskripsi_rencana_kinerja          = $request->deskripsiRencanaKinerja;
+        $ah->definisi                           = $request->deskripsiDefinisi;
+        $ah->formula                            = $request->deskripsiFormula;
+        $ah->tujuan                             = $request->deskripsiTujuan;
+        $ah->satuan_pengukuran                  = $request->satuanPengukuran;
+        $ah->jenis_indikator_kinerja            = $request->jenisIndikatorKinerjaUtama;
+        $ah->penanggung_jawab                   = $request->penanggungJawab;
+        $ah->pihak_penyedia_data                = $request->pihakPenyediaData;
+        $ah->sumber_data                        = $request->sumberData;
+        $ah->periode_pelaporan                  = $request->periodePelaporan;
 
         if ($ah->save()) {
             $data = array(
