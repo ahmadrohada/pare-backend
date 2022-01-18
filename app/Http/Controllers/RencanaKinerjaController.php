@@ -24,7 +24,7 @@ class RencanaKinerjaController extends Controller
         $response = array();
         $response['rencana_kinerja'] = array();
 
-        $data = RencanaKinerja::WHERE('skp_id',$request->sasaran_kinerja_id)->get();
+        $data = RencanaKinerja::WHERE('sasaran_kinerja_id',$request->sasaran_kinerja_id)->get();
         foreach( $data AS $y ){
             $r['id']            = $y->id;
             $r['label']         = $y->label;
@@ -57,7 +57,7 @@ class RencanaKinerjaController extends Controller
         }
 
         $rk    = new RencanaKinerja;
-        $rk->skp_id                                 = $request->sasaranKinerjaId;
+        $rk->sasaran_kinerja_id                                 = $request->sasaranKinerjaId;
         $rk->label                                  = $request->rencanaKinerjaLabel;
         $rk->jenis_rencana_kinerja                  = $request->jenisRencanaKinerja;
         $rk->lingkup_penugasan_kinerja_tambahan     = $request->lingkupPenugasan;

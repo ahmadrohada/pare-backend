@@ -190,7 +190,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::get('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Detail']);
     Route::post('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Store']);
-    //Route::put('rencana_kinerja', [RencanaKinerjaController::class, 'update']);
+    Route::put('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Update']);
     //Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'destroy']);
 
 

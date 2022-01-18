@@ -17,7 +17,7 @@ class IndikatorKinerjaIndividuController extends Controller
     public function Detail(Request $request)
     {
         $indikator = IndikatorKinerjaIndividu::with(array('RencanaKinerja' => function($query) {
-                $query->select('id','skp_id','label');
+                $query->select('id','sasaran_kinerja_id','label');
             }))
             ->SELECT(
                 'id',
@@ -41,7 +41,7 @@ class IndikatorKinerjaIndividuController extends Controller
             $h['target_min']            = $indikator->target_min;
             $h['target_max']            = $indikator->target_max;
             $h['satuan_target']         = $indikator->satuan_target;
-            $h['sasaran_kinerja_id']    = $indikator->RencanaKinerja->skp_id;
+            $h['sasaran_kinerja_id']    = $indikator->RencanaKinerja->sasaran_kinerja_id;
             $h['rencana_kinerja']       = json_decode($indikator->RencanaKinerja);
 
         } else {

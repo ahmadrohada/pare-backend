@@ -207,7 +207,7 @@ class SasaranKinerjaController extends Controller
                 foreach( $sasaran AS $x ){
 
                     $rk    = new RencanaKinerja;
-                    $rk->skp_id                  = $ah->id;
+                    $rk->sasaran_kinerja_id      = $ah->id;
                     $rk->label                   = $x->label;
                     $rk->jenis_rencana_kinerja   = "kinerja_utama";
                     $rk->type_kinerja_utama      = "perjanjian_kinerja";

@@ -15,7 +15,7 @@ class CreateSkpRencanaKinerjaTable extends Migration
     {
         Schema::create('skp_rencana_kinerja', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('skp_id');
+            $table->integer('sasaran_kinerja_id');
             $table->enum('jenis_kinerja',['','kinerja_utama','kinerja_tambahan']);
             $table->enum('type_kinerja_utama',['','perjanjian_kinerja','direktif','inisiatif_strategis','rencana_aksi']); //wajib bagi JPT dan pimpinan unit kerja mandiri
             $table->enum('penyelarasan_kinerja_utama',['','direct_cascading','non_direct_cascading']); // wajib bagi JA da JF

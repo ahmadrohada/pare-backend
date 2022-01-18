@@ -57,7 +57,7 @@ class RencanaKinerjaDataTable {
             foreach( $x->IndikatorKinerjaIndividu AS $y ){
 
                 //id MAnual indikator
-                $manual = ManualIndikatorKinerja::WHERE('indikator_kinerja_id','=',$y->id)->Select('id')->first();
+                $manual = ManualIndikatorKinerja::WHERE('indikator_kinerja_individu_id','=',$y->id)->Select('id')->first();
                 if ($manual){
                     $manual_indikator_id = $manual->id;
                 }else{
@@ -118,7 +118,7 @@ class RencanaKinerjaDataTable {
             $sasaranKinerjaId = urldecode( $this->sasaranKinerjaId );
 
             $this->query->where(function( $query ) use ( $sasaranKinerjaId ){
-                $query->where('skp_id', '=', $sasaranKinerjaId );
+                $query->where('sasaran_kinerja_id', '=', $sasaranKinerjaId );
             });
         }
     }

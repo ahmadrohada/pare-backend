@@ -16,53 +16,55 @@ class ManualIndikatorKinerjaController extends Controller
 
     public function Detail(Request $request)
     {
-        $manual_indikator = ManualIndikatorKinerja::with(array('IndikatorKinerjaIndividu' => function($query) {
-                $query->select('id','rencana_kinerja_id','label');
+        $x = ManualIndikatorKinerja::with(array('IndikatorKinerjaIndividu' => function($query) {
+                $query->select('id','label');
             }))
-            ->SELECT(
-                'id'
-                /* 'rencana_kinerja_id',
-                'label',
-                'type_target',
-                'target_min',
-                'target_max',
-                'satuan_target', */
-
-            )
+            ->with(array('RencanaKinerja' => function($query) {
+                $query->select('id','label');
+            }))
+            ->with(array('SasaranKinerja' => function($query) {
+                $query->select('id','skpd_id','user_id','jabatan_aktif_id');
+            }))
             ->WHERE('id', $request->id)
             ->first();
 
-        return $manual_indikator;
+        if ($x) {
+            $h['manual_indikator_kinerja_id']               = $x->id;
+            $h['sasaran_kinerja_id']                        = $x->sasaran_kinerja_id;
+            $h['deskripsi_rencana_kinerja']                 = $x->deskripsi_rencana_kinerja;
+            $h['definisi']                                  = $x->definisi;
+            $h['formula']                                   = $x->formula;
+            $h['tujuan']                                    = $x->tujuan;
+            $h['satuan_pengukuran']                         = $x->satuan_pengukuran;
+            $h['jenis_indikator_kinerja']                   = $x->jenis_indikator_kinerja;
+            $h['penanggung_jawab']                          = $x->penanggung_jawab;
+            $h['pihak_penyedia_data']                       = $x->pihak_penyedia_data;
+            $h['sumber_data']                               = $x->sumber_data;
+            $h['periode_pelaporan']                         = $x->periode_pelaporan;
 
-      /*   if ($indikator) {
-            $h['id']                    = $indikator->id;
-            $h['rencana_kinerja_id']    = $indikator->rencana_kinerja_id;
-            $h['label']                 = $indikator->label;
-            $h['type_target']           = $indikator->type_target;
-            $h['target_min']            = $indikator->target_min;
-            $h['target_max']            = $indikator->target_max;
-            $h['satuan_target']         = $indikator->satuan_target;
-            $h['sasaran_kinerja_id']    = $indikator->RencanaKinerja->skp_id;
+            $h['sasaran_kinerja']                           = json_decode($x->SasaranKinerja);
+            $h['rencana_kinerja']                           = json_decode($x->RencanaKinerja);
+            $h['indikator_kinerja_individu']                = json_decode($x->IndikatorKinerjaIndividu);
 
         } else {
             $h = null;
         }
 
-        return $h; */
+        return $h;
     }
 
     public function Store(Request $request)
     {
 
         $messages = [
-            'skpId.required'                            => 'Harus diisi',
+            'sasaranKinerjaId.required'                 => 'Harus diisi',
             'rencanaKinerjaId.required'                 => 'Harus diisi',
             'indikatorKinerjaId.required'               => 'Harus diisi',
         ];
         $validator = Validator::make(
             $request->all(),
             [
-                'skpId'                                 => 'required',
+                'sasaranKinerjaId'                      => 'required',
                 'rencanaKinerjaId'                      => 'required',
                 'indikatorKinerjaId'                    => 'required',
             ],
@@ -72,9 +74,9 @@ class ManualIndikatorKinerjaController extends Controller
             return response()->json(['errors' => $validator->messages()], 422);
         }
         $ah    = new ManualIndikatorKinerja;
-        $ah->skp_id                             = $request->skpId;
+        $ah->sasaran_kinerja_id                 = $request->sasaranKinerjaId;
         $ah->rencana_kinerja_id                 = $request->rencanaKinerjaId;
-        $ah->indikator_kinerja_id               = $request->indikatorKinerjaId;
+        $ah->indikator_kinerja_individu_id      = $request->indikatorKinerjaId;
         $ah->deskripsi_rencana_kinerja          = $request->deskripsiRencanaKinerja;
         $ah->definisi                           = $request->deskripsiDefinisi;
         $ah->formula                            = $request->deskripsiFormula;
@@ -96,27 +98,22 @@ class ManualIndikatorKinerjaController extends Controller
         }
     }
 
+
     public function Update(Request $request)
     {
         $messages = [
-            'indikatorId'                                => 'Harus diisi',
-            'rencanaKinerjaId.required'                  => 'Harus diisi',
-            'indikatorKinerjaIndividuLabel.required'     => 'Harus diisi',
-            'typeTarget.required'                        => 'Harus diisi',
-            'targetMin.required'                         => 'Harus diisi',
-            'targetMax.required'                         => 'Harus diisi',
-            'satuanTarget.required'                      => 'Harus diisi',
+            'manualIndikatorKinerjaId.required'         => 'Harus diisi',
+            'sasaranKinerjaId.required'                 => 'Harus diisi',
+            'rencanaKinerjaId.required'                 => 'Harus diisi',
+            'indikatorKinerjaId.required'               => 'Harus diisi',
         ];
         $validator = Validator::make(
             $request->all(),
             [
-                'indikatorId'                           => 'required',
+                'manualIndikatorKinerjaId'              => 'required',
+                'sasaranKinerjaId'                      => 'required',
                 'rencanaKinerjaId'                      => 'required',
-                'indikatorKinerjaIndividuLabel'         => 'required',
-                'typeTarget'                            => 'required',
-                'targetMin'                             => 'required',
-                'targetMax'                             => 'required',
-                'satuanTarget'                          => 'required',
+                'indikatorKinerjaId'                    => 'required',
             ],
             $messages
         );
@@ -124,14 +121,21 @@ class ManualIndikatorKinerjaController extends Controller
             return response()->json(['errors' => $validator->messages()], 422);
         }
 
-        $update  = IndikatorKinerjaIndividu::find($request->indikatorId);
+        $update  = ManualIndikatorKinerja::find($request->manualIndikatorKinerjaId);
 
-        $update->rencana_kinerja_id            = $request->rencanaKinerjaId;
-        $update->label                           = $request->indikatorKinerjaIndividuLabel;
-        $update->type_target                     = $request->typeTarget;
-        $update->target_min                      = $request->targetMin;
-        $update->target_max                      = $request->targetMax;
-        $update->satuan_target                   = $request->satuanTarget;
+        $update->sasaran_kinerja_id                 = $request->sasaranKinerjaId;
+        $update->rencana_kinerja_id                 = $request->rencanaKinerjaId;
+        $update->indikator_kinerja_individu_id      = $request->indikatorKinerjaId;
+        $update->deskripsi_rencana_kinerja          = $request->deskripsiRencanaKinerja;
+        $update->definisi                           = $request->deskripsiDefinisi;
+        $update->formula                            = $request->deskripsiFormula;
+        $update->tujuan                             = $request->deskripsiTujuan;
+        $update->satuan_pengukuran                  = $request->satuanPengukuran;
+        $update->jenis_indikator_kinerja            = $request->jenisIndikatorKinerjaUtama;
+        $update->penanggung_jawab                   = $request->penanggungJawab;
+        $update->pihak_penyedia_data                = $request->pihakPenyediaData;
+        $update->sumber_data                        = $request->sumberData;
+        $update->periode_pelaporan                  = $request->periodePelaporan;
 
         if ($update->save()) {
             $data = array(

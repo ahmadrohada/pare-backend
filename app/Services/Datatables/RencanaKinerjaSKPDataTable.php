@@ -18,7 +18,7 @@ class RencanaKinerjaSKPDataTable {
 
     private function setLocalParameters( $parameters )
     {
-        $this->skpId = isset( $parameters['skp_id'] ) ? $parameters['skp_id'] : 0;
+        $this->skpId = isset( $parameters['sasaran_kinerja_id'] ) ? $parameters['sasaran_kinerja_id'] : 0;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
@@ -86,7 +86,7 @@ class RencanaKinerjaSKPDataTable {
             $skpId = urldecode( $this->skpId );
 
             $this->query->where(function( $query ) use ( $skpId ){
-                $query->where('skp_id', '=', $skpId );
+                $query->where('sasaran_kinerja_id', '=', $skpId );
                       //->orWhere('username', 'LIKE', '%'.$search.'%');
             });
         }

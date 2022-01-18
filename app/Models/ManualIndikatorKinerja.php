@@ -16,5 +16,15 @@ class ManualIndikatorKinerja extends Model
         return $this->belongsTo(IndikatorKinerjaIndividu::class);
     }
 
+    public function RencanaKinerja()
+    {
+        return $this->belongsTo(RencanaKinerja::class);
+    }
+
+    public function SasaranKinerja()
+    {
+        return $this->belongsTo(SasaranKinerja::class);
+    }
+
 
 }
