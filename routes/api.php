@@ -13,6 +13,7 @@ use App\Http\Controllers\PeranHasilController;
 use App\Http\Controllers\RencanaSKPController;
 use App\Http\Controllers\PerjanjianKinerjaController;
 use App\Http\Controllers\SasaranKinerjaController;
+use App\Http\Controllers\SasaranKinerjaReviuController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\IndikatorKinerjaIndividuController;
@@ -167,6 +168,14 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDestroy']);
 
     //========================================================================================================//
+	//===========================        SASARAN KINERJA   REVIU              ================================//
+	//========================================================================================================//
+    Route::post('sasaran_kinerja_reviu', [SasaranKinerjaReviuController::class, 'Store']);
+
+
+
+
+    //========================================================================================================//
 	//======================           SASARAN KINERJA - RENCANA KINERJA       ================================//
 	//========================================================================================================//
     Route::get('sasaran_kinerja_rencana_kinerja', [RencanaKinerjaController::class, 'List']);
@@ -184,6 +193,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::post('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Store']);
     Route::get('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Detail']);
     Route::put('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Update']);
+
+
     //========================================================================================================//
 	//========================       MANUAL INDIKATOR KINERJA INDIVIDU              ==========================//
 	//========================================================================================================//
@@ -191,10 +202,6 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Detail']);
     Route::post('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Store']);
     Route::put('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Update']);
-    //Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'destroy']);
-
-
-
 
 
     //========================================================================================================//
