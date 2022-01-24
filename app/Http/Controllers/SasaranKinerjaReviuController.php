@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\SasaranKinerja;
 use App\Models\SasaranKinerjaReviu;
 
+use App\Http\Resources\User as UserResource;
+
 use Validator;
 
 class SasaranKinerjaReviuController extends Controller
@@ -18,12 +20,7 @@ class SasaranKinerjaReviuController extends Controller
 
         $messages = [
 
-                    'dateFrom.required'              => 'Harus diisi',
-                    'dateTo.required'                => 'Harus diisi',
-                    'periodePkId.required'           => 'Harus diisi',
-                    'userId.required'                => 'Harus diisi',
-                    'simpegId.required'              => 'Harus diisi',
-                    'jenisJabatanSkp.required'       => 'Harus diisi',
+                    'id.required'              => 'Harus diisi',
 
         ];
 
@@ -32,12 +29,7 @@ class SasaranKinerjaReviuController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                    'dateFrom'                              => 'required',
-                    'dateTo'                                => 'required',
-                    'periodePkId'                           => 'required',
-                    'userId'                                => 'required',
-                    'simpegId'                              => 'required',
-                    'jenisJabatanSkp'                       => 'required',
+                    'id'                              => 'required',
 
             ],
             $messages
@@ -47,63 +39,29 @@ class SasaranKinerjaReviuController extends Controller
             return response()->json(['message' => $validator->messages()], 422);
         }
 
+        //cek apakah punya sasaran strategis pada PK nta
+        $sasaran = SasaranKinerjaReviu::WHERE('sasaran_kinerja_id','=',$request->id )->first();
+
+        if ($sasaran != null ) {
+            return response()->json(['message' => "dalam Proses Reviu"], 403);
+        }
 
 
-        $ah    = new SasaranKinerjaReviu;
-        $ah->user_id                    = $request->userId;
-        $ah->jabatan_aktif_id           = $request->jabatanAktifPegawaiYangDinilaiId;
+        $skr    = new SasaranKinerjaReviu;
+        $skr->sasaran_kinerja_id      = $request->id;
+        $skr->pengelola_kinerja       = json_encode(new UserResource(auth()->user()) );
 
 
-        if ($ah->save()) {
-            $skp    = SasaranKinerja::find($request->sasaran_kinerja_id);
-            $skp->status      = '3';
-            $skp->reviu       = $ah->created_at;
+        if ($skr->save()) {
 
-            $iki->save();
+            $update  = SasaranKinerja::find($request->id);
+            $update->status            = '3';
+            $update->save();
 
-            return \Response::make($ah, 200);
+            return \Response::make($request->id, 200);
         } else {
             return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
         }
     }
-
-
-    public function SasaranKinerjaDestroy(Request $request)
-    {
-
-        $messages = [
-            'id.required'   => 'Harus diisi',
-        ];
-        $validator = Validator::make(
-                        $request->all(),
-                        array(
-                            'id'   => 'required',
-                        ),
-                        $messages
-        );
-        if ( $validator->fails() ){
-            //$messages = $validator->messages();
-            return response()->json(['errors'=>$validator->messages()],422);
-
-        }
-
-
-        $sr    = SasaranKinerja::find($request->id);
-        if (is_null($sr)) {
-            return \Response::make(['message' => "Sasaran Kinerja tidak ditemukan"], 500);
-        }
-
-
-        if ( $sr->delete()){
-            return \Response::make('sukses', 200);
-        }else{
-            return \Response::make('error', 500);
-        }
-
-
-    }
-
-
-
 
 }
