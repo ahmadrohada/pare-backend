@@ -18,6 +18,8 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\IndikatorKinerjaIndividuController;
 use App\Http\Controllers\ManualIndikatorKinerjaController;
+use App\Http\Controllers\ManajemenKinerjaController;
+use App\Http\Controllers\MatrikPeranHasilController;
 
 
 
@@ -113,6 +115,13 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//===========================                   PERIODE               ====================================//
 	//========================================================================================================//
     Route::get('periode', [PeriodeController::class, 'PeriodeDetail']);
+    Route::get('periode_list', [PeriodeController::class, 'PeriodeList']);
+
+    //========================================================================================================//
+	//===========================           MANAJEMEN KINERJA PNS         ====================================//
+	//========================================================================================================//
+
+    Route::get('manajemen_kinerja', [ManajemenKinerjaController::class, 'list']);
 
     //========================================================================================================//
 	//===========================                  RENJA                   ====================================//
@@ -205,6 +214,25 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
     //========================================================================================================//
+	//========================                 MATRIK PERAN HASIL                   ==========================//
+	//========================================================================================================//
+
+    Route::get('matrik_peran_hasil', [MatrikPeranHasilController::class, 'list']);
+    Route::get('koordinator_list', [MatrikPeranHasilController::class, 'koordinatorList']);
+    Route::get('list_jabatan', [MatrikPeranHasilController::class, 'listJabatan']);
+
+    Route::post('jabatan', [MatrikPeranHasilController::class, 'jabatanStore']);
+
+
+
+
+
+
+
+
+
+
+    //========================================================================================================//
 	//===================               RENCANA KERJA TAHUNAN                   ==============================//
 	//========================================================================================================//
     Route::get('rencana_kerja_tahunan_list', [RencanaKerjaTahunanController::class, 'list']);
@@ -256,7 +284,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     //========================================================================================================//
 	//==========================           MATRIKS     PERAN DAN HASIL           =============================//
 	//========================================================================================================//
-    Route::get('matrik_peran_hasil', [PeranHasilController::class, 'matrik']);
+    //Route::get('matrik_peran_hasil', [PeranHasilController::class, 'matrik']);
 
 
     //========================================================================================================//
