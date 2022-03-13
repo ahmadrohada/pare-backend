@@ -26,6 +26,7 @@ class SasaranKinerjaDataTable {
     {
         $this->userId = isset( $parameters['user_id'] ) ? $parameters['user_id'] : 0;
         $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : 0;
+        $this->periode = isset( $parameters['periode'] ) ? $parameters['periode'] : 0;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
@@ -38,6 +39,7 @@ class SasaranKinerjaDataTable {
     $this->applyOrder();
     $this->applySkpdId();
     $this->applyUserId();
+    $this->applyPeriode();
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
@@ -96,6 +98,18 @@ class SasaranKinerjaDataTable {
             $this->query->where(function( $query ) use ( $skpdId ){
                 //$query->whereJsonContains('pegawai_yang_dinilai->skpd->id', 28 );
                 $query->where('skpd_id', '=', $skpdId );
+            });
+        }
+    }
+
+    private function applyPeriode()
+    {
+        if( $this->periode != '' ){
+            $periode = urldecode( $this->periode );
+
+            $this->query->where(function( $query ) use ( $periode ){
+                //$query->whereJsonContains('pegawai_yang_dinilai->skpd->id', 28 );
+                $query->where('periode_penilaian->tahun', '=', $periode );
             });
         }
     }

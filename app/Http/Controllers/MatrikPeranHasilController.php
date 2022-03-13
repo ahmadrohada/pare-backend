@@ -73,7 +73,7 @@ class MatrikPeranHasilController extends Controller
             }
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return \Response::make(['message' => "Terjadi Kesalahan , SIM ASN not response"], 500);
+            return null;
         }
     }
 
@@ -456,14 +456,20 @@ class MatrikPeranHasilController extends Controller
             $rp->role                = "koordinator";
             $rp->level               = "S1";
             $rp->parent_id           = null;
-
             $rp->jabatan             = json_encode($jabatan);
 
-            $rp->save();
-            $no++;
-
+            if ( $jabatan != null ){
+                $rp->save();
+                $no++;
+            }
         }
-        return \Response::make($no. "data berhasil tersimpan", 200);
+
+        if ( $no > 0 ){
+            return \Response::make($no. "data berhasil tersimpan", 200);
+        }else{
+            return \Response::make("data tidak berhasil tersimpan", 400);
+        }
+
 
     }
 

@@ -431,10 +431,25 @@ class PerjanjianKinerjaController extends Controller
 
     }
 
+    public function PerjanjianKinerjaId(Request $request)
+    {
+        $pk = PerjanjianKinerja::
+            WHERE('skpd_id', $request->skpd_id)
+            ->WHERE('periode->tahun', $request->periode)
+            ->first();
+
+        if ($pk){
+            $h['id']   = $pk->id;
+        }else{
+            $h['id']   = null;
+        }
+        return $h;
+    }
+
     public function PerjanjianKinerjaStore(Request $request)
     {
         $messages = [
-            'periodeId.required'    => 'Harus diisi',
+            'periode.required'    => 'Harus diisi',
             'skpdId.required'       => 'Harus diisi',
             'userId.required'       => 'Harus diisi',
             'kepalaSkpdId.required' => 'Harus diisi',
@@ -446,7 +461,7 @@ class PerjanjianKinerjaController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'periodeId'         => 'required',
+                'periode'         => 'required',
                 'skpdId'            => 'required',
                 'userId'            => 'required',
                 'kepalaSkpdId'      => 'required',
@@ -463,7 +478,7 @@ class PerjanjianKinerjaController extends Controller
 
 
         //cek apakah pernah ada id skpd dan id periode yang sama pada db
-        if (PerjanjianKinerja::WHERE('periode_id','=',$request->periodeId)->WHERE('skpd_id','=',$request->skpdId)->exists()) {
+        if (PerjanjianKinerja::WHERE('periode->tahun','=',$request->periode)->WHERE('skpd_id','=',$request->skpdId)->exists()) {
             return \Response::make(['message'=>'PK pada periode ini sudah dibuat'],422);
         }
 
@@ -483,11 +498,14 @@ class PerjanjianKinerjaController extends Controller
             }
         }
 
+        //PERIODE
+        $periode_data = Periode::WHERE('tahun',$request->periode)->first();
+
 
         $rp    = new PerjanjianKinerja;
         $rp->skpd_id             = $request->skpdId;
-        $rp->periode_id          = $request->periodeId;
-        $rp->periode             = json_encode(Periode::WHERE('id',$request->periodeId)->first());
+        $rp->periode_id          = $periode_data->id;
+        $rp->periode             = json_encode(Periode::WHERE('tahun',$request->periode)->first());
         $rp->skpd                = json_encode($skpd);
         $rp->kepala_skpd         = json_encode($kepala_skpd);
         $rp->jabatan_kepala_skpd = $jabatanKepalaSKPD;

@@ -117,11 +117,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('periode', [PeriodeController::class, 'PeriodeDetail']);
     Route::get('periode_list', [PeriodeController::class, 'PeriodeList']);
 
-    //========================================================================================================//
-	//===========================           MANAJEMEN KINERJA PNS         ====================================//
-	//========================================================================================================//
 
-    Route::get('manajemen_kinerja', [ManajemenKinerjaController::class, 'list']);
+
 
     //========================================================================================================//
 	//===========================                  RENJA                   ====================================//
@@ -137,13 +134,20 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::post('renja', [RenjaController::class, 'store']);
     Route::delete('renja', [RenjaController::class, 'destroy']); */
 
+    //========================================================================================================//
+	//===========================           MANAJEMEN KINERJA                 ================================//
+	//========================================================================================================//
+    Route::get('manajemen_kinerja', [ManajemenKinerjaController::class, 'list']);
+    Route::get('manajemen_kinerja_menu', [ManajemenKinerjaController::class, 'ManajemenKinerjaMenu']);
 
-     //========================================================================================================//
+
+    //========================================================================================================//
 	//===========================           PERJANJIAN KINERJA                ================================//
 	//========================================================================================================//
 
     // =======     P  K      ===============//
     Route::get('perjanjian_kinerja_detail', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaDetail']);
+    Route::get('perjanjian_kinerja_id', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaId']);
     Route::get('create_perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaCreate']);
     Route::post('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaStore']);
     Route::get('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaList']);
@@ -211,6 +215,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Detail']);
     Route::post('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Store']);
     Route::put('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Update']);
+
 
 
     //========================================================================================================//
