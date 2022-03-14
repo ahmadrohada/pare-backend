@@ -25,6 +25,21 @@ class SasaranKinerjaController extends Controller
         return $data;
     }
 
+    public function SasaranKinerjaId(Request $request)
+    {
+        $skp = SasaranKinerja::
+                WHERE('periode_penilaian->tahun','=',$request->periode)
+                ->WHERE('skpd_id','=',$request->skpd_id)
+                ->WHERE('jenis_jabatan_skp','=','PEJABAT PIMPINAN TINGGI')
+                ->first();
+
+        if ($skp){
+            $h['id']   = $skp->id;
+        }else{
+            $h['id']   = null;
+        }
+        return $h;
+    }
 
     public function SasaranKinerjaDetail(Request $request)
     {
