@@ -7,6 +7,7 @@ use App\Models\SasaranKinerja;
 use App\Models\RencanaKinerja;
 use App\Models\IndikatorKinerjaIndividu;
 use App\Models\SasaranStrategis;
+use App\Models\PerjanjianKinerja;
 
 use App\Http\Resources\SasaranKinerja as SasaranKinerjaResource;
 
@@ -86,11 +87,11 @@ class SasaranKinerjaController extends Controller
 
                     'dateFrom.required'              => 'Harus diisi',
                     'dateTo.required'                => 'Harus diisi',
-                    'periodePkId.required'           => 'Harus diisi',
+                    'periodeTahun.required'           => 'Harus diisi',
                     'userId.required'                => 'Harus diisi',
                     'simpegId.required'              => 'Harus diisi',
                     'jenisJabatanSkp.required'       => 'Harus diisi',
-                    //'skpdId.required'                => 'Harus diisi',
+                    'skpdId.required'                => 'Harus diisi',
                     //'unitKerjaId.required'           => 'Harus diisi',
                     //'pnsId'                 => 'Harus diisi',
 
@@ -123,11 +124,11 @@ class SasaranKinerjaController extends Controller
             [
                     'dateFrom'                              => 'required',
                     'dateTo'                                => 'required',
-                    'periodePkId'                           => 'required',
+                    'periodeTahun'                          => 'required',
                     'userId'                                => 'required',
                     'simpegId'                              => 'required',
                     'jenisJabatanSkp'                       => 'required',
-                    //'skpdId'                                => 'required',
+                    'skpdId'                                => 'required',
                     //'unitKerjaId'                           => 'required',
                     //'pnsId'                               => 'required',
 
@@ -159,8 +160,18 @@ class SasaranKinerjaController extends Controller
             return response()->json(['message' => $validator->messages()], 422);
         }
 
+        //CARI PK ID
+        $pk = PerjanjianKinerja::WHERE('periode->tahun','=',$request->periodeTahun)->WHERE('skpd_id','=',$request->skpdId)->first();
+        if ($pk){
+            $pkId = $pk->id;
+
+        }else{
+            return response()->json(['message' => "Perjanjian Kinerja tidak ditemukan"], 422);
+        }
+
+
         //cek apakah punya sasaran strategis pada PK nta
-        $sasaran = SasaranStrategis::WHERE('perjanjian_kinerja_id','=',$request->periodePkId )->get();
+        $sasaran = SasaranStrategis::WHERE('perjanjian_kinerja_id','=',$pkId )->get();
 
         if ($sasaran == null ) {
             return response()->json(['message' => "sasaran strategis tidak ditemukan"], 422);
@@ -168,7 +179,7 @@ class SasaranKinerjaController extends Controller
 
 
         $periode_penilaian = [
-            "periode_pk"        => $request->periodePkId,
+            "periode_pk"        => $pkId,
             "tahun"             => date('Y', strtotime($request->dateFrom)),
             "tgl_mulai"         => date('Y-m-d', strtotime($request->dateFrom)),
             "tgl_selesai"       => date('Y-m-d', strtotime($request->dateTo)),
@@ -204,7 +215,7 @@ class SasaranKinerjaController extends Controller
         $ah->unit_kerja_id              = $request->unitKerjaId;
         $ah->simpeg_id                  = $request->simpegId;
         $ah->pns_id                     = $request->pnsId;
-        $ah->perjanjian_kinerja_id      = $request->periodePkId;
+        $ah->perjanjian_kinerja_id      = $pkId;
         $ah->jenis_jabatan_skp          = $request->jenisJabatanSkp;
         $ah->periode_penilaian          = json_encode($periode_penilaian);
         $ah->pegawai_yang_dinilai       = json_encode($pegawai_yang_dinilai);
