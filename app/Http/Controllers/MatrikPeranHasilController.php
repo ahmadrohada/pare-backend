@@ -189,6 +189,7 @@ class MatrikPeranHasilController extends Controller
         $koordinator = $koordinator->get();
 
 
+
 //=======================================================================================================//
 //=================================== MATRIK ROLE / PERAN ===============================================//
 //=======================================================================================================//
@@ -196,7 +197,7 @@ class MatrikPeranHasilController extends Controller
         $response['role'] = array();
         $no = 1 ;
 
-        $array_style = array('style1','style2','style3','style4','style5','style6');
+        $array_style = array('style4','style5','style6','style1','style2','style3');
         foreach( $koordinator AS $x ){
             $row_style = $array_style[rand(0, count($array_style) - 2)];
             //KOORDINATOR
@@ -272,11 +273,11 @@ class MatrikPeranHasilController extends Controller
 //===============================      OUTCOME HEADER      =============================================//
 //=======================================================================================================//
 
-        //for jumlah kolom outcome
-        $s_0 = MatriksHasil::WHERE('level','=','S0')
+        //for jumlah kolom outcome S2 ( Koordinator )
+        $s_2 = MatriksHasil::WHERE('level','=','S2')
                                 ->WHERE('periode','=',$periode)
                                 ->WHERE('skpd_id','=',$skpd_id)
-                                ->whereNull('matriks_peran_id')
+                                ->WHERE('matriks_peran_id','=',$koordinator_id)
                                 ->whereNull('parent_id')
                                 ->SELECT(   'id',
                                             'label',
@@ -284,33 +285,14 @@ class MatrikPeranHasilController extends Controller
                                         )
                                 ->GET();
 
-        $response['sasaran_strategis_header'] = array();
         $response['sasaran_strategis'] = array();
-        $response['sasaran_strategis_header_2'] = array();
-
-
-        $no_ss_jpt = 1;
-        foreach( $s_0 AS $m ){
-
+        //S2
+        foreach( $s_2 AS $m ){
             for ($x = 1; $x <= $m->jumlah_kolom; $x++) {
-
-                //HEADER ATAS
-                $kl['id']           = $m->id;
-                $kl['label']        = "SASARAN STRATEGIS JPT  ". $no_ss_jpt;
-                array_push($response['sasaran_strategis_header'], $kl);
-
-                //HEADER TENGAH
                 $k['id']           = $m->id;
                 $k['label']        = $m->label;
                 array_push($response['sasaran_strategis'], $k);
-
-                //HEADER BAWAH
-                $km['id']           = $m->id;
-                $km['label']        = "INTERMEDIATE OUTCOME";
-                array_push($response['sasaran_strategis_header_2'], $km);
-
             }
-            $no_ss_jpt+=1;
         }
 
 
@@ -320,7 +302,7 @@ class MatrikPeranHasilController extends Controller
         $response['outcome'] = array();
 
 
-        //======================= HEADER MATRIKS PERAN HASIL ============================//
+       /*  //======================= HEADER MATRIKS PERAN HASIL ============================//
         $k['id']                = null;
         $k['role']              = "";
         $k['id_jabatan']        = "NAMA";
@@ -342,7 +324,7 @@ class MatrikPeranHasilController extends Controller
         $k['row_style']         = "style0";
         $k['outcome']           = $response['sasaran_strategis_header_2'];
         array_push($response['data'], $k);
-        //===============================================================================//
+        //===============================================================================// */
 
 
 //=======================================================================================================//
@@ -353,10 +335,16 @@ class MatrikPeranHasilController extends Controller
 
         $response['last_data'] = $response['sasaran_strategis'];
 
-
         foreach( $response['role'] AS $a ){
             $role_level = $a['level'];
 
+            //BARIS PERTAMA
+            if ($role_level == "S2"){
+                $response['outcome'] = $response['sasaran_strategis'];
+            }else{
+
+
+            //BARIS SELANJUTNYA
             //MENCARAI DATA OUTCOME nYA
             $last_id = null ;
             foreach( $response['last_data'] AS $ot ){
@@ -390,11 +378,13 @@ class MatrikPeranHasilController extends Controller
 
             }
 
+        }
+
 
             $k['id']                = $a['id'];
             $k['role']              = $a['role'];
             $k['id_jabatan']        = $a['id_jabatan'];
-            $k['jabatan']           = $role_level.'-'.$a['jabatan'];
+            $k['jabatan']           = $a['jabatan'];
             $k['level']             = $a['level'];
             $k['row_style']         = $a['row_style'];
             $k['outcome']           = $response['outcome'];
@@ -454,7 +444,7 @@ class MatrikPeranHasilController extends Controller
             $rp->skpd_id             = $request->skpdId;
             $rp->periode             = $request->periode;
             $rp->role                = "koordinator";
-            $rp->level               = "S1";
+            $rp->level               = "S2";
             $rp->parent_id           = null;
             $rp->jabatan             = json_encode($jabatan);
 
