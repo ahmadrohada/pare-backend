@@ -29,31 +29,41 @@ class AuthController extends Controller
 
     //login with SIM ASN
     protected function get_token($code){
+
+
+        $headers = [
+            'Accept'        => 'application/json',
+        ];
+
+        $form_params = [
+
+                'grant_type'    => "authorization_code",
+                'client_id'     => "93ce4ca9-b473-4f37-bd34-1a03c5c61e58",
+                'client_secret' => "SoA6lCpauKqXWPsgfAgUecKJlEpRruAcPAFi8jmEZGpLLS1f7x",
+                'redirect_uri'  => (env('BACKEND_URL').'/api/login_simpeg'),
+                'scope'         => "*",
+                'code'          => $code
+
+        ];
+
         try{
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 6, // Response timeout
-                'connect_timeout' => 6, // Connection timeout
+                'timeout' => 10, // Response timeout
+                'connect_timeout' => 10, // Connection timeout
                 'peer' => false
             ]);
-            $response = $client->request('POST', '/oauth/token',
-                ['form_params' =>   [
-                                        'grant_type'    => "authorization_code",
-                                        'client_id'     => "93ce4ca9-b473-4f37-bd34-1a03c5c61e58",
-                                        'client_secret' => "SoA6lCpauKqXWPsgfAgUecKJlEpRruAcPAFi8jmEZGpLLS1f7x",
-                                        'redirect_uri'  => (env('BACKEND_URL').'/api/login_simpeg'),
-                                        'code'          => $code
-                                    ],
-                  'header'      =>  [
-                                        'Accept'        => 'application/json',
-                                    ],
-                ]);
+            $response = $client->request('POST', '/oauth/token',[
+                'headers'       => $headers,
+                'form_params'   => $form_params
+            ]);
+
             $body = $response->getBody();
             return json_decode($body,true);
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return "error";
+            return $e;
         }
     }
 
@@ -76,11 +86,17 @@ class AuthController extends Controller
             $response = $client->request('GET', '/api/me/',[
                 'headers' => $headers
             ]);
-            //$body = $response->getBody()->getContents();
-
             $body = $response->getBody();
             $arr_body = json_decode($body,true);
-            return $arr_body;
+            if ( isset($arr_body['data']) && ($arr_body['data'] != null) ){
+                return $arr_body['data'];
+            }else{
+                return null;
+            }
+
+            /* $body = $response->getBody();
+            $arr_body = json_decode($body,true);
+            return $arr_body; */
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
@@ -220,11 +236,12 @@ class AuthController extends Controller
 
     public function login_simpeg(Request $request):RedirectResponse
     {
-        $token = $this::get_token($request->code);
+
+       $token = $this::get_token($request->code);
+
 
         if ( isset($token['access_token']) || $token['access_token'] != null  ){
             $profile = $this::user_profile($token['access_token']);
-
             if ( isset($profile['pegawai']['nip'])){
                 $user = User::WHERE('nip',$profile['pegawai']['nip'])->first();
 
@@ -233,7 +250,7 @@ class AuthController extends Controller
                         return $this->redirectLoginSimpeg($request->state, 'token', '' );
                     }
 
-                    if ( $user['pegawai'] === null ){
+                    /* if ( $user['pegawai'] === null ){
                         $detail_pegawai                 = $this::detail_pegawai($profile['pegawai']['nip']);
                         //nip pejabat penilai
                         $nip_pejabat_penilai            = $this::nip_atasan($profile['pegawai']['nip']);
@@ -267,7 +284,7 @@ class AuthController extends Controller
                         $add_log->action            = "sync";
                         $add_log->label             = "sikronisasi data simpeg";
                         $add_log->save();
-                    }
+                    } */
 
                     //LOGGER
                     $add_log = new UserLogging;
