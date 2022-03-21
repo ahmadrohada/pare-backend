@@ -227,8 +227,11 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('matrik_peran_hasil', [MatrikPeranHasilController::class, 'list']);
     Route::get('koordinator_list', [MatrikPeranHasilController::class, 'koordinatorList']);
     Route::get('list_jabatan', [MatrikPeranHasilController::class, 'listJabatan']);
+    Route::get('list_jabatan_atasan', [MatrikPeranHasilController::class, 'ListJabatanAtasan']);
 
     Route::post('jabatan', [MatrikPeranHasilController::class, 'jabatanStore']);
+
+    Route::post('hasil', [MatrikPeranHasilController::class, 'hasilStore']);
 
 
 

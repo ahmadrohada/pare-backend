@@ -50,8 +50,8 @@ class AuthController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 10, // Response timeout
-                'connect_timeout' => 10, // Connection timeout
+                'timeout' => 15, // Response timeout
+                'connect_timeout' => 15, // Connection timeout
                 'peer' => false
             ]);
             $response = $client->request('POST', '/oauth/token',[
@@ -61,9 +61,13 @@ class AuthController extends Controller
 
             $body = $response->getBody();
             return json_decode($body,true);
-
+            if ( isset($body['access_token']) && ($body['access_token'] != null) ){
+                return $body;
+            }else{
+                return null;
+            }
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return $e;
+            return null;
         }
     }
 
@@ -79,8 +83,8 @@ class AuthController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 10, // Response timeout
-                'connect_timeout' => 10, // Connection timeout
+                'timeout' => 15, // Response timeout
+                'connect_timeout' => 15, // Connection timeout
                 'peer' => false
             ]);
             $response = $client->request('GET', '/api/me/',[
@@ -93,10 +97,6 @@ class AuthController extends Controller
             }else{
                 return null;
             }
-
-            /* $body = $response->getBody();
-            $arr_body = json_decode($body,true);
-            return $arr_body; */
 
         }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             return "error";
@@ -115,8 +115,8 @@ class AuthController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 10, // Response timeout
-                'connect_timeout' => 10, // Connection timeout
+                'timeout' => 15, // Response timeout
+                'connect_timeout' => 15, // Connection timeout
                 'peer' => false
             ]);
             $response = $client->request('GET', '/api/pegawai/'.$nip,[
@@ -223,7 +223,6 @@ class AuthController extends Controller
                 'type' => 'success',
                 'message' => 'Logged in',
                 "token_type"=> "Bearer",
-                /* "expires_in"=> 1577923199, */
                 'token' => $token,
                 'data'  => $user_data
             ]);
@@ -237,75 +236,81 @@ class AuthController extends Controller
     public function login_simpeg(Request $request):RedirectResponse
     {
 
-       $token = $this::get_token($request->code);
+        $token = $this::get_token($request->code);
 
+        if ( $token != null ){
+            if ( isset($token['access_token']) || $token['access_token'] != null  ){
+                $profile = $this::user_profile($token['access_token']);
 
-        if ( isset($token['access_token']) || $token['access_token'] != null  ){
-            $profile = $this::user_profile($token['access_token']);
-            if ( isset($profile['pegawai']['nip'])){
-                $user = User::WHERE('nip',$profile['pegawai']['nip'])->first();
+                if ( isset($profile['pegawai']['nip'])){
+                    $user = User::WHERE('nip',$profile['pegawai']['nip'])->first();
 
-                if ($user){
-                    if (!$userToken = JWTAuth::fromUser($user)) {
-                        return $this->redirectLoginSimpeg($request->state, 'token', '' );
-                    }
-
-                    /* if ( $user['pegawai'] === null ){
-                        $detail_pegawai                 = $this::detail_pegawai($profile['pegawai']['nip']);
-                        //nip pejabat penilai
-                        $nip_pejabat_penilai            = $this::nip_atasan($profile['pegawai']['nip']);
-                        if ( $nip_pejabat_penilai != null ){
-                            //detail pejabata penilai
-                            $pejabat_penilai                = $this::detail_pegawai($nip_pejabat_penilai);
-                            if ( $pejabat_penilai != null ){
-                                //nip atasan pejabat penilai
-                                $nip_atasan_pejabat_penilai  = $this::nip_atasan($pejabat_penilai['nip']);
-                                if ( $nip_atasan_pejabat_penilai != null ){
-                                    $atasan_pejabat_penilai = $this::detail_pegawai($nip_atasan_pejabat_penilai);
-                                }
-                            }
+                    if ($user){
+                        if (!$userToken = JWTAuth::fromUser($user)) {
+                            return $this->redirectLoginSimpeg($request->state, 'token', '' );
                         }
 
-                        //UPDATE USER PARE with SIM-ASN PROFILE
-                        $update                             = User::find($user->id);
-                        $update->pegawai                    = isset($detail_pegawai) ? $detail_pegawai : null;
-                        $update->pejabat_penilai            = isset($pejabat_penilai) ? $pejabat_penilai : null;
-                        $update->atasan_pejabat_penilai     = isset($atasan_pejabat_penilai ) ? $atasan_pejabat_penilai : null ;
-                        $update->simpeg_id                  = $profile['id'];
-                        $update->simpeg_token               = $token['access_token'];
-                        $update->simpeg_refresh_token       = $token['refresh_token'];
-                        $update->save();
-                        //lOGIN SUKSES
+                        /* if ( $user['pegawai'] === null ){
+                            $detail_pegawai                 = $this::detail_pegawai($profile['pegawai']['nip']);
+                            //nip pejabat penilai
+                            $nip_pejabat_penilai            = $this::nip_atasan($profile['pegawai']['nip']);
+                            if ( $nip_pejabat_penilai != null ){
+                                //detail pejabata penilai
+                                $pejabat_penilai                = $this::detail_pegawai($nip_pejabat_penilai);
+                                if ( $pejabat_penilai != null ){
+                                    //nip atasan pejabat penilai
+                                    $nip_atasan_pejabat_penilai  = $this::nip_atasan($pejabat_penilai['nip']);
+                                    if ( $nip_atasan_pejabat_penilai != null ){
+                                        $atasan_pejabat_penilai = $this::detail_pegawai($nip_atasan_pejabat_penilai);
+                                    }
+                                }
+                            }
+
+                            //UPDATE USER PARE with SIM-ASN PROFILE
+                            $update                             = User::find($user->id);
+                            $update->pegawai                    = isset($detail_pegawai) ? $detail_pegawai : null;
+                            $update->pejabat_penilai            = isset($pejabat_penilai) ? $pejabat_penilai : null;
+                            $update->atasan_pejabat_penilai     = isset($atasan_pejabat_penilai ) ? $atasan_pejabat_penilai : null ;
+                            $update->simpeg_id                  = $profile['id'];
+                            $update->simpeg_token               = $token['access_token'];
+                            $update->simpeg_refresh_token       = $token['refresh_token'];
+                            $update->save();
+                            //lOGIN SUKSES
+
+                            //LOGGER
+                            $add_log = new UserLogging;
+                            $add_log->id_user           = $user->id;
+                            $add_log->module            = "sync";
+                            $add_log->action            = "sync";
+                            $add_log->label             = "sikronisasi data simpeg";
+                            $add_log->save();
+                        } */
 
                         //LOGGER
                         $add_log = new UserLogging;
                         $add_log->id_user           = $user->id;
-                        $add_log->module            = "sync";
-                        $add_log->action            = "sync";
-                        $add_log->label             = "sikronisasi data simpeg";
+                        $add_log->module            = "authentication";
+                        $add_log->action            = "login";
+                        $add_log->label             = "Login melalui akun simpeg";
                         $add_log->save();
-                    } */
-
-                    //LOGGER
-                    $add_log = new UserLogging;
-                    $add_log->id_user           = $user->id;
-                    $add_log->module            = "authentication";
-                    $add_log->action            = "login";
-                    $add_log->label             = "Login melalui akun simpeg";
-                    $add_log->save();
 
 
-                    return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
+                        return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
+                    }else{
+                        return $this->redirectLoginSimpeg($request->state, 'message', 'Login SIM-ASN gagal' );
+                    }
+
                 }else{
-                    return $this->redirectLoginSimpeg($request->state, 'message', 'Login SIM-ASN gagal' );
+                    return $this->redirectLoginSimpeg($request->state, 'message', 'NIP tidak ditemukan' );
                 }
-
             }else{
-                return $this->redirectLoginSimpeg($request->state, 'message', 'NIP tidak ditemukan' );
+                return $this->redirectLoginSimpeg($request->state, 'message', 'User Profile Error' );
             }
         }else{
-            return $this->redirectLoginSimpeg($request->state, 'message', 'User Profile Error' );
+            return $this->redirectLoginSimpeg($request->state, 'message', 'gagal Mendapatkan Token SIM-ASN' );
         }
+
+
     }
 
 

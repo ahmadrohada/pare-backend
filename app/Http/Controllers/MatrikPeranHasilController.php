@@ -77,6 +77,39 @@ class MatrikPeranHasilController extends Controller
         }
     }
 
+    protected function detail_skpd($id_skpd){
+        //$token = env('SIMPEG_APP_TOKEN');
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5M2NlNGNhOS1iNDczLTRmMzctYmQzNC0xYTAzYzVjNjFlNTgiLCJqdGkiOiI1Y2ZmYjcwNDgzNmVkZDMzZGM2MzlmNjYyN2RlNzRhNTkyY2I0OWU0NGJlNjEwZjY5MDBlYzRiZGFiZWZmNjMyNTliMTBkZmY4MjIzMmUxNSIsImlhdCI6MTYyNzgyNDU4NSwibmJmIjoxNjI3ODI0NTg1LCJleHAiOjE2NTkzNjA1ODUsInN1YiI6IiIsInNjb3BlcyI6WyIqIl19.GlE2yf4WJDtYvkThAjLYp37qxzN0NLqcS05YHFaMrQre4sY1izm1mVgO9Y-yCDasTz_0iZNrBOz1vMbw_PxsFxV9cBdPjIhuepcnk4vmN-iSe2fn0NP5rR3l2S-ZQmaT7HmPoABEcgGpTbKx_nOa43I6Y2UIzZsxPxQlDaRqfuSMBAtjm7QreGeD23K0CQQ4BMT3Nxe0iwqOwrYCjYTmu2m4JAhjmWN7amcJ95p_RdyrG0i-L9C-vGK1rO8LGtkAm4JjUmZLpGELjMpYMhIO11h2ok-TcBqaAJH_l92izQ5SHoR4UGmsyUiIygCmr8BD541zEOr4g6ITgk729lmXB_8faR0BQsbiGPA3NKq8YrHiJA63DP-iWmglE_QS4KTgSej6oU_5IM77kSXV90HTgPgzDTGgnDhtxWObcKTvCFsFlMR_aOePYEPTJj5qUIvy2lGgFJODwnr25Fc2m043tRDL_oQqBNXAl5rhTvjQxOWNylTqJw0rceuBCOOQZxPTw5L5OdOciecMfeRw3-E4dhPF7aWHwAdY4U71VAv78ACVG5NO2q4pxAoRBKEtS2pv0TgoAbkM3D-bH-C5b4XgUpylFUzIZlx4CN29FoMlwbuEbqi1hMUPu_GXOGXORXAzGHFoOIQAf8KHlO09RrQ2LUnB6-xPSvAJ-LbYZEwBGHg";
+        $headers = [
+            'Authorization' => 'Bearer ' . $token,
+            'Accept'        => 'application/json',
+        ];
+
+        try{
+            $client = new Client([
+                'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
+                'verify' => false,
+                'timeout' => 10, // Response timeout
+                'connect_timeout' => 10, // Connection timeout
+                'peer' => false
+            ]);
+            $response = $client->request('GET', '/api/sotk/skpd/'.$id_skpd,[
+                'headers' => $headers
+            ]);
+
+            $body = $response->getBody();
+            $arr_body = json_decode($body,true);
+            if ( isset($arr_body['data']) && ($arr_body['data'] != null) ){
+                return $arr_body['data'];
+            }else{
+                return null;
+            }
+
+        }catch(\GuzzleHttp\Exception\GuzzleException $e) {
+            return null;
+        }
+    }
+
 
     public function koordinatorList(Request $request)
     {
@@ -119,21 +152,51 @@ class MatrikPeranHasilController extends Controller
     public function ListJabatan(Request $request)
     {
 
-        $jabatan_atasan_id = 1931;
+        //$jabatan_atasan_id = $request->jabatan_atasan_id;
         $skpd_id = $request->skpd_id;
         $periode = $request->periode;
 
-        //get list jabatan yang sudah terdaftar pada matrik peran
-        $koordinator_list = MatriksPeran::WHERE('role','=','koordinator')
-                                    ->WHERE('periode','=',$periode)
-                                    ->WHERE('skpd_id','=',$skpd_id)
-                                    ->SELECT(   'jabatan->id AS id')
-                                    ->get();
-        $response['koordinator_list'] = array();
-        foreach( $koordinator_list AS $x ){
-            array_push($response['koordinator_list'], $x->id);
+        //cari id jabatan atasan di sotk
+        $skpd = $this::detail_skpd($skpd_id);
+        if ( $skpd == null ) {
+            return response()->json(['errors' => "Jabatan tidak ditemukan"], 422);
+        }else{
+            $jabatan_atasan_id = $skpd['id_jabatan_kepala'];
         }
 
+        if ( !isset($request->role) ){
+            //nyari jneis jabatan atasan
+            $jj_atasan = MatriksPeran::WHERE('jabatan->id','=',$jabatan_atasan_id)->SELECT('role')->first();
+
+            switch ($jj_atasan->role) {
+                case "koordinator":
+                    $role =  "ketua";
+                    $level =  "S3";
+                    break;
+                case "ketua":
+                    $role =  "anggota";
+                    $level =  "S4";
+                    break;
+                case "anggota":
+                    $role = null ;
+                    break;
+            }
+        }else{
+            $role = $request->role;
+            $level =  "S2";
+        }
+
+
+         //get list jabatan yang sudah terdaftar pada matrik peran
+         $existing_list = MatriksPeran:: WHERE('jabatan->id_jabatan_atasan','=',$jabatan_atasan_id)
+                                        ->WHERE('periode','=',$periode)
+                                        ->WHERE('skpd_id','=',$skpd_id)
+                                        ->SELECT('jabatan->id AS id')
+                                        ->get();
+                                $response['existing_list'] = array();
+                                foreach( $existing_list AS $x ){
+                                array_push($response['existing_list'], $x->id);
+                                }
 
 
 
@@ -143,7 +206,7 @@ class MatrikPeranHasilController extends Controller
         //list jabatan dikurangi list jabatan yang sudah ada di role matrik
         $response['role'] = array();
         foreach( $list_jabatan_sotk AS $x ){
-            if (!in_array($x['id'], $response['koordinator_list'])) {
+            if (!in_array($x['id'], $response['existing_list'])) {
                 //KOORDINATOR
                 $i['id']                = $x['id'];
                 $i['singkatan']         = $x['singkatan'];
@@ -156,7 +219,61 @@ class MatrikPeranHasilController extends Controller
 
         return [
             'list_jabatan'          => $response['role'],
-            'koordinator_list'      => $response['koordinator_list'],
+            'existing_list'         => $response['existing_list'],
+            'role'                  => $role,
+            'level'                 => $level
+        ];
+    }
+
+    public function ListJabatanAtasan(Request $request)
+    {
+
+        $jabatan_atasan_id = $request->role_id;
+        $skpd_id = $request->skpd_id;
+        $periode = $request->periode;
+
+        //existing jabatan
+        //get list jabatan yang sudah terdaftar pada matrik peran
+        $existing = MatriksPeran::WHERE('periode','=',$periode)
+                                    ->WHERE('skpd_id','=',$skpd_id)
+                                    ->where(function ($query) use($jabatan_atasan_id){
+                                        $query->WHERE('id','=',$jabatan_atasan_id)
+                                              ->orWhere('parent_id', '=', $jabatan_atasan_id);
+                                    })
+                                    ->SELECT(   'jabatan->id AS id')
+                                    ->get();
+        $response['existing'] = array();
+        foreach( $existing AS $x ){
+            array_push($response['existing'], $x->id);
+        }
+
+        $jabatan_atasan_id = MatriksPeran::SELECT('jabatan->id AS jabatan_id')->WHERE('id','=',$jabatan_atasan_id)->first();
+        $jabatan_atasan_id = $jabatan_atasan_id->jabatan_id;
+
+
+        //get detail jabatan pribadi from SOTK
+        $jabatan_self     = $this::detail_jabatan($jabatan_atasan_id);
+        //get list bawahan from SOTK
+        $list_jabatan_sotk     = $this::list_jabatan($jabatan_atasan_id);
+        array_push($list_jabatan_sotk, $jabatan_self);
+        $list_jabatan_sotk = collect($list_jabatan_sotk)->sortBy('id')->toArray();
+
+        //list jabatan yang muncul hanya yang sudah ada di matrik peran hasil
+
+        $response['role'] = array();
+        foreach( $list_jabatan_sotk AS $x ){
+            if ( ($x['is_jabatan_kepala'] === true) & (in_array($x['id'], $response['existing'])) ) {
+                //JABATAN LIST
+                $i['id']                = $x['id'];
+                $i['singkatan']         = $x['singkatan'];
+                $i['nama_lengkap']      = $x['nama_lengkap'];
+                array_push($response['role'], $i);
+            }
+        }
+
+
+        return [
+            'list_jabatan'          => $response['role'],
         ];
     }
 
@@ -177,7 +294,9 @@ class MatrikPeranHasilController extends Controller
                                             'role',
                                             'jabatan->id AS id_jabatan',
                                             'jabatan->nama_lengkap AS jabatan',
-                                            'level'
+                                            'level',
+                                            'skpd_id',
+                                            'periode'
                                         )
                                 ->ORDERBY('jabatan->id','ASC');
 
@@ -199,12 +318,14 @@ class MatrikPeranHasilController extends Controller
 
         $array_style = array('style4','style5','style6','style1','style2','style3');
         foreach( $koordinator AS $x ){
-            $row_style = $array_style[rand(0, count($array_style) - 2)];
+            $row_style = $array_style[rand(0, count($array_style) - 3)];
             //KOORDINATOR
             $i['id']                = $x->id;
-            $i['role']              = strtoupper($x->role).' '.$no;
+            $i['role']              = ( $koordinator_id != null ) ? strtoupper($x->role) : strtoupper($x->role).' '.$no;
             $i['id_jabatan']        = $x->id_jabatan;
             $i['jabatan']           = $x->jabatan;
+            $i['skpd_id']           = $x->skpd_id;
+            $i['periode']           = $x->periode;
             $i['level']             = $x->level;
             $i['row_style']         = $row_style;
             array_push($response['role'], $i);
@@ -214,7 +335,9 @@ class MatrikPeranHasilController extends Controller
                                             'role',
                                             'jabatan->id AS id_jabatan',
                                             'jabatan->nama_lengkap AS jabatan',
-                                            'level'
+                                            'level',
+                                            'skpd_id',
+                                            'periode'
                                         )
                                 ->ORDERBY('jabatan->id','ASC')
                                 ->GET();
@@ -226,6 +349,8 @@ class MatrikPeranHasilController extends Controller
                 $i['id_jabatan']        = $y->id_jabatan;
                 $i['jabatan']           = $y->jabatan;
                 $i['level']             = $y->level;
+                $i['periode']           = $y->periode;
+                $i['skpd_id']           = $y->skpd_id;
                 $i['row_style']         = $row_style;
                 array_push($response['role'], $i);
                 $s_no+=1;
@@ -239,7 +364,9 @@ class MatrikPeranHasilController extends Controller
                                             'role',
                                             'jabatan->id AS id_jabatan',
                                             'jabatan->nama_lengkap AS jabatan',
-                                            'level'
+                                            'level',
+                                            'skpd_id',
+                                            'periode'
                                         )
                                 ->ORDERBY('jabatan->id','ASC')
                                 ->GET();
@@ -252,6 +379,8 @@ class MatrikPeranHasilController extends Controller
                     $i['id_jabatan']        = $z->id_jabatan;
                     $i['jabatan']           = $z->jabatan;
                     $i['level']             = $z->level;
+                    $i['periode']           = $z->periode;
+                    $i['skpd_id']           = $z->skpd_id;
                     $i['row_style']         = $row_style;
                     array_push($response['role'], $i);
                     $sss_no+=1;
@@ -300,31 +429,6 @@ class MatrikPeranHasilController extends Controller
         //MATRIKS PERAN DAN HASIL
         $response['data'] = array();
         $response['outcome'] = array();
-
-
-       /*  //======================= HEADER MATRIKS PERAN HASIL ============================//
-        $k['id']                = null;
-        $k['role']              = "";
-        $k['id_jabatan']        = "NAMA";
-        $k['jabatan']           = "JABATAN";
-        $k['row_style']         = "style0";
-        $k['outcome']           = $response['sasaran_strategis_header'];
-        array_push($response['data'], $k);
-        $k['id']                = null;
-        $k['role']              = "";
-        $k['id_jabatan']        = "NAMA";
-        $k['jabatan']           = "JABATAN";
-        $k['row_style']         = "style0";
-        $k['outcome']           = $response['sasaran_strategis'];
-        array_push($response['data'], $k);
-        $k['id']                = null;
-        $k['role']              = "";
-        $k['id_jabatan']        = "NAMA";
-        $k['jabatan']           = "JABATAN";
-        $k['row_style']         = "style0";
-        $k['outcome']           = $response['sasaran_strategis_header_2'];
-        array_push($response['data'], $k);
-        //===============================================================================// */
 
 
 //=======================================================================================================//
@@ -386,6 +490,8 @@ class MatrikPeranHasilController extends Controller
             $k['id_jabatan']        = $a['id_jabatan'];
             $k['jabatan']           = $a['jabatan'];
             $k['level']             = $a['level'];
+            $k['skpd_id']           = $a['skpd_id'];
+            $k['periode']           = $a['periode'];
             $k['row_style']         = $a['row_style'];
             $k['outcome']           = $response['outcome'];
 
@@ -431,11 +537,23 @@ class MatrikPeranHasilController extends Controller
             return response()->json(['errors' => $validator->messages()], 422);
         }
 
+        //nyari ID parent nya
+        $parent = MatriksPeran::SELECT('id')
+                                ->WHERE('periode','=',$request->periode)
+                                ->WHERE('skpd_id','=',$request->skpdId)
+                                ->WHERE('jabatan->id','=',$request->parentId)
+                                ->first();
+        if ($parent){
+            $parent_id = $parent->id;
+        }else{
+            $parent_id = null;
+        }
+
+
 
         $selectedRoles = $request->selectedRoles ;
         $no = 0 ;
 
-        //cari jabatannya kepala SKPD
         foreach( $selectedRoles AS $x ){
             //cari detail jabatan from simASN
             $jabatan     = $this::detail_jabatan($x['id']);
@@ -443,9 +561,9 @@ class MatrikPeranHasilController extends Controller
             $rp    = new MatriksPeran;
             $rp->skpd_id             = $request->skpdId;
             $rp->periode             = $request->periode;
-            $rp->role                = "koordinator";
-            $rp->level               = "S2";
-            $rp->parent_id           = null;
+            $rp->role                = $request->role;
+            $rp->level               = $request->level;
+            $rp->parent_id           = $parent_id;
             $rp->jabatan             = json_encode($jabatan);
 
             if ( $jabatan != null ){
@@ -456,6 +574,60 @@ class MatrikPeranHasilController extends Controller
 
         if ( $no > 0 ){
             return \Response::make($no. "data berhasil tersimpan", 200);
+        }else{
+            return \Response::make("data tidak berhasil tersimpan", 400);
+        }
+
+
+    }
+
+
+    public function hasilStore(Request $request)
+    {
+        $messages = [
+
+            'skpdId.required'             => 'Harus diisi',
+            'periode.required'            => 'Harus diisi',
+            'roleId.required'             => 'Harus diisi',
+            'level.required'              => 'Harus diisi',
+            'outcomeLabel.required'       => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+
+                'skpdId'              => 'required',
+                'periode'             => 'required',
+                'roleId'              => 'required',
+                'level'               => 'required',
+                'outcomeLabel'        => 'required',
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+
+        $rp    = new MatriksHasil;
+        $rp->skpd_id             = $request->skpdId;
+        $rp->periode             = $request->periode;
+        $rp->matriks_peran_id    = $request->roleId;
+        $rp->level               = $request->level;
+        $rp->label               = $request->outcomeLabel;
+        $rp->jumlah_kolom        = 1;
+
+
+
+
+        if ( $rp->save() ){
+            return \Response::make("data berhasil tersimpan", 200);
         }else{
             return \Response::make("data tidak berhasil tersimpan", 400);
         }
