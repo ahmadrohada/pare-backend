@@ -152,7 +152,6 @@ class MatrikPeranHasilController extends Controller
     public function ListJabatan(Request $request)
     {
 
-        //$jabatan_atasan_id = $request->jabatan_atasan_id;
         $skpd_id = $request->skpd_id;
         $periode = $request->periode;
 
@@ -277,6 +276,34 @@ class MatrikPeranHasilController extends Controller
         ];
     }
 
+
+    public function ListOutcomeAtasan(Request $request)
+    {
+
+        $role_id = $request->role_id;
+
+        //cari parent nya
+        $dt = MatriksPeran::WHERE('id','=',$role_id)
+                                    ->SELECT('parent_id AS id')
+                                    ->first();
+        if ($dt){
+            $parent_id = $dt->id;
+        }
+
+        $response = array();
+        $response['outcomeAtasan'] = array();
+
+        $data = MatriksHasil::WHERE('matriks_peran_id',$parent_id)->get();
+        foreach( $data AS $y ){
+            $r['id']            = $y->id;
+            $r['label']         = $y->label;
+
+            array_push($response['outcomeAtasan'], $r);
+        }
+        return $response;
+
+
+    }
 
 
     public function List(Request $request)
@@ -457,27 +484,31 @@ class MatrikPeranHasilController extends Controller
                     $outcome = MatriksHasil::WHERE('level','=',$role_level)
                                         ->WHERE('parent_id','=',$ot['id'])
                                         ->WHERE('matriks_peran_id','=',$a['id'])
-                                        ->SELECT('id','label','level')
+                                        ->SELECT('id','label','level','jumlah_kolom')
                                         ->get();
                     if (!$outcome->isEmpty()){
                         foreach( $outcome AS $od ){
-                            $j['id']           = $od->id;
-                            $j['label']        = $od->label;
-                            array_push($response['outcome'], $j);
+                            for ($x = 1; $x <= $od->jumlah_kolom; $x++) {
+                                $j['id']           = $od->id;
+                                $j['label']        = $od->label;
+                                array_push($response['outcome'], $j);
+                            }
+
                         }
                     }else{
                         $j['id']           = $ot['id'];
-                        $j['label']        = '-';
+                        $j['label']        = "";
                         array_push($response['outcome'], $j);
                     }
-
+                    $last_id = $ot['id'];
                 }else{
                     $j['id']           = $ot['id'];
-                    $j['label']        = '-';
+                    $j['label']        = "";
                     array_push($response['outcome'], $j);
+                    $last_id = $ot['id'];
                 }
 
-                $last_id = $ot['id'];
+
 
 
             }
@@ -621,13 +652,23 @@ class MatrikPeranHasilController extends Controller
         $rp->matriks_peran_id    = $request->roleId;
         $rp->level               = $request->level;
         $rp->label               = $request->outcomeLabel;
+        $rp->parent_id           = $request->outcomeAtasanId;
         $rp->jumlah_kolom        = 1;
 
 
 
 
         if ( $rp->save() ){
-            return \Response::make("data berhasil tersimpan", 200);
+
+            if ( $request->level != "S2"){
+                //AUPDATE jumlah kolom parent nya
+                $count = MatriksHasil::WHERE('parent_id','=',$request->outcomeAtasanId)->count();
+                $update  = MatriksHasil::find($request->outcomeAtasanId);
+                $update->jumlah_kolom   = $count;
+                $update->save();
+            }
+
+            return \Response::make(" data berhasil tersimpan", 200);
         }else{
             return \Response::make("data tidak berhasil tersimpan", 400);
         }
