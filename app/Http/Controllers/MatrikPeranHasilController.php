@@ -155,18 +155,22 @@ class MatrikPeranHasilController extends Controller
         $skpd_id = $request->skpd_id;
         $periode = $request->periode;
 
-        //cari id jabatan atasan di sotk
-        $skpd = $this::detail_skpd($skpd_id);
-        if ( $skpd == null ) {
-            return response()->json(['errors' => "Jabatan tidak ditemukan"], 422);
+        if ( !isset($request->jabatan_atasan_id) ){
+            //cari id jabatan atasan di sotk
+            $skpd = $this::detail_skpd($skpd_id);
+            if ( $skpd == null ) {
+                return response()->json(['errors' => "Jabatan tidak ditemukan"], 422);
+            }else{
+                $jabatan_atasan_id = $skpd['id_jabatan_kepala'];
+            }
         }else{
-            $jabatan_atasan_id = $skpd['id_jabatan_kepala'];
+            $jabatan_atasan_id = $request->jabatan_atasan_id;
         }
+
 
         if ( !isset($request->role) ){
             //nyari jneis jabatan atasan
             $jj_atasan = MatriksPeran::WHERE('jabatan->id','=',$jabatan_atasan_id)->SELECT('role')->first();
-
             switch ($jj_atasan->role) {
                 case "koordinator":
                     $role =  "ketua";
@@ -419,6 +423,7 @@ class MatrikPeranHasilController extends Controller
             $no+=1;
         }
 
+
 //=======================================================================================================//
 //=============================== END OF MATRIK ROLE / PERAN =============================================//
 //=======================================================================================================//
@@ -430,28 +435,47 @@ class MatrikPeranHasilController extends Controller
 //=======================================================================================================//
 
         //for jumlah kolom outcome S2 ( Koordinator )
-        $s_2 = MatriksHasil::WHERE('level','=','S2')
+        $data = MatriksHasil::WHERE('level','=','S2')
                                 ->WHERE('periode','=',$periode)
                                 ->WHERE('skpd_id','=',$skpd_id)
                                 ->WHERE('matriks_peran_id','=',$koordinator_id)
                                 ->whereNull('parent_id')
                                 ->SELECT(   'id',
                                             'label',
-                                            'jumlah_kolom'
+                                            'parent_id'
                                         )
-                                ->GET();
+                                ->WITH('children')
+                                ->get();
 
         $response['sasaran_strategis'] = array();
-        //S2
-        foreach( $s_2 AS $m ){
-            for ($x = 1; $x <= $m->jumlah_kolom; $x++) {
-                $k['id']           = $m->id;
-                $k['label']        = $m->label;
-                array_push($response['sasaran_strategis'], $k);
+        foreach( $data AS $x ){
+
+            //SAAT data S2 tidak memiliki children
+            if ( count( $x->children) == 0 ){
+                //Bikin 1 kolom OUTCOME LEVEL S2
+                $dt_1['id']           = $x['id'];
+                $dt_1['label']        = $x['label'];
+                array_push($response['sasaran_strategis'], $dt_1);
+            }
+            foreach( $x->children AS $y ){
+                //SAAT data S3 tidak memiliki children
+                if ( count( $y->children) == 0 ){
+                    //Bikin 1 kolom OUTCOME LEVEL S3
+                    $dt_1['id']           = $x['id'];
+                    $dt_1['label']        = $x['label'];
+                    array_push($response['sasaran_strategis'], $dt_1);
+                }
+
+                foreach( $y->children AS $y ){
+                    //yang diinput tetap OUTCOME LEVEL S2
+                    $dt_1['id']           = $x['id'];
+                    $dt_1['label']        = $x['label'];
+                    array_push($response['sasaran_strategis'], $dt_1);
+                }
             }
         }
 
-
+        //return $response['sasaran_strategis'];
 
         //MATRIKS PERAN DAN HASIL
         $response['data'] = array();
@@ -466,6 +490,7 @@ class MatrikPeranHasilController extends Controller
 
         $response['last_data'] = $response['sasaran_strategis'];
 
+
         foreach( $response['role'] AS $a ){
             $role_level = $a['level'];
 
@@ -475,43 +500,64 @@ class MatrikPeranHasilController extends Controller
             }else{
 
 
-            //BARIS SELANJUTNYA
+            //BARIS SELANJUTNYA S3
             //MENCARAI DATA OUTCOME nYA
             $last_id = null ;
+            $i = 0;
+            $ot_terakhir = null;
             foreach( $response['last_data'] AS $ot ){
+                $i ++;
+                if ( $ot_terakhir != $ot['id']){
+                    //kerjakan apabila last id nya beda
+                    if ( $last_id != $ot['id']){
+                        $outcome = MatriksHasil::WHERE('level','=',$role_level)
+                                            ->WHERE('parent_id','=',$ot['id'])
+                                            ->WHERE('matriks_peran_id','=',$a['id'])
+                                            ->SELECT('id','label','level','parent_id')
+                                            ->WITH('children')
+                                            ->get();
 
-                if ( $last_id != $ot['id']){
-                    $outcome = MatriksHasil::WHERE('level','=',$role_level)
-                                        ->WHERE('parent_id','=',$ot['id'])
-                                        ->WHERE('matriks_peran_id','=',$a['id'])
-                                        ->SELECT('id','label','level','jumlah_kolom')
-                                        ->get();
-                    if (!$outcome->isEmpty()){
-                        foreach( $outcome AS $od ){
-                            for ($x = 1; $x <= $od->jumlah_kolom; $x++) {
-                                $j['id']           = $od->id;
-                                $j['label']        = $od->label;
-                                array_push($response['outcome'], $j);
+                        if (!$outcome->isEmpty()){
+                            foreach( $outcome AS $od ){
+                            if ( count( $od->children) == 0 ){
+                                    //Bikin 1 kolom OUTCOME LEVEL S3
+                                    $ja['id']           = $od['id'];
+                                    $ja['label']        = $od['label'].' / '.$od['id'];
+                                    array_push($response['outcome'], $ja);
+                                    $last_id = $ot['id'];
+
+                                }
+                                foreach( $od->children AS $x ){
+                                    //yang diinput tetap OUTCOME LEVEL S3
+                                    $jb['id']           = $od['id'];
+                                    $jb['label']        = $od['label'].' //'.$od['id'];
+                                    array_push($response['outcome'], $jb);
+                                    //$last_id = $x['id'];
+
+                                }
+
                             }
+                        }else{
+                            //jika empty ( tidak ada data baru, data diatas/sebelunya diinsert lagi)
+                            $jc['id']           = $ot['id'];
+                            $jc['label']        = "";
+                            array_push($response['outcome'], $jc);
 
                         }
                     }else{
-                        $j['id']           = $ot['id'];
-                        $j['label']        = "";
-                        array_push($response['outcome'], $j);
+                        //jika last id sama kayak diatas
+                        $jd['id']           = $ot['id'];
+                        $jd['label']        = "";
+                        array_push($response['outcome'], $jd);
                     }
-                    $last_id = $ot['id'];
-                }else{
-                    $j['id']           = $ot['id'];
-                    $j['label']        = "";
-                    array_push($response['outcome'], $j);
-                    $last_id = $ot['id'];
                 }
 
 
 
 
+                $ot_terakhir = $ot['id'];
             }
+
 
         }
 
@@ -653,21 +699,11 @@ class MatrikPeranHasilController extends Controller
         $rp->level               = $request->level;
         $rp->label               = $request->outcomeLabel;
         $rp->parent_id           = $request->outcomeAtasanId;
-        $rp->jumlah_kolom        = 1;
 
 
 
 
         if ( $rp->save() ){
-
-            if ( $request->level != "S2"){
-                //AUPDATE jumlah kolom parent nya
-                $count = MatriksHasil::WHERE('parent_id','=',$request->outcomeAtasanId)->count();
-                $update  = MatriksHasil::find($request->outcomeAtasanId);
-                $update->jumlah_kolom   = $count;
-                $update->save();
-            }
-
             return \Response::make(" data berhasil tersimpan", 200);
         }else{
             return \Response::make("data tidak berhasil tersimpan", 400);

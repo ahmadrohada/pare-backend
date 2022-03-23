@@ -14,6 +14,16 @@ class MatriksHasil extends Model
     protected $dates = ['deleted_at'];
 
 
+    public function child()
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+    public function children()
+    {
+        return $this->child()->with('children');
+    }
+
+
    /*  public function IndikatorKinerjaIndividu()
     {
     return $this->hasMany(IndikatorKinerjaIndividu::class,'rencana_kinerja_id');
