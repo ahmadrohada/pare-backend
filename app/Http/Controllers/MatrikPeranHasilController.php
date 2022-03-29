@@ -599,6 +599,34 @@ class MatrikPeranHasilController extends Controller
         ];
     }
 
+
+    public function hasilDetail(Request $request)
+    {
+        $indikator = MatriksHasil::with(array('Periode' => function($query) {
+                $query->select('id');
+                //->with('parent:id,label')
+                //->with('renja:id,periode->tahun AS periode,skpd->id AS id_skpd,skpd->nama AS nama_skpd,status');
+            }))
+            ->SELECT(
+                'id',
+                'label',
+
+            )
+            ->WHERE('id', $request->id)
+            ->first();
+
+
+        if ($indikator) {
+            $h['id']                    = $indikator->id;
+            $h['label']                 = $indikator->label;
+
+        } else {
+            $h = null;
+        }
+
+        return $h;
+    }
+
     public function jabatanStore(Request $request)
     {
         $messages = [
