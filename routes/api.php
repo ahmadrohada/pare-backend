@@ -233,6 +233,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::post('hasil', [MatrikPeranHasilController::class, 'hasilStore']);
     Route::get('hasil', [MatrikPeranHasilController::class, 'hasilDetail']);
+    Route::put('hasil', [MatrikPeranHasilController::class, 'hasilUpdate']);
+    Route::delete('hasil', [MatrikPeranHasilController::class, 'hasilDestroy']);
 
     Route::get('list_outcome_atasan', [MatrikPeranHasilController::class, 'ListOutcomeAtasan']);
 

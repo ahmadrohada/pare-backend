@@ -23,11 +23,16 @@ class MatriksHasil extends Model
         return $this->child()->with('children');
     }
 
-
-   /*  public function IndikatorKinerjaIndividu()
+    public function parent()
     {
-    return $this->hasMany(IndikatorKinerjaIndividu::class,'rencana_kinerja_id');
-    } */
+        return $this->belongsTo(self::class,'parent_id');
+    }
+
+    // all ascendants
+    public function parent_rec()
+    {
+        return $this->parent()->with('parent_rec');
+    }
 
 
 }

@@ -602,29 +602,45 @@ class MatrikPeranHasilController extends Controller
 
     public function hasilDetail(Request $request)
     {
-        $indikator = MatriksHasil::with(array('Periode' => function($query) {
-                $query->select('id');
-                //->with('parent:id,label')
-                //->with('renja:id,periode->tahun AS periode,skpd->id AS id_skpd,skpd->nama AS nama_skpd,status');
-            }))
-            ->SELECT(
-                'id',
-                'label',
+        $new_outcome = MatriksHasil::WHERE('id', '=', $request->outcome_id)
+                                    ->WITH('parent')
+                                    ->first();
 
-            )
-            ->WHERE('id', $request->id)
-            ->first();
+        $response = [
+                    'id'         => $new_outcome->id,
+                    'label'      => $new_outcome->label,
+                    'skpd_id'    => $new_outcome->skpd_id,
+                    'periode'    => $new_outcome->periode,
+                    'role_id'    => $new_outcome->matriks_peran_id,
+                    'level'      => $new_outcome->level,
+                    'parent_id'  => $new_outcome->parent ? $new_outcome->parent->id : null
+                    ];
 
 
-        if ($indikator) {
-            $h['id']                    = $indikator->id;
-            $h['label']                 = $indikator->label;
+        return [
+            'data'     => $response,
+        ];
 
-        } else {
-            $h = null;
-        }
+                                  /*       $i['id_jabatan']        = $x->id_jabatan;
+                                        $i['jabatan']           = $x->jabatan;
+                                        $i['level']             = $x->level;
+                                        array_push($response['role'], $i);
+                                    $no = 1;
+                                    foreach ($koordinator as $x) {
 
-        return $h;
+                                        //KOORDINATOR
+                                        $i['id']                = $x->id;
+                                        $i['role']              = strtoupper($x->role) . ' ' . $no;
+                                        $i['id_jabatan']        = $x->id_jabatan;
+                                        $i['jabatan']           = $x->jabatan;
+                                        $i['level']             = $x->level;
+                                        array_push($response['role'], $i);
+                                        $no += 1;
+                                    }
+ */
+
+
+
     }
 
     public function jabatanStore(Request $request)
@@ -746,4 +762,77 @@ class MatrikPeranHasilController extends Controller
             return \Response::make("data tidak berhasil tersimpan", 400);
         }
     }
+
+
+    public function hasilUpdate(Request $request)
+    {
+        $messages = [
+
+            'outcomeLabel.required'       => 'Harus diisi',
+            'outcomeId.required'          => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'outcomeId'           => 'required',
+                'outcomeLabel'        => 'required',
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = MatriksHasil::find($request->outcomeId);
+        if (is_null($update)) {
+            return \Response::make(['message' => "Outcome ID  tidak ditemukan"], 500);
+        }
+
+        $update->label             = $request->outcomeLabel;
+        $update->parent_id         = $request->outcomeAtasanId;
+
+        if ($update->save()) {
+            $data = array('id'=> $update->id);
+            return \Response::make($data, 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
+
+    public function hasilDestroy(Request $request)
+    {
+        $messages = [
+            'id.required'   => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'id'   => 'required',
+                        ),
+                        $messages
+        );
+        if ( $validator->fails() ){
+            return response()->json(['errors'=>$validator->messages()],422);
+        }
+
+
+        $sr    = MatriksHasil::find($request->id);
+        if (is_null($sr)) {
+            return \Response::make(['message' => "ID Outcome tidak ditemukan"], 500);
+        }
+
+
+        if ( $sr->delete()){
+            return \Response::make('sukses', 200);
+        }else{
+            return \Response::make('error', 500);
+        }
+    }
+
 }
