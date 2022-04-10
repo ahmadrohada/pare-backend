@@ -182,6 +182,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::put('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaUpdate']);
     Route::delete('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDestroy']);
 
+
+
+
     //========================================================================================================//
 	//===========================        SASARAN KINERJA   REVIU              ================================//
 	//========================================================================================================//
@@ -240,7 +243,10 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
 
-
+    //========================================================================================================//
+	//===========================             ADD PEJABAT MPH                   ==============================//
+	//========================================================================================================//
+    Route::post('pejabat_sasaran_kinerja', [SasaranKinerjaController::class, 'PejabatSasaranKinerjaStore']);
 
 
 

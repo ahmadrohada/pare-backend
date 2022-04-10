@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\MatriksPeran;
 use App\Models\MatriksHasil;
-use Psy\Command\WhereamiCommand;
+use App\Models\PerjanjianKinerja;
+use App\Models\SasaranKinerja;
+
 use Validator;
 
 use GuzzleHttp\Client;
@@ -316,6 +318,11 @@ class MatrikPeranHasilController extends Controller
         $koordinator_id = $request->koordinator_id ? $request->koordinator_id : null;
 
 
+        //Mencarai ID Perjanjian kinerja
+        $pk = PerjanjianKinerja::WHERE('skpd_id', $request->skpd_id)->WHERE('periode->tahun', $request->periode)->first();
+        $perjanjian_kinerja_id = ($pk) ? $pk->id : null ;
+
+
         $koordinator = MatriksPeran::WHERE('role', '=', 'koordinator')
             ->WHERE('periode', '=', $periode)
             ->WHERE('skpd_id', '=', $skpd_id)
@@ -482,6 +489,7 @@ class MatrikPeranHasilController extends Controller
         //MATRIKS PERAN DAN HASIL
         $response['data'] = array();
         $response['outcome'] = array();
+        $response['pejabat_skp'] = array();
 
 
         //=======================================================================================================//
@@ -572,22 +580,38 @@ class MatrikPeranHasilController extends Controller
                 }
             }
 
+            //PEJABAT SKP
+            $pejabat = SasaranKinerja:: SELECT( 'id',
+                                                'pegawai_yang_dinilai->nama AS nama_pejabat'
+                                                )
+                                        ->WHERE('matriks_peran_id','=',$role['id'])
+                                        ->get();
+            foreach ($pejabat as $pdata) {
+                $oe['id']                   = $pdata['id'];
+                $oe['nama_pejabat']         = $pdata['nama_pejabat'];
+                array_push($response['pejabat_skp'], $oe);
+            }
 
-            $k['id']                = $role['id'];
-            $k['role']              = $role['role'];
-            $k['id_jabatan']        = $role['id_jabatan'];
-            $k['jabatan']           = $role['jabatan'];
-            $k['level']             = $role['level'];
-            $k['skpd_id']           = $role['skpd_id'];
-            $k['periode']           = $role['periode'];
-            $k['row_style']         = $role['row_style'];
 
-            $k['outcome']           = $response['outcome'];
+            $k['id']                        = $role['id'];
+            $k['role']                      = $role['role'];
+            $k['id_jabatan']                = $role['id_jabatan'];
+            $k['jabatan']                   = $role['jabatan'];
+            $k['level']                     = $role['level'];
+            $k['skpd_id']                   = $role['skpd_id'];
+            $k['periode']                   = $role['periode'];
+            $k['row_style']                 = $role['row_style'];
+
+            $k['perjanjian_kinerja_id']     = $perjanjian_kinerja_id;
+
+            $k['outcome']                   = $response['outcome'];
+            $k['pejabat_skp']               = $response['pejabat_skp'];
 
             array_push($response['data'], $k);
 
             $response['last_data'] = $response['outcome'];
             $response['outcome'] = array();
+            $response['pejabat_skp'] = array();
         }
 
 

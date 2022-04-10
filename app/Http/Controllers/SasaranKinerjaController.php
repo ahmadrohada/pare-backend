@@ -270,6 +270,123 @@ class SasaranKinerjaController extends Controller
         }
     }
 
+    //save form MPH add pejabat
+    public function PejabatSasaranKinerjaStore(Request $request)
+    {
+
+        $messages = [
+
+
+                    'periodeTahun.required'             => 'Harus diisi',
+                    'dateFrom.required'                 => 'Harus diisi',
+                    'dateTo.required'                   => 'Harus diisi',
+                    'matriksPeranId.required'           => 'Harus diisi',
+
+
+                    'perjanjianKinerjaId.required'      => 'Harus diisi',
+                    'userId.required'                   => 'Harus diisi',
+                    'simpegId.required'                 => 'Harus diisi',
+                    'jenisJabatanSkp.required'        => 'Harus diisi',
+                    'skpdId.required'                   => 'Harus diisi',
+                    'unitKerjaId.required'              => 'Harus diisi',
+                    'pnsId'                             => 'Harus diisi',
+
+                    'golonganPejabat'                   => 'Harus diisi',
+                    'instansiPejabat.required'          => 'Harus diisi',
+                    'jabatanAktifId.required'           => 'Harus diisi',
+                    'jabatanPejabat.required'           => 'Harus diisi',
+                    'jabatanSimAsnPejabatId.required'   => 'Harus diisi',
+                    'jabatanSimAsnPejabatJenis.required'=> 'Harus diisi',
+
+                    'nipPejabat.required'               => 'Harus diisi',
+                    //'pangkatPejabat'                    => 'Harus diisi',
+                    'namaLengkapPejabat.required'       => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                    'periodeTahun'                          => 'required',
+                    'dateFrom'                              => 'required',
+                    'dateTo'                                => 'required',
+                    'matriksPeranId'                        => 'required',
+
+                    'perjanjianKinerjaId'                   => 'required',
+                    'userId'                                => 'required',
+                    'simpegId'                              => 'required',
+                    'jenisJabatanSkp'                     => 'required',
+                    'skpdId'                                => 'required',
+                    'unitKerjaId'                           => 'required',
+                    'pnsId'                                 => 'required',
+
+                    'golonganPejabat'                       => 'required',
+                    'instansiPejabat'                       => 'required',
+                    'jabatanAktifId'                        => 'required',
+                    'jabatanPejabat'                        => 'required',
+                    'jabatanSimAsnPejabatId'                => 'required',
+                    'jabatanSimAsnPejabatJenis'             => 'required',
+
+                    'nipPejabat'                            => 'required',
+                    //'pangkatPejabat'                        => 'required',
+                    'namaLengkapPejabat'                    => 'required',
+
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()], 422);
+        }
+
+
+
+        $periode_penilaian = [
+            "periode_pk"        => $request->perjanjianKinerjaId,
+            "tahun"             => date('Y', strtotime($request->periodeTahun)),
+            "tgl_mulai"         => date('Y-m-d', strtotime($request->dateFrom)),
+            "tgl_selesai"       => date('Y-m-d', strtotime($request->dateTo)),
+        ];
+
+        $pegawai_yang_dinilai = [
+            "nama"              => $request->namaLengkapPejabat,
+            "nip"               => $request->nipPejabat,
+            "jabatan"           => $request->jabatanPejabat,
+            "jabatan_id"        => $request->jabatanSimAsnPejabatId,
+            "pangkat"           => $request->pangkatPejabat,
+            "golongan"          => $request->golonganPejabat,
+            "instansi"          => $request->instansiPejabat,
+        ];
+
+
+
+
+
+
+        $ah    = new SasaranKinerja;
+        $ah->user_id                    = $request->userId;
+        $ah->matriks_peran_id           = $request->matriksPeranId;
+        $ah->jabatan_aktif_id           = $request->jabatanAktifId;
+        $ah->skpd_id                    = $request->skpdId;
+        $ah->unit_kerja_id              = $request->unitKerjaId;
+        $ah->simpeg_id                  = $request->simpegId;
+        $ah->pns_id                     = $request->pnsId;
+        $ah->perjanjian_kinerja_id      = $request->perjanjianKinerjaId;
+        $ah->jenis_jabatan_skp          = $request->jenisJabatanSkp;
+        $ah->periode_penilaian          = json_encode($periode_penilaian);
+        $ah->pegawai_yang_dinilai       = json_encode($pegawai_yang_dinilai);
+        $ah->pejabat_penilai_kinerja    = null;
+
+
+        if ($ah->save()) {
+            return \Response::make(['message' => "Berhasil menambahkan pejabat"], 200);
+        } else {
+            return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
+        }
+    }
+
 
     public function SasaranKinerjaDestroy(Request $request)
     {
