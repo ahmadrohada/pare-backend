@@ -270,7 +270,7 @@ class SasaranKinerjaController extends Controller
         }
     }
 
-    //save form MPH add pejabat
+    //save form MPH add pejabat tes sajah lah
     public function PejabatSasaranKinerjaStore(Request $request)
     {
 
