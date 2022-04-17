@@ -134,17 +134,42 @@ class MatrikPeranHasilController extends Controller
 
 
         $response['role'] = array();
+        $response['pejabat_skp'] = array();
         $no = 1;
         foreach ($koordinator as $x) {
 
+            //Pejabat SKP
+            $pejabat = SasaranKinerja:: SELECT( 'id',
+                                                'pegawai_yang_dinilai->nama AS nama_pejabat'
+                                                )
+                                        ->WHERE('matriks_peran_id','=',$x->id)
+                                        ->get();
+
+            foreach ($pejabat as $pdata) {
+                $oe['id']                   = $pdata['id'];
+                $oe['nama_pejabat']         = $pdata['nama_pejabat'];
+                array_push($response['pejabat_skp'], $oe);
+            }
+
+            //Mencarai ID Perjanjian kinerja
+            $pk = PerjanjianKinerja::WHERE('skpd_id', $request->skpd_id)->WHERE('periode->tahun', $request->periode)->first();
+            $perjanjian_kinerja_id = ($pk) ? $pk->id : null ;
+
+
             //KOORDINATOR
-            $i['id']                = $x->id;
-            $i['role']              = strtoupper($x->role) . ' ' . $no;
-            $i['id_jabatan']        = $x->id_jabatan;
-            $i['jabatan']           = $x->jabatan;
-            $i['level']             = $x->level;
+            $i['id']                    = $x->id;
+            $i['role']                  = strtoupper($x->role) . ' ' . $no;
+            $i['id_jabatan']            = $x->id_jabatan;
+            $i['jabatan']               = $x->jabatan;
+            $i['level']                 = $x->level;
+            $i['periode']               = $request->periode;
+            $i['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
+            $i['pejabat_skp']           = $response['pejabat_skp'];
+
             array_push($response['role'], $i);
             $no += 1;
+
+            $response['pejabat_skp'] = array();
         }
 
         return [
@@ -279,6 +304,64 @@ class MatrikPeranHasilController extends Controller
 
         return [
             'list_jabatan'          => $response['role'],
+        ];
+    }
+
+
+
+
+
+    public function ListPejabatPenilai(Request $request)
+    {
+
+        $matriksPeranId = $request->matriksPeranId;
+
+        $peran = MatriksPeran::
+                                leftJoin('perjanjian_kinerja', function($pk)
+                                {
+                                    $pk->on('matriks_peran.skpd_id','=','perjanjian_kinerja.skpd_id');
+                                    $pk->on('perjanjian_kinerja.periode->tahun','=','matriks_peran.periode');
+                                })
+                                ->SELECT(   'matriks_peran.id AS matriks_peran_id',
+                                            'matriks_peran.skpd_id',
+                                            'matriks_peran.periode',
+                                            'matriks_peran.role',
+                                            'matriks_peran.parent_id',
+                                            'perjanjian_kinerja.id AS perjanjian_kinerja_id'
+                                        )
+                                ->WHERE('matriks_peran.id', '=', $matriksPeranId)
+                                ->first();
+
+        //jika koordinator, cari skp JPT nya
+        if ( $peran->role === 'koordinator'){
+
+            $skp_jpt = SasaranKinerja::WHERE('perjanjian_kinerja_id', '=', $peran->perjanjian_kinerja_id)
+                                ->SELECT('id AS skp_id','pegawai_yang_dinilai->nama AS nama')
+                                ->WHERE('jenis_jabatan_skp','=','PEJABAT PIMPINAN TINGGI')
+                                ->get();
+
+        }else{
+            $skp_jpt = SasaranKinerja::WHERE('matriks_peran_id', '=', $peran->parent_id)
+                                ->SELECT('id AS skp_id','pegawai_yang_dinilai->nama AS nama')
+                                ->get();
+
+        }
+
+
+
+        $response['atasan'] = array();
+
+        foreach ($skp_jpt as $x) {
+            //JABATAN LIST
+            $i['id']                = $x['skp_id'];
+            $i['nama']              = $x['nama'];
+            array_push($response['atasan'], $i);
+        }
+
+
+        return [
+            'role'                  => $peran->role,
+            'pejabatPenilai'        => $response['atasan'],
         ];
     }
 

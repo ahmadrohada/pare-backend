@@ -14,10 +14,11 @@ class MatriksPeran extends Model
     protected $dates = ['deleted_at'];
 
 
-   /*  public function IndikatorKinerjaIndividu()
+    public function SasaranKinerja()
     {
-    return $this->hasMany(IndikatorKinerjaIndividu::class,'rencana_kinerja_id');
-    } */
+    return $this->hasMany(SasaranKinerja::class,'matriks_peran_id');
+    }
+
 
 
 }

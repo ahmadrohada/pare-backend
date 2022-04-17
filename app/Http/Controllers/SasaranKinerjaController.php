@@ -271,6 +271,7 @@ class SasaranKinerjaController extends Controller
     }
 
     //save form MPH add pejabat tes sajah lah
+    //after save, masukan semua Rencana kinerja nya ke skp
     public function PejabatSasaranKinerjaStore(Request $request)
     {
 
@@ -301,6 +302,7 @@ class SasaranKinerjaController extends Controller
                     'nipPejabat.required'               => 'Harus diisi',
                     //'pangkatPejabat'                    => 'Harus diisi',
                     'namaLengkapPejabat.required'       => 'Harus diisi',
+                    'skpPejabatPenilaiKinerjaId'        => 'Harus diisi',
 
         ];
 
@@ -332,6 +334,7 @@ class SasaranKinerjaController extends Controller
                     'nipPejabat'                            => 'required',
                     //'pangkatPejabat'                        => 'required',
                     'namaLengkapPejabat'                    => 'required',
+                    'skpPejabatPenilaiKinerjaId'            => 'required'
 
             ],
             $messages
@@ -360,6 +363,14 @@ class SasaranKinerjaController extends Controller
             "instansi"          => $request->instansiPejabat,
         ];
 
+        //SKP atasan
+        $skp_atasan = SasaranKinerja::WHERE('id',$request->skpPejabatPenilaiKinerjaId)->first();
+
+        if ( $skp_atasan == null ) {
+            return response()->json(['message' => 'SKP Atasan tidak ditemukan'], 422);
+        }else{
+            $pejabat_penilai_kinerja = json_decode($skp_atasan->pegawai_yang_dinilai);
+        }
 
 
 
@@ -377,10 +388,15 @@ class SasaranKinerjaController extends Controller
         $ah->jenis_jabatan_skp          = $request->jenisJabatanSkp;
         $ah->periode_penilaian          = json_encode($periode_penilaian);
         $ah->pegawai_yang_dinilai       = json_encode($pegawai_yang_dinilai);
-        $ah->pejabat_penilai_kinerja    = null;
+        $ah->pejabat_penilai_kinerja    = json_encode($pejabat_penilai_kinerja);;
 
 
         if ($ah->save()) {
+
+            //masukan Rencana kinerja
+
+
+
             return \Response::make(['message' => "Berhasil menambahkan pejabat"], 200);
         } else {
             return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);

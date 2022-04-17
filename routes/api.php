@@ -240,6 +240,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('hasil', [MatrikPeranHasilController::class, 'hasilDestroy']);
 
     Route::get('list_outcome_atasan', [MatrikPeranHasilController::class, 'ListOutcomeAtasan']);
+    Route::get('list_pejabat_penilai_mph', [MatrikPeranHasilController::class, 'ListPejabatPenilai']);
+
 
 
 
