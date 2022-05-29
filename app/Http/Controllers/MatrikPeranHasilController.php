@@ -135,6 +135,7 @@ class MatrikPeranHasilController extends Controller
 
         $response['role'] = array();
         $response['pejabat_skp'] = array();
+        $response['outcome'] = array();
         $no = 1;
         foreach ($koordinator as $x) {
 
@@ -151,9 +152,36 @@ class MatrikPeranHasilController extends Controller
                 array_push($response['pejabat_skp'], $oe);
             }
 
+
+            //Hasil / outcome
+            $outcome = MatriksHasil:: SELECT( 'id',
+                                                'label'
+                                                )
+                                        ->WHERE('matriks_peran_id','=',$x->id)
+                                        ->get();
+
+            foreach ($outcome as $odata) {
+                $of['id']            = $odata['id'];
+                $of['label']         = $odata['label'];
+                array_push($response['outcome'], $of);
+            }
+
             //Mencarai ID Perjanjian kinerja
             $pk = PerjanjianKinerja::WHERE('skpd_id', $request->skpd_id)->WHERE('periode->tahun', $request->periode)->first();
             $perjanjian_kinerja_id = ($pk) ? $pk->id : null ;
+
+
+            /* $ix['id']                    = 2;
+            $ix['role']                  = strtoupper($x->role) . ' ' . $no;
+            $ix['id_jabatan']            = $x->id_jabatan;
+            $ix['jabatan']               = $x->jabatan;
+            $ix['level']                 = $x->level;
+            $ix['periode']               = $request->periode;
+            $ix['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
+            $ix['pejabat_skp']           = $response['pejabat_skp'];
+            $ix['outcome']               = $response['outcome'];
+            $response['children'] = array();
+            array_push($response['children'], $ix); */
 
 
             //KOORDINATOR
@@ -165,10 +193,13 @@ class MatrikPeranHasilController extends Controller
             $i['periode']               = $request->periode;
             $i['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
             $i['pejabat_skp']           = $response['pejabat_skp'];
+            $i['outcome']               = $response['outcome'];
+            //$i['children']              = $response['children'];
 
             array_push($response['role'], $i);
             $no += 1;
 
+            $response['outcome'] = array();
             $response['pejabat_skp'] = array();
         }
 
@@ -258,20 +289,32 @@ class MatrikPeranHasilController extends Controller
     public function ListJabatanAtasan(Request $request)
     {
 
-        $jabatan_atasan_id = $request->role_id;
+
+
+
+
         $skpd_id = $request->skpd_id;
         $periode = $request->periode;
 
         //existing jabatan
         //get list jabatan yang sudah terdaftar pada matrik peran
+
+
+        $jabatan_atasan_id = $request->role_id;
         $existing = MatriksPeran::WHERE('periode', '=', $periode)
-            ->WHERE('skpd_id', '=', $skpd_id)
-            ->where(function ($query) use ($jabatan_atasan_id) {
-                $query->WHERE('id', '=', $jabatan_atasan_id)
-                    ->orWhere('parent_id', '=', $jabatan_atasan_id);
-            })
-            ->SELECT('jabatan->id AS id')
-            ->get();
+                                    ->WHERE('skpd_id', '=', $skpd_id)
+                                    ->where(function ($query) use ($jabatan_atasan_id) {
+                                        $query->WHERE('id', '=', $jabatan_atasan_id)
+                                            ->orWhere('parent_id', '=', $jabatan_atasan_id);
+                                    })
+                                    ->SELECT('jabatan->id AS id')
+                                    ->get();
+
+
+
+
+
+
         $response['existing'] = array();
         foreach ($existing as $x) {
             array_push($response['existing'], $x->id);
@@ -279,7 +322,6 @@ class MatrikPeranHasilController extends Controller
 
         $jabatan_atasan_id = MatriksPeran::SELECT('jabatan->id AS jabatan_id')->WHERE('id', '=', $jabatan_atasan_id)->first();
         $jabatan_atasan_id = $jabatan_atasan_id->jabatan_id;
-
 
         //get detail jabatan pribadi from SOTK
         $jabatan_self     = $this::detail_jabatan($jabatan_atasan_id);
