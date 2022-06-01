@@ -328,7 +328,7 @@ class SasaranKinerjaController extends Controller
 
     //save form MPH add pejabat tes sajah lah
     //after save, masukan semua Rencana kinerja nya ke skp
-    public function PejabatSasaranKinerjaStore(Request $request)
+    /* public function PejabatSasaranKinerjaStore(Request $request)
     {
 
         $messages = [
@@ -457,7 +457,7 @@ class SasaranKinerjaController extends Controller
         } else {
             return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
         }
-    }
+    } */
 
 
     public function SasaranKinerjaDestroy(Request $request)

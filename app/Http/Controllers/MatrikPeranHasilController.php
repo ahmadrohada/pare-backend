@@ -171,17 +171,7 @@ class MatrikPeranHasilController extends Controller
             $perjanjian_kinerja_id = ($pk) ? $pk->id : null ;
 
 
-            /* $ix['id']                    = 2;
-            $ix['role']                  = strtoupper($x->role) . ' ' . $no;
-            $ix['id_jabatan']            = $x->id_jabatan;
-            $ix['jabatan']               = $x->jabatan;
-            $ix['level']                 = $x->level;
-            $ix['periode']               = $request->periode;
-            $ix['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
-            $ix['pejabat_skp']           = $response['pejabat_skp'];
-            $ix['outcome']               = $response['outcome'];
-            $response['children'] = array();
-            array_push($response['children'], $ix); */
+
 
 
             //KOORDINATOR
@@ -194,17 +184,101 @@ class MatrikPeranHasilController extends Controller
             $i['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
             $i['pejabat_skp']           = $response['pejabat_skp'];
             $i['outcome']               = $response['outcome'];
-            //$i['children']              = $response['children'];
+            $i['hasChildren']           = MatriksPeran::WHERE('parent_id',$x->id)->exists();
+
 
             array_push($response['role'], $i);
             $no += 1;
 
+            $response['children'] = array();
             $response['outcome'] = array();
             $response['pejabat_skp'] = array();
         }
 
         return [
             'koordinatorList'     => $response['role'],
+        ];
+    }
+
+    public function Children(Request $request)
+    {
+        $parent_id = $request->parent_id;
+
+        $koordinator = MatriksPeran::WHERE('parent_id', '=', $parent_id)
+            ->SELECT(
+                'id',
+                'role',
+                'jabatan->id AS id_jabatan',
+                'jabatan->nama_lengkap AS jabatan',
+                'level'
+            )
+            ->ORDERBY('jabatan->id', 'ASC')
+            ->get();
+
+
+        $response['role'] = array();
+        $response['pejabat_skp'] = array();
+        $response['outcome'] = array();
+        $no = 1;
+        foreach ($koordinator as $x) {
+
+            //Pejabat SKP
+            $pejabat = SasaranKinerja:: SELECT( 'id',
+                                                'pegawai_yang_dinilai->nama AS nama_pejabat'
+                                                )
+                                        ->WHERE('matriks_peran_id','=',$x->id)
+                                        ->get();
+
+            foreach ($pejabat as $pdata) {
+                $oe['id']                   = $pdata['id'];
+                $oe['nama_pejabat']         = $pdata['nama_pejabat'];
+                array_push($response['pejabat_skp'], $oe);
+            }
+
+
+            //Hasil / outcome
+            $outcome = MatriksHasil:: SELECT( 'id',
+                                                'label'
+                                                )
+                                        ->WHERE('matriks_peran_id','=',$x->id)
+                                        ->get();
+
+            foreach ($outcome as $odata) {
+                $of['id']            = $odata['id'];
+                $of['label']         = $odata['label'];
+                array_push($response['outcome'], $of);
+            }
+
+            //Mencarai ID Perjanjian kinerja
+            $pk = PerjanjianKinerja::WHERE('skpd_id', $request->skpd_id)->WHERE('periode->tahun', $request->periode)->first();
+            $perjanjian_kinerja_id = ($pk) ? $pk->id : null ;
+
+
+
+
+            //KOORDINATOR
+            $i['id']                    = $x->id;
+            $i['role']                  = strtoupper($x->role) . ' ' . $no;
+            $i['id_jabatan']            = $x->id_jabatan;
+            $i['jabatan']               = $x->jabatan;
+            $i['level']                 = $x->level;
+            $i['periode']               = $request->periode;
+            $i['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
+            $i['pejabat_skp']           = $response['pejabat_skp'];
+            $i['outcome']               = $response['outcome'];
+            $i['hasChildren']           = MatriksPeran::WHERE('parent_id',$x->id)->exists();
+
+
+            array_push($response['role'], $i);
+            $no += 1;
+
+            $response['children'] = array();
+            $response['outcome'] = array();
+            $response['pejabat_skp'] = array();
+        }
+
+        return [
+            'jabatan_list'     => $response['role'],
         ];
     }
 
