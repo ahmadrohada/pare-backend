@@ -124,10 +124,10 @@ class SasaranKinerjaController extends Controller
 
                     'dateFrom.required'              => 'Harus diisi',
                     'dateTo.required'                => 'Harus diisi',
-                    'periodeTahun.required'           => 'Harus diisi',
+                    'periodeLabel.required'           => 'Harus diisi',
                     'userId.required'                => 'Harus diisi',
                     'simpegId.required'              => 'Harus diisi',
-                    'jenisJabatanSkp.required'       => 'Harus diisi',
+                    //'jenisJabatanSkp.required'       => 'Harus diisi',
                     'skpdId.required'                => 'Harus diisi',
                     //'unitKerjaId.required'           => 'Harus diisi',
                     //'pnsId'                 => 'Harus diisi',
@@ -161,10 +161,10 @@ class SasaranKinerjaController extends Controller
             [
                     'dateFrom'                              => 'required',
                     'dateTo'                                => 'required',
-                    'periodeTahun'                          => 'required',
+                    'periodeLabel'                          => 'required',
                     'userId'                                => 'required',
                     'simpegId'                              => 'required',
-                    'jenisJabatanSkp'                       => 'required',
+                    //'jenisJabatanSkp'                       => 'required',
                     'skpdId'                                => 'required',
                     //'unitKerjaId'                           => 'required',
                     //'pnsId'                               => 'required',
@@ -198,7 +198,7 @@ class SasaranKinerjaController extends Controller
         }
 
         //CARI PK ID
-        $pk = PerjanjianKinerja::WHERE('periode->tahun','=',$request->periodeTahun)->WHERE('skpd_id','=',$request->skpdId)->first();
+        $pk = PerjanjianKinerja::WHERE('periode->tahun','=',$request->periodeLabel)->WHERE('skpd_id','=',$request->skpdId)->first();
         if ($pk){
             $pkId = $pk->id;
 
@@ -297,11 +297,11 @@ class SasaranKinerjaController extends Controller
 
 
                 //kemudian maasukan juga ke  matrik peran hasil
-                $jabatan     = $this::detail_jabatan($request->jabatanSimAsnPegawaiYangDinilaiId);
+                /* $jabatan     = $this::detail_jabatan($request->jabatanSimAsnPegawaiYangDinilaiId);
 
                 $rp    = new MatriksPeran;
                 $rp->skpd_id             = $request->skpdId;
-                $rp->periode             = $request->periodeTahun;
+                $rp->periode             = $request->periodeLabel;
                 $rp->role                = "kepala_skpd";
                 $rp->level               = "S1";
                 $rp->parent_id           = null;
@@ -311,7 +311,7 @@ class SasaranKinerjaController extends Controller
                     $update  = SasaranKinerja::find($ah->id);
                     $update->matriks_peran_id             = $rp->id;
                     $update->save();
-                }
+                } */
 
 
 
@@ -334,7 +334,7 @@ class SasaranKinerjaController extends Controller
         $messages = [
 
 
-                    'periodeTahun.required'             => 'Harus diisi',
+                    'periodeLabel.required'             => 'Harus diisi',
                     'dateFrom.required'                 => 'Harus diisi',
                     'dateTo.required'                   => 'Harus diisi',
                     'matriksPeranId.required'           => 'Harus diisi',
@@ -367,7 +367,7 @@ class SasaranKinerjaController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                    'periodeTahun'                          => 'required',
+                    'periodeLabel'                          => 'required',
                     'dateFrom'                              => 'required',
                     'dateTo'                                => 'required',
                     'matriksPeranId'                        => 'required',
@@ -404,7 +404,7 @@ class SasaranKinerjaController extends Controller
 
         $periode_penilaian = [
             "periode_pk"        => $request->perjanjianKinerjaId,
-            "tahun"             => date('Y', strtotime($request->periodeTahun)),
+            "tahun"             => date('Y', strtotime($request->periodeLabel)),
             "tgl_mulai"         => date('Y-m-d', strtotime($request->dateFrom)),
             "tgl_selesai"       => date('Y-m-d', strtotime($request->dateTo)),
         ];
