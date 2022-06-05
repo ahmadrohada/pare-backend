@@ -15,8 +15,20 @@ class SasaranKinerjaDataTable {
         $this->setLocalParameters( $parameters );
        $this->query = SasaranKinerja::SELECT(   'id AS id',
                                                 'periode_penilaian->tahun AS periode_tahun',
+
                                                 'pegawai_yang_dinilai->nama AS nama_pegawai',
+                                                'pegawai_yang_dinilai->jabatan AS jabatan_pegawai',
                                                 'pegawai_yang_dinilai->nip AS nip_pegawai',
+
+                                                'pejabat_penilai->nama AS nama_pejabat_penilai',
+                                                'pejabat_penilai->jabatan AS jabatan_pejabat_penilai',
+                                                'pejabat_penilai->nip AS nip_pejabat_penilai',
+
+                                                'atasan_pejabat_penilai->nama AS nama_atasan_pejabat_penilai',
+                                                'atasan_pejabat_penilai->jabatan AS jabatan_atasan_pejabat_penilai',
+                                                'atasan_pejabat_penilai->nip AS nip_atasan_pejabat_penilai',
+
+
                                                 'jenis_jabatan_skp',
                                                 'status AS status',
                                                 'created_at AS created_at');
@@ -60,8 +72,21 @@ class SasaranKinerjaDataTable {
         $i['id']                        = $x->id;
         $i['periode_id']                = $x->periode_pk_id;
         $i['periode_tahun']             = $x->periode_tahun;
+
         $i['nama_pegawai']              = $x->nama_pegawai;
+        $i['jabatan_pegawai']           = $x->jabatan_pegawai;
         $i['nip_pegawai']               = $x->nip_pegawai;
+
+        $i['nama_pejabat_penilai']            = $x->nama_pejabat_penilai;
+        $i['jabatan_pejabat_penilai']         = $x->jabatan_pejabat_penilai;
+        $i['nip_pejabat_penilai']             = $x->nip_pejabat_penilai;
+
+        $i['nama_atasan_pejabat_penilai']     = $x->nama_atasan_pejabat_penilai;
+        $i['jabatan_atasan_pejabat_penilai']  = $x->jabatan_atasan_pejabat_penilai;
+        $i['nip_atasan_pejabat_penilai']      = $x->nip_atasan_pejabat_penilai;
+
+
+
         $i['jenis_jabatan_skp']         = $x->jenis_jabatan_skp;
         $i['created_at']                = $x->created_at;
         $i['status']                    = $x->status;

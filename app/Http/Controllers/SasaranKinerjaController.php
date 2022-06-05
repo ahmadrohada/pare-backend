@@ -127,30 +127,17 @@ class SasaranKinerjaController extends Controller
                     'periodeLabel.required'           => 'Harus diisi',
                     'userId.required'                => 'Harus diisi',
                     'simpegId.required'              => 'Harus diisi',
-                    //'jenisJabatanSkp.required'       => 'Harus diisi',
                     'skpdId.required'                => 'Harus diisi',
-                    //'unitKerjaId.required'           => 'Harus diisi',
-                    //'pnsId'                 => 'Harus diisi',
 
-                    //'golonganPegawaiYangDinilai'  => 'Harus diisi',
-                    //'golonganPejabatPenilaiKinerja'  => 'Harus diisi',
                     'instansiPegawaiYangDinilai.required'           => 'Harus diisi',
-                    //'instansiPejabatPenilaiKinerja.required'        => 'Harus diisi',
                     'jabatanAktifPegawaiYangDinilaiId.required'     => 'Harus diisi',
-                    'jabatanAktifPejabatPenilaiKinerjaId.required'  => 'Harus diisi',
+                    'jabatanAktifPejabatPenilaiId.required'         => 'Harus diisi',
                     'jabatanPegawaiYangDinilai.required'            => 'Harus diisi',
-                    'jabatanPejabatPenilaiKinerja.required'         => 'Harus diisi',
+
                     'jabatanSimAsnPegawaiYangDinilaiId.required'    => 'Harus diisi',
                     'jabatanSimAsnPegawaiYangDinilaiJenis.required' => 'Harus diisi',
-                    'jabatanSimAsnPejabatPenilaiKinerjaId.required' => 'Harus diisi',
-                    'jabatanSimAsnPejabatPenilaiKinerjaJenis.required'  => 'Harus diisi',
-
                     'nipPegawaiYangDinilai.required'                => 'Harus diisi',
-                    //'nipPejabatPenilaiKinerja.required'             => 'Harus diisi',
-                    //'pangkatPegawaiYangDinilai'  => 'Harus diisi',
-                    //'pangkatPejabatPenilaiKinerja'  => 'Harus diisi',
                     'namaLengkapPegawaiYangDinilai.required'        => 'Harus diisi',
-                    'namaLengkapPejabatPenilaiKinerja.required'     => 'Harus diisi',
 
         ];
 
@@ -164,30 +151,15 @@ class SasaranKinerjaController extends Controller
                     'periodeLabel'                          => 'required',
                     'userId'                                => 'required',
                     'simpegId'                              => 'required',
-                    //'jenisJabatanSkp'                       => 'required',
                     'skpdId'                                => 'required',
-                    //'unitKerjaId'                           => 'required',
-                    //'pnsId'                               => 'required',
 
-                    //'golonganPegawaiYangDinilai'          => 'required',
-                    //'golonganPejabatPenilaiKinerja'       => 'required',
                     'instansiPegawaiYangDinilai'            => 'required',
-                    //'instansiPejabatPenilaiKinerja'         => 'required',
                     'jabatanAktifPegawaiYangDinilaiId'      => 'required',
-                    'jabatanAktifPejabatPenilaiKinerjaId'  => 'required',
                     'jabatanPegawaiYangDinilai'             => 'required',
-                    'jabatanPejabatPenilaiKinerja'          => 'required',
                     'jabatanSimAsnPegawaiYangDinilaiId'     => 'required',
                     'jabatanSimAsnPegawaiYangDinilaiJenis'  => 'required',
-                    'jabatanSimAsnPejabatPenilaiKinerjaId'  => 'required',
-                    'jabatanSimAsnPejabatPenilaiKinerjaJenis'  => 'required',
-
                     'nipPegawaiYangDinilai'                 => 'required',
-                    //'nipPejabatPenilaiKinerja'              => 'required',
-                    //'pangkatPegawaiYangDinilai'           => 'required',
-                    //'pangkatPejabatPenilaiKinerja'        => 'required',
                     'namaLengkapPegawaiYangDinilai'         => 'required',
-                    'namaLengkapPejabatPenilaiKinerja'      => 'required',
 
             ],
             $messages
@@ -232,14 +204,14 @@ class SasaranKinerjaController extends Controller
             "instansi"          => $request->instansiPegawaiYangDinilai,
         ];
 
-        $pejabat_penilai_kinerja = [
-            "nama"              => $request->namaLengkapPejabatPenilaiKinerja,
-            "nip"               => $request->nipPejabatPenilaiKinerja,
-            "jabatan"           => $request->jabatanPejabatPenilaiKinerja,
-            "jabatan_id"        => $request->jabatanSimAsnPejabatPenilaiKinerjaId,
-            "pangkat"           => $request->pangkatPejabatPenilaiKinerja,
-            "golongan"          => $request->golonganPejabatPenilaiKinerja,
-            "instansi"          => $request->instansiPejabatPenilaiKinerja,
+        $pejabat_penilai = [
+            "nama"              => $request->namaLengkapPejabatPenilai,
+            "nip"               => $request->nipPejabatPenilai,
+            "jabatan"           => $request->jabatanPejabatPenilai,
+            "jabatan_id"        => $request->jabatanSimAsnPejabatPenilaiId,
+            "pangkat"           => $request->pangkatPejabatPenilai,
+            "golongan"          => $request->golonganPejabatPenilai,
+            "instansi"          => $request->instansiPejabatPenilai,
         ];
 
 
@@ -256,7 +228,7 @@ class SasaranKinerjaController extends Controller
         $ah->jenis_jabatan_skp          = $request->jenisJabatanSkp;
         $ah->periode_penilaian          = json_encode($periode_penilaian);
         $ah->pegawai_yang_dinilai       = json_encode($pegawai_yang_dinilai);
-        $ah->pejabat_penilai_kinerja    = json_encode($pejabat_penilai_kinerja);
+        $ah->pejabat_penilai            = ( $request->namaLengkapPejabatPenilai != null ) ? json_encode($pejabat_penilai) : null;
 
 
         if ($ah->save()) {
@@ -294,27 +266,6 @@ class SasaranKinerjaController extends Controller
 
 
                 }
-
-
-                //kemudian maasukan juga ke  matrik peran hasil
-                /* $jabatan     = $this::detail_jabatan($request->jabatanSimAsnPegawaiYangDinilaiId);
-
-                $rp    = new MatriksPeran;
-                $rp->skpd_id             = $request->skpdId;
-                $rp->periode             = $request->periodeLabel;
-                $rp->role                = "kepala_skpd";
-                $rp->level               = "S1";
-                $rp->parent_id           = null;
-                $rp->jabatan             = json_encode($jabatan);
-
-                if ( $rp->save() ){
-                    $update  = SasaranKinerja::find($ah->id);
-                    $update->matriks_peran_id             = $rp->id;
-                    $update->save();
-                } */
-
-
-
             }
 
 
@@ -358,7 +309,7 @@ class SasaranKinerjaController extends Controller
                     'nipPejabat.required'               => 'Harus diisi',
                     //'pangkatPejabat'                    => 'Harus diisi',
                     'namaLengkapPejabat.required'       => 'Harus diisi',
-                    'skpPejabatPenilaiKinerjaId'        => 'Harus diisi',
+                    'skpPejabatPenilaiId'        => 'Harus diisi',
 
         ];
 
@@ -390,7 +341,7 @@ class SasaranKinerjaController extends Controller
                     'nipPejabat'                            => 'required',
                     //'pangkatPejabat'                        => 'required',
                     'namaLengkapPejabat'                    => 'required',
-                    'skpPejabatPenilaiKinerjaId'            => 'required'
+                    'skpPejabatPenilaiId'            => 'required'
 
             ],
             $messages
@@ -420,12 +371,12 @@ class SasaranKinerjaController extends Controller
         ];
 
         //SKP atasan
-        $skp_atasan = SasaranKinerja::WHERE('id',$request->skpPejabatPenilaiKinerjaId)->first();
+        $skp_atasan = SasaranKinerja::WHERE('id',$request->skpPejabatPenilaiId)->first();
 
         if ( $skp_atasan == null ) {
             return response()->json(['message' => 'SKP Atasan tidak ditemukan'], 422);
         }else{
-            $pejabat_penilai_kinerja = json_decode($skp_atasan->pegawai_yang_dinilai);
+            $pejabat_penilai = json_decode($skp_atasan->pegawai_yang_dinilai);
         }
 
 
@@ -444,7 +395,7 @@ class SasaranKinerjaController extends Controller
         $ah->jenis_jabatan_skp          = $request->jenisJabatanSkp;
         $ah->periode_penilaian          = json_encode($periode_penilaian);
         $ah->pegawai_yang_dinilai       = json_encode($pegawai_yang_dinilai);
-        $ah->pejabat_penilai_kinerja    = json_encode($pejabat_penilai_kinerja);;
+        $ah->pejabat_penilai            = json_encode($pejabat_penilai);;
 
 
         if ($ah->save()) {

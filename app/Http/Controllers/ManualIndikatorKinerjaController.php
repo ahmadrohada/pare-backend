@@ -23,7 +23,7 @@ class ManualIndikatorKinerjaController extends Controller
                 $query->select('id','label');
             }))
             ->with(array('SasaranKinerja' => function($query) {
-                $query->select('id','skpd_id','user_id','jabatan_aktif_id','pegawai_yang_dinilai','pejabat_penilai_kinerja');
+                $query->select('id','skpd_id','user_id','jabatan_aktif_id','pegawai_yang_dinilai','pejabat_penilai');
             }))
             ->WHERE('id', $request->id)
             ->first();
@@ -47,7 +47,7 @@ class ManualIndikatorKinerjaController extends Controller
             $h['indikator_kinerja_individu']                = json_decode($x->IndikatorKinerjaIndividu);
 
             $h['pegawai_yang_dinilai']                      = json_decode($x->SasaranKinerja->pegawai_yang_dinilai);
-            $h['pejabat_penilai_kinerja']                   = json_decode($x->SasaranKinerja->pejabat_penilai_kinerja);
+            $h['pejabat_penilai']                           = json_decode($x->SasaranKinerja->pejabat_penilai);
 
 
         } else {

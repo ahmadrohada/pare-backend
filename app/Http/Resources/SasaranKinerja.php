@@ -27,8 +27,12 @@ class SasaranKinerja extends JsonResource
             'statusSkp'                 => $this->status,
 
             'periodePenilaian'          => json_decode($this->periode_penilaian),
+
             'pegawaiYangDinilai'        => json_decode($this->pegawai_yang_dinilai),
-            'pejabatPenilaiKinerja'     => json_decode($this->pejabat_penilai_kinerja),
+
+
+
+            'pejabatPenilai'            => json_decode($this->pejabat_penilai),
             'jumlahRencanaKinerja'      => RencanaKinerja::WHERE('sasaran_kinerja_id','=',$this->id)->count(),
 
             /* 'username'      => $this->username,
