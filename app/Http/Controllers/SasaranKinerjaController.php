@@ -279,7 +279,7 @@ class SasaranKinerjaController extends Controller
 
     //save form MPH add pejabat tes sajah lah
     //after save, masukan semua Rencana kinerja nya ke skp
-    /* public function PejabatSasaranKinerjaStore(Request $request)
+    public function PejabatSasaranKinerjaStore(Request $request)
     {
 
         $messages = [
@@ -309,7 +309,7 @@ class SasaranKinerjaController extends Controller
                     'nipPejabat.required'               => 'Harus diisi',
                     //'pangkatPejabat'                    => 'Harus diisi',
                     'namaLengkapPejabat.required'       => 'Harus diisi',
-                    'skpPejabatPenilaiId'        => 'Harus diisi',
+                    //'skpPejabatPenilaiId'        => 'Harus diisi',
 
         ];
 
@@ -341,7 +341,7 @@ class SasaranKinerjaController extends Controller
                     'nipPejabat'                            => 'required',
                     //'pangkatPejabat'                        => 'required',
                     'namaLengkapPejabat'                    => 'required',
-                    'skpPejabatPenilaiId'            => 'required'
+                    //'skpPejabatPenilaiId'            => 'required'
 
             ],
             $messages
@@ -371,13 +371,13 @@ class SasaranKinerjaController extends Controller
         ];
 
         //SKP atasan
-        $skp_atasan = SasaranKinerja::WHERE('id',$request->skpPejabatPenilaiId)->first();
+        /* $skp_atasan = SasaranKinerja::WHERE('id',$request->skpPejabatPenilaiId)->first();
 
         if ( $skp_atasan == null ) {
             return response()->json(['message' => 'SKP Atasan tidak ditemukan'], 422);
         }else{
             $pejabat_penilai = json_decode($skp_atasan->pegawai_yang_dinilai);
-        }
+        } */
 
 
 
@@ -395,7 +395,7 @@ class SasaranKinerjaController extends Controller
         $ah->jenis_jabatan_skp          = $request->jenisJabatanSkp;
         $ah->periode_penilaian          = json_encode($periode_penilaian);
         $ah->pegawai_yang_dinilai       = json_encode($pegawai_yang_dinilai);
-        $ah->pejabat_penilai            = json_encode($pejabat_penilai);;
+        //$ah->pejabat_penilai            = json_encode($pejabat_penilai);;
 
 
         if ($ah->save()) {
@@ -408,7 +408,7 @@ class SasaranKinerjaController extends Controller
         } else {
             return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
         }
-    } */
+    }
 
 
     public function SasaranKinerjaDestroy(Request $request)

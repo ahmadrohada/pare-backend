@@ -227,8 +227,18 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//========================                 MATRIK PERAN HASIL                   ==========================//
 	//========================================================================================================//
 
-    Route::get('matrik_peran_hasil', [MatrikPeranHasilController::class, 'list']);
+    Route::get('matrik_peran_hasil', [MatrikPeranHasilController::class, 'matrikPeranHasilList']);
+
     Route::get('koordinator_list', [MatrikPeranHasilController::class, 'koordinatorList']);
+
+    Route::delete('peran', [MatrikPeranHasilController::class, 'peranDestroy']);
+
+    //PEGAWAI
+    Route::delete('peran_pegawai', [MatrikPeranHasilController::class, 'peranPegawaiDestroy']);
+    Route::post('peran_pegawai', [MatrikPeranHasilController::class, 'peranPegawaiStore']);
+
+
+
     Route::get('jabatan_child', [MatrikPeranHasilController::class, 'Children']);
     Route::get('list_jabatan', [MatrikPeranHasilController::class, 'listJabatan']);
     Route::get('list_jabatan_atasan', [MatrikPeranHasilController::class, 'ListJabatanAtasan']);
@@ -249,7 +259,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     //========================================================================================================//
 	//===========================         ADD PEJABAT MPH     TES              ==============================//
 	//========================================================================================================//
-    /* Route::post('pejabat_sasaran_kinerja', [SasaranKinerjaController::class, 'PejabatSasaranKinerjaStore']); */
+    Route::post('pejabat_sasaran_kinerja', [SasaranKinerjaController::class, 'PejabatSasaranKinerjaStore']);
 
 
 

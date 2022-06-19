@@ -127,6 +127,8 @@ class MatrikPeranHasilController extends Controller
                 'role',
                 'jabatan->id AS id_jabatan',
                 'jabatan->nama_lengkap AS jabatan',
+                'pegawai->nama AS nama_pegawai',
+                'parent_id',
                 'level'
             )
             ->ORDERBY('jabatan->id', 'ASC')
@@ -134,24 +136,9 @@ class MatrikPeranHasilController extends Controller
 
 
         $response['role'] = array();
-        $response['pejabat_skp'] = array();
         $response['outcome'] = array();
         $no = 1;
         foreach ($koordinator as $x) {
-
-            //Pejabat SKP
-            $pejabat = SasaranKinerja:: SELECT( 'id',
-                                                'pegawai_yang_dinilai->nama AS nama_pejabat'
-                                                )
-                                        ->WHERE('matriks_peran_id','=',$x->id)
-                                        ->get();
-
-            foreach ($pejabat as $pdata) {
-                $oe['id']                   = $pdata['id'];
-                $oe['nama_pejabat']         = $pdata['nama_pejabat'];
-                array_push($response['pejabat_skp'], $oe);
-            }
-
 
             //Hasil / outcome
             $outcome = MatriksHasil:: SELECT( 'id',
@@ -176,13 +163,14 @@ class MatrikPeranHasilController extends Controller
 
             //KOORDINATOR
             $i['id']                    = $x->id;
-            $i['role']                  = strtoupper($x->role) . ' ' . $no;
+            $i['role']                  = strtoupper($x->role);
             $i['id_jabatan']            = $x->id_jabatan;
+            $i['parent_id']             = $x->parent_id;
             $i['jabatan']               = $x->jabatan;
             $i['level']                 = $x->level;
             $i['periode']               = $request->periode;
             $i['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
-            $i['pejabat_skp']           = $response['pejabat_skp'];
+            $i['nama_pegawai']          = $x->nama_pegawai;
             $i['outcome']               = $response['outcome'];
             $i['hasChildren']           = MatriksPeran::WHERE('parent_id',$x->id)->exists();
 
@@ -190,14 +178,142 @@ class MatrikPeranHasilController extends Controller
             array_push($response['role'], $i);
             $no += 1;
 
-            $response['children'] = array();
+            //$response['children'] = array();
             $response['outcome'] = array();
-            $response['pejabat_skp'] = array();
+            //$response['pegawai'] = array();
         }
 
         return [
             'koordinatorList'     => $response['role'],
         ];
+    }
+
+
+
+
+    public function peranDestroy(Request $request)
+    {
+        $messages = [
+            'id.required'   => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'id'   => 'required',
+                        ),
+                        $messages
+        );
+        if ( $validator->fails() ){
+            return response()->json(['errors'=>$validator->messages()],422);
+        }
+
+
+        $sr    = MatriksPeran::find($request->id);
+        if (is_null($sr)) {
+            return \Response::make(['message' => "ID Peran tidak ditemukan"], 500);
+        }
+
+
+        if ( $sr->delete()){
+            return \Response::make('sukses', 200);
+        }else{
+            return \Response::make('error', 500);
+        }
+    }
+
+    public function peranPegawaiStore(Request $request)
+    {
+
+        $messages = [
+
+                    'matriksPeranId.required'           => 'Harus diisi',
+
+                    'golonganPegawai'                   => 'Harus diisi',
+                    'instansiPegawai.required'          => 'Harus diisi',
+                    'jabatanAktifId.required'           => 'Harus diisi',
+                    'jabatanPegawai.required'           => 'Harus diisi',
+                    'nipPegawai.required'               => 'Harus diisi',
+                    'namaLengkapPegawai.required'       => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+
+                    'matriksPeranId'                        => 'required',
+
+                    'golonganPegawai'                       => 'required',
+                    'instansiPegawai'                       => 'required',
+                    'jabatanAktifId'                        => 'required',
+                    'jabatanPegawai'                        => 'required',
+                    'jabatanSimAsnPegawaiId'                => 'required',
+                    'jabatanSimAsnPegawaiJenis'             => 'required',
+                    'nipPegawai'                            => 'required',
+                    'namaLengkapPegawai'                    => 'required',
+
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = MatriksPeran::find($request->matriksPeranId);
+        if (is_null($update)) {
+            return \Response::make(['message' => "Peran ID  tidak ditemukan"], 500);
+        }
+
+        $pegawai = [
+            "nama"              => $request->namaLengkapPegawai,
+            "nip"               => $request->nipPegawai,
+            "jabatan"           => $request->jabatanPegawai,
+            "jabatan_id"        => $request->jabatanSimAsnPegawaiId,
+            "pangkat"           => $request->pangkatPegawai,
+            "golongan"          => $request->golonganPegawai,
+            "instansi"          => $request->instansiPegawai,
+        ];
+
+        $update->pegawai             = json_encode($pegawai);
+        if ($update->save()) {
+            return \Response::make('sukses',200);
+        } else {
+            return \Response::make('error', 500);
+        }
+
+    }
+
+    public function peranPegawaiDestroy(Request $request)
+    {
+        $messages = [
+            'id.required'   => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'id'   => 'required',
+                        ),
+                        $messages
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = MatriksPeran::find($request->id);
+        if (is_null($update)) {
+            return \Response::make(['message' => "Peran ID  tidak ditemukan"], 500);
+        }
+
+        $update->pegawai             = null;
+        if ($update->save()) {
+            return \Response::make('sukses',200);
+        } else {
+            return \Response::make('error', 500);
+        }
     }
 
     public function Children(Request $request)
@@ -210,6 +326,8 @@ class MatrikPeranHasilController extends Controller
                 'role',
                 'jabatan->id AS id_jabatan',
                 'jabatan->nama_lengkap AS jabatan',
+                'pegawai->nama AS nama_pegawai',
+                'parent_id',
                 'level'
             )
             ->ORDERBY('jabatan->id', 'ASC')
@@ -217,24 +335,9 @@ class MatrikPeranHasilController extends Controller
 
 
         $response['role'] = array();
-        $response['pejabat_skp'] = array();
         $response['outcome'] = array();
         $no = 1;
         foreach ($koordinator as $x) {
-
-            //Pejabat SKP
-            $pejabat = SasaranKinerja:: SELECT( 'id',
-                                                'pegawai_yang_dinilai->nama AS nama_pejabat'
-                                                )
-                                        ->WHERE('matriks_peran_id','=',$x->id)
-                                        ->get();
-
-            foreach ($pejabat as $pdata) {
-                $oe['id']                   = $pdata['id'];
-                $oe['nama_pejabat']         = $pdata['nama_pejabat'];
-                array_push($response['pejabat_skp'], $oe);
-            }
-
 
             //Hasil / outcome
             $outcome = MatriksHasil:: SELECT( 'id',
@@ -253,18 +356,16 @@ class MatrikPeranHasilController extends Controller
             $pk = PerjanjianKinerja::WHERE('skpd_id', $request->skpd_id)->WHERE('periode->tahun', $request->periode)->first();
             $perjanjian_kinerja_id = ($pk) ? $pk->id : null ;
 
-
-
-
             //KOORDINATOR
             $i['id']                    = $x->id;
-            $i['role']                  = strtoupper($x->role) . ' ' . $no;
+            $i['role']                  = strtoupper($x->role);
             $i['id_jabatan']            = $x->id_jabatan;
+            $i['parent_id']             = $x->parent_id;
             $i['jabatan']               = $x->jabatan;
             $i['level']                 = $x->level;
             $i['periode']               = $request->periode;
             $i['perjanjian_kinerja_id'] = $perjanjian_kinerja_id;
-            $i['pejabat_skp']           = $response['pejabat_skp'];
+            $i['nama_pegawai']          = $x->nama_pegawai;
             $i['outcome']               = $response['outcome'];
             $i['hasChildren']           = MatriksPeran::WHERE('parent_id',$x->id)->exists();
 
@@ -509,7 +610,7 @@ class MatrikPeranHasilController extends Controller
     }
 
 
-    public function List(Request $request)
+    public function matrikPeranHasilList(Request $request)
     {
 
         $skpd_id = $request->skpd_id;
@@ -530,6 +631,7 @@ class MatrikPeranHasilController extends Controller
                 'role',
                 'jabatan->id AS id_jabatan',
                 'jabatan->nama_lengkap AS jabatan',
+                'pegawai->nama AS nama_pegawai',
                 'level',
                 'skpd_id',
                 'periode'
@@ -557,9 +659,10 @@ class MatrikPeranHasilController extends Controller
             $row_style = $array_style[rand(0, count($array_style) - 3)];
             //KOORDINATOR
             $i['id']                = $x->id;
-            $i['role']              = ($koordinator_id != null) ? strtoupper($x->role) : strtoupper($x->role) . ' ' . $no;
+            $i['role']              = ($koordinator_id != null) ? strtoupper($x->role) : strtoupper($x->role)/*  . ' ' . $no */;
             $i['id_jabatan']        = $x->id_jabatan;
             $i['jabatan']           = $x->jabatan;
+            $i['nama_pegawai']      = $x->nama_pegawai;
             $i['skpd_id']           = $x->skpd_id;
             $i['periode']           = $x->periode;
             $i['level']             = $x->level;
@@ -572,6 +675,7 @@ class MatrikPeranHasilController extends Controller
                     'role',
                     'jabatan->id AS id_jabatan',
                     'jabatan->nama_lengkap AS jabatan',
+                    'pegawai->nama AS nama_pegawai',
                     'level',
                     'skpd_id',
                     'periode'
@@ -582,9 +686,10 @@ class MatrikPeranHasilController extends Controller
             foreach ($ketua as $y) {
                 //KETUA
                 $i['id']                = $y->id;
-                $i['role']              = strtoupper($y->role) . ' ' . $no . '.' . $s_no;
+                $i['role']              = strtoupper($y->role)/*  . ' ' . $no . '.' . $s_no */;
                 $i['id_jabatan']        = $y->id_jabatan;
                 $i['jabatan']           = $y->jabatan;
+                $i['nama_pegawai']      = $y->nama_pegawai;
                 $i['level']             = $y->level;
                 $i['periode']           = $y->periode;
                 $i['skpd_id']           = $y->skpd_id;
@@ -602,6 +707,7 @@ class MatrikPeranHasilController extends Controller
                         'role',
                         'jabatan->id AS id_jabatan',
                         'jabatan->nama_lengkap AS jabatan',
+                        'pegawai->nama AS nama_pegawai',
                         'level',
                         'skpd_id',
                         'periode'
@@ -616,6 +722,7 @@ class MatrikPeranHasilController extends Controller
                     $i['role']              = strtoupper($z->role) . ' ' . $no . '.' . $ss_no . '.' . $sss_no;
                     $i['id_jabatan']        = $z->id_jabatan;
                     $i['jabatan']           = $z->jabatan;
+                    $i['nama_pegawai']      = $z->nama_pegawai;
                     $i['level']             = $z->level;
                     $i['periode']           = $z->periode;
                     $i['skpd_id']           = $z->skpd_id;
@@ -688,7 +795,6 @@ class MatrikPeranHasilController extends Controller
         //MATRIKS PERAN DAN HASIL
         $response['data'] = array();
         $response['outcome'] = array();
-        $response['pejabat_skp'] = array();
 
 
         //=======================================================================================================//
@@ -779,23 +885,11 @@ class MatrikPeranHasilController extends Controller
                 }
             }
 
-            //PEJABAT SKP
-            $pejabat = SasaranKinerja:: SELECT( 'id',
-                                                'pegawai_yang_dinilai->nama AS nama_pejabat'
-                                                )
-                                        ->WHERE('matriks_peran_id','=',$role['id'])
-                                        ->get();
-            foreach ($pejabat as $pdata) {
-                $oe['id']                   = $pdata['id'];
-                $oe['nama_pejabat']         = $pdata['nama_pejabat'];
-                array_push($response['pejabat_skp'], $oe);
-            }
-
-
             $k['id']                        = $role['id'];
             $k['role']                      = $role['role'];
             $k['id_jabatan']                = $role['id_jabatan'];
             $k['jabatan']                   = $role['jabatan'];
+            $k['nama_pegawai']              = $role['nama_pegawai'];
             $k['level']                     = $role['level'];
             $k['skpd_id']                   = $role['skpd_id'];
             $k['periode']                   = $role['periode'];
@@ -804,13 +898,11 @@ class MatrikPeranHasilController extends Controller
             $k['perjanjian_kinerja_id']     = $perjanjian_kinerja_id;
 
             $k['outcome']                   = $response['outcome'];
-            $k['pejabat_skp']               = $response['pejabat_skp'];
 
             array_push($response['data'], $k);
 
             $response['last_data'] = $response['outcome'];
             $response['outcome'] = array();
-            $response['pejabat_skp'] = array();
         }
 
 

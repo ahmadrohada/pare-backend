@@ -434,12 +434,23 @@ class PerjanjianKinerjaController extends Controller
     public function PerjanjianKinerjaId(Request $request)
     {
         $pk = PerjanjianKinerja::
-            WHERE('skpd_id', $request->skpd_id)
+            SELECT(
+                'perjanjian_kinerja.id AS pkId',
+                'perjanjian_kinerja.periode->tahun AS periodePk',
+                'perjanjian_kinerja.skpd->nama AS namaSkpd',
+                'perjanjian_kinerja.kepala_skpd->id AS kepala_skpd_id',
+                'perjanjian_kinerja.jabatan_kepala_skpd->nama AS jabatanKepalaSkpd',
+                'perjanjian_kinerja.admin->pegawai->nama_lengkap AS createdBy',
+                'perjanjian_kinerja.created_at AS createdAt',
+                'perjanjian_kinerja.status'
+            )
+            ->WHERE('skpd_id', $request->skpd_id)
             ->WHERE('periode->tahun', $request->periode)
             ->first();
 
         if ($pk){
-            $h['id']   = $pk->id;
+            $h['id']                = $pk->pkId;
+            $h['kepala_skpd_id']    = $pk->kepala_skpd_id;
         }else{
             $h['id']   = null;
         }
