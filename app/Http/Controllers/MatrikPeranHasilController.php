@@ -1067,6 +1067,8 @@ class MatrikPeranHasilController extends Controller
         $rp->level               = $request->level;
         $rp->label               = $request->outcomeLabel;
         $rp->parent_id           = $request->outcomeAtasanId;
+        $rp->pk_ss_id            = $request->sasaranStrategisId;
+        $rp->pk_iku_id           = $request->indikatorKinerjaUtamaId;
 
 
 

@@ -163,11 +163,12 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::put('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisUpdate']);
     Route::delete('sasaran_strategis', [PerjanjianKinerjaController::class, 'SasaranStrategisDestroy']);
 
-    // ======= INDIKATOR SASARAN STRATEGIS ===============//
+    // ================         INDIKATOR SASARAN STRATEGIS / INDIKATOR KINERJA UTAMA        ===============//
     Route::get('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisDetail']);
     Route::post('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisStore']);
     Route::delete('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisDestroy']);
     Route::put('indikator_sasaran_strategis', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisUpdate']);
+    Route::get('indikator_kinerja_utama_select_list', [PerjanjianKinerjaController::class, 'IndikatorSasaranStrategisSelectList']);
 
 
     //========================================================================================================//

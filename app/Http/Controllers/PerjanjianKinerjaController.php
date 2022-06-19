@@ -171,6 +171,23 @@ class PerjanjianKinerjaController extends Controller
         }
     }
 
+    public function IndikatorSasaranStrategisSelectList(Request $request)
+    {
+        $response = array();
+        $response['indikator_kinerja_utama'] = array();
+
+        $data = IndikatorSasaranStrategis::WHERE('sasaran_strategis_id',$request->sasaran_strategis_id)->get();
+        foreach( $data AS $y ){
+            $r['id']            = $y->id;
+            $r['label']         = $y->label;
+
+            array_push($response['indikator_kinerja_utama'], $r);
+        }
+
+
+        return $response;
+    }
+
     public function IndikatorSasaranStrategisDetail(Request $request)
     {
         $indikator = IndikatorSasaranStrategis::with(array('SasaranStrategis' => function($query) {
