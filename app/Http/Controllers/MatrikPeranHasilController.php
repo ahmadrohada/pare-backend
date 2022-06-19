@@ -922,13 +922,15 @@ class MatrikPeranHasilController extends Controller
                                     ->first();
 
         $response = [
-                    'id'         => $new_outcome->id,
-                    'label'      => $new_outcome->label,
-                    'skpd_id'    => $new_outcome->skpd_id,
-                    'periode'    => $new_outcome->periode,
-                    'role_id'    => $new_outcome->matriks_peran_id,
-                    'level'      => $new_outcome->level,
-                    'parent_id'  => $new_outcome->parent ? $new_outcome->parent->id : null
+                    'id'                                => $new_outcome->id,
+                    'label'                             => $new_outcome->label,
+                    'skpd_id'                           => $new_outcome->skpd_id,
+                    'periode'                           => $new_outcome->periode,
+                    'role_id'                           => $new_outcome->matriks_peran_id,
+                    'level'                             => $new_outcome->level,
+                    'parent_id'                         => $new_outcome->parent ? $new_outcome->parent->id : null,
+                    'sasaran_strategis_id'              => $new_outcome->pk_ss_id,
+                    'indikator_kinerja_utama_id'        => $new_outcome->pk_iku_id,
                     ];
 
 
@@ -1111,8 +1113,10 @@ class MatrikPeranHasilController extends Controller
             return \Response::make(['message' => "Outcome ID  tidak ditemukan"], 500);
         }
 
-        $update->label             = $request->outcomeLabel;
-        $update->parent_id         = $request->outcomeAtasanId;
+        $update->label              = $request->outcomeLabel;
+        $update->parent_id          = $request->outcomeAtasanId;
+        $update->pk_ss_id           = $request->sasaranStrategisId;
+        $update->pk_iku_id          = $request->indikatorKinerjaUtamaId;
 
         if ($update->save()) {
             $data = array('id'=> $update->id);
