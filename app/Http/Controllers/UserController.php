@@ -309,7 +309,7 @@ class UserController extends Controller
         }
 
         if($request->search) {
-            $query->where('pegawai->nama_lengkap','LIKE', '%'.$request->search.'%');
+            $query->where('pegawai->nama_lengkap','LIKE', "%{$request->search}%");
         }
 
         $response = array();
