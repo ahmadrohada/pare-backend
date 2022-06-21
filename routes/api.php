@@ -241,7 +241,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
     Route::get('jabatan_child', [MatrikPeranHasilController::class, 'Children']);
-    Route::get('list_jabatan', [MatrikPeranHasilController::class, 'listJabatan']);
+    Route::get('list_jabatan', [MatrikPeranHasilController::class, 'ListJabatan']);
     Route::get('list_jabatan_atasan', [MatrikPeranHasilController::class, 'ListJabatanAtasan']);
 
     Route::post('jabatan', [MatrikPeranHasilController::class, 'jabatanStore']);

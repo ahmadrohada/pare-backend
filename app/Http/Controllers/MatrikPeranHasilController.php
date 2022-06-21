@@ -443,13 +443,13 @@ class MatrikPeranHasilController extends Controller
         //list jabatan dikurangi list jabatan yang sudah ada di role matrik
         $response['role'] = array();
         foreach ($list_jabatan_sotk as $x) {
-            if (!in_array($x['id'], $response['existing_list'])) {
+            //if (!in_array($x['id'], $response['existing_list'])) {
                 //KOORDINATOR
                 $i['id']                = $x['id'];
                 $i['singkatan']         = $x['singkatan'];
                 $i['nama_lengkap']      = $x['nama_lengkap'];
                 array_push($response['role'], $i);
-            }
+            //}
         }
 
 
