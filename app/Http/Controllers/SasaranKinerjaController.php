@@ -68,7 +68,7 @@ class SasaranKinerjaController extends Controller
         $skp = SasaranKinerja::
                 WHERE('periode_penilaian->tahun','=',$request->periode)
                 ->WHERE('skpd_id','=',$request->skpd_id)
-                ->WHERE('jenis_jabatan_skp','=','PEJABAT PIMPINAN TINGGI')
+                ->WHERE('jenis_jabatan_skp','=','JABATAN PIMPINAN TINGGI')
                 ->first();
 
         if ($skp){
@@ -234,7 +234,7 @@ class SasaranKinerjaController extends Controller
         if ($ah->save()) {
 
             //JIKA JENIS JABATN JPT atau UNIT KERJA,  abuskeun semua PK nya ke SKP tahunan
-            if (($ah->jenis_jabatan_skp == "PEJABAT PIMPINAN TINGGI")|($ah->jenis_jabatan_skp == "PIMPINAN UNIT KERJA MANDIRI")){
+            if (($ah->jenis_jabatan_skp == "JABATAN PIMPINAN TINGGI")|($ah->jenis_jabatan_skp == "PIMPINAN UNIT KERJA MANDIRI")){
                 $pk_id = $ah->perjanjian_kinerja_id;
                 //SELECT SEMUA data sasaran strategis nya
                 $sasaran = SasaranStrategis::WITH(['Indikator'])->WHERE('perjanjian_kinerja_id','=',$pk_id )->get();

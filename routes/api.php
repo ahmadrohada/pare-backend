@@ -238,8 +238,6 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('peran_pegawai', [MatrikPeranHasilController::class, 'peranPegawaiDestroy']);
     Route::post('peran_pegawai', [MatrikPeranHasilController::class, 'peranPegawaiStore']);
 
-
-
     Route::get('jabatan_child', [MatrikPeranHasilController::class, 'Children']);
     Route::get('list_jabatan', [MatrikPeranHasilController::class, 'ListJabatan']);
     Route::get('list_jabatan_atasan', [MatrikPeranHasilController::class, 'ListJabatanAtasan']);

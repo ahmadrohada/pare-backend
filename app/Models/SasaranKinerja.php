@@ -13,6 +13,11 @@ class SasaranKinerja extends Model
     use HasFactory;
     protected $dates = ['deleted_at'];
 
+    public function RencanaKinerja()
+    {
+        return $this->hasMany(RencanaKinerja::class);
+    }
+
 /*     public function Indikator()
     {
     return $this->hasMany(IndikatorSasaranStrategis::class);

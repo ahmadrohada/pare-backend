@@ -55,7 +55,7 @@ class ManajemenKinerjaController extends Controller
 
 
         $i['perjanjian_kinerja']        = PerjanjianKinerja::WHERE('periode->tahun','=',$periode_tahun)->WHERE('skpd_id','=',$skpd_id)->WHERE('status','=','close')->exists();
-        $i['skp_jpt']                   = SasaranKinerja::WHERE('periode_penilaian->tahun','=',$periode_tahun)->WHERE('skpd_id','=',$skpd_id)->WHERE('jenis_jabatan_skp','=','PEJABAT PIMPINAN TINGGI')->exists();
+        $i['skp_jpt']                   = SasaranKinerja::WHERE('periode_penilaian->tahun','=',$periode_tahun)->WHERE('skpd_id','=',$skpd_id)->WHERE('jenis_jabatan_skp','=','JABATAN PIMPINAN TINGGI')->exists();
         $i['tim_kerja']                 = MatriksPeran::WHERE('periode','=',$periode_tahun)->WHERE('skpd_id','=',$skpd_id)->WHERE('role','=','koordinator')->exists();
 
         array_push($response['data'], $i);

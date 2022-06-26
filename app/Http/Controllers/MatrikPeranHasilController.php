@@ -119,6 +119,33 @@ class MatrikPeranHasilController extends Controller
         $skpd_id = $request->skpd_id;
         $periode = $request->periode;
 
+        //SKP JPT
+        $response['skp_jpt'] = array();
+
+
+        $skp_jpt = SasaranKinerja::
+                WITH('RencanaKinerja','RencanaKinerja.IndikatorKinerjaIndividu')
+                ->WHERE('periode_penilaian->tahun','=',$request->periode)
+                ->WHERE('skpd_id','=',$request->skpd_id)
+                ->WHERE('jenis_jabatan_skp','=','JABATAN PIMPINAN TINGGI')
+                ->SELECT(
+                        'id',
+                        'pegawai_yang_dinilai->nama AS nama_pegawai',
+                        'pegawai_yang_dinilai->jabatan AS jabatan',
+                        'jenis_jabatan_skp AS role'
+                        )
+                ->get();
+
+        if ($skp_jpt){
+            $response['skp_jpt']   = $skp_jpt;
+        }else{
+            $response['skp_jpt']   = null;
+        }
+
+
+
+
+        //LIST KOORDINATOR
         $koordinator = MatriksPeran::WHERE('role', '=', 'koordinator')
             ->WHERE('periode', '=', $periode)
             ->WHERE('skpd_id', '=', $skpd_id)
@@ -184,7 +211,8 @@ class MatrikPeranHasilController extends Controller
         }
 
         return [
-            'koordinatorList'     => $response['role'],
+            'koordinatorList'       => $response['role'],
+            'skpJptList'            => $response['skp_jpt'],
         ];
     }
 
