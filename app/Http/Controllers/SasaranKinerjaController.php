@@ -187,6 +187,9 @@ class SasaranKinerjaController extends Controller
         }
 
 
+
+
+
         $periode_penilaian = [
             "periode_pk"        => $pkId,
             "tahun"             => date('Y', strtotime($request->dateFrom)),
@@ -266,12 +269,32 @@ class SasaranKinerjaController extends Controller
 
 
                 }
+            } else  if (($ah->jenis_jabatan_skp == "JABATAN ADMINISTRASI")|($ah->jenis_jabatan_skp == "JABATAN FUNGSIONAL")){
+                //mau coba memasukan rencana hasil kerja pada matrik
+
+                $peran = MatriksPeran::
+                                        WHERE('pegawai->nip', '=', $request->nipPegawaiYangDinilai)
+                                        ->WHERE('skpd_id','=',$request->skpdId)
+                                        ->WHERE('periode','=',$request->periodeLabel)
+                                        ->first();
+
+                    foreach( $peran->MatriksHasil AS $y ){
+                        $rk    = new RencanaKinerja;
+                        $rk->sasaran_kinerja_id      = $ah->id;
+                        $rk->label                   = $y->label;
+                        $rk->jenis_rencana_kinerja   = "kinerja_utama";
+                        $rk->save();
+
+                    }
+
+
+
             }
 
 
 
 
-            return \Response::make($sasaran, 200);
+            return \Response::make($peran->MatriksHasil, 200);
         } else {
             return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
         }

@@ -16,7 +16,12 @@ class MatriksPeran extends Model
 
     public function SasaranKinerja()
     {
-    return $this->hasMany(SasaranKinerja::class,'matriks_peran_id');
+        return $this->hasMany(SasaranKinerja::class,'matriks_peran_id');
+    }
+
+    public function MatriksHasil()
+    {
+        return $this->hasMany(MatriksHasil::class,'matriks_peran_id');
     }
 
 

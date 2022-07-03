@@ -27,6 +27,7 @@ class IndikatorKinerjaIndividuController extends Controller
                 'target_min',
                 'target_max',
                 'satuan_target',
+                'perspektif'
 
             )
             ->WHERE('id', $request->id)
@@ -41,7 +42,9 @@ class IndikatorKinerjaIndividuController extends Controller
             $h['target_min']            = $indikator->target_min;
             $h['target_max']            = $indikator->target_max;
             $h['satuan_target']         = $indikator->satuan_target;
+            $h['perspektif']            = $indikator->perspektif;
             $h['sasaran_kinerja_id']    = $indikator->RencanaKinerja->sasaran_kinerja_id;
+
             $h['rencana_kinerja']       = json_decode($indikator->RencanaKinerja);
 
         } else {
@@ -85,6 +88,7 @@ class IndikatorKinerjaIndividuController extends Controller
         $ah->target_min                      = $request->targetMin;
         $ah->target_max                      = $request->targetMax;
         $ah->satuan_target                   = $request->satuanTarget;
+        $ah->perspektif                      = $request->perspektif;
 
         if ($ah->save()) {
             $data = array(
@@ -132,6 +136,7 @@ class IndikatorKinerjaIndividuController extends Controller
         $update->target_min                      = $request->targetMin;
         $update->target_max                      = $request->targetMax;
         $update->satuan_target                   = $request->satuanTarget;
+        $update->perspektif                      = $request->perspektif;
 
         if ($update->save()) {
             $data = array(

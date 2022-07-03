@@ -20,6 +20,7 @@ use App\Http\Controllers\IndikatorKinerjaIndividuController;
 use App\Http\Controllers\ManualIndikatorKinerjaController;
 use App\Http\Controllers\ManajemenKinerjaController;
 use App\Http\Controllers\MatrikPeranHasilController;
+use App\Http\Controllers\PerilakuKerjaController;
 
 
 
@@ -195,7 +196,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
 
     //========================================================================================================//
-	//======================           SASARAN KINERJA - RENCANA KINERJA       ================================//
+	//======================           SASARAN KINERJA - RENCANA HAISL KERJA       ================================//
 	//========================================================================================================//
     Route::get('sasaran_kinerja_rencana_kinerja', [RencanaKinerjaController::class, 'List']);
     Route::get('rencana_kinerja_select_list', [RencanaKinerjaController::class, 'SelectList']);
@@ -204,6 +205,10 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('rencana_kinerja', [RencanaKinerjaController::class, 'Detail']);
     Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'Destroy']);
 
+    //========================================================================================================//
+	//======================           SASARAN KINERJA - PERILAKU KERJA       ================================//
+	//========================================================================================================//
+    Route::get('sasaran_kinerja_perilaku_kerja', [PerilakuKerjaController::class, 'List']);
 
     //========================================================================================================//
 	//======================      SASARAN KINERJA - INDIKATOR KINERJA INDIVIDU ( IKI )   =====================//
