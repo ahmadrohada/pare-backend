@@ -185,6 +185,11 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDestroy']);
 
 
+    //========================================================================================================//
+	//========================        SASARAN KINERJA  PEJABAT PENILAI         ===============================//
+	//========================================================================================================//
+    Route::post('sasaran_kinerja_pejabat_penilai', [SasaranKinerjaController::class, 'PejabatPenilaiStore']);
+    Route::post('sasaran_kinerja_atasan_pejabat_penilai', [SasaranKinerjaController::class, 'AtasanPejabatPenilaiStore']);
 
 
     //========================================================================================================//

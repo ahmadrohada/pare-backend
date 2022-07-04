@@ -300,8 +300,98 @@ class SasaranKinerjaController extends Controller
         }
     }
 
-    //save form MPH add pejabat tes sajah lah
-    //after save, masukan semua Rencana kinerja nya ke skp
+    public function PejabatPenilaiStore(Request $request)
+    {
+
+        $messages = [
+
+                    'sasaranKinerjaId.required'              => 'Harus diisi',
+
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                    'sasaranKinerjaId'    => 'required',
+
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()], 422);
+        }
+
+        $pejabat_penilai = [
+            "nama"              => $request->namaLengkapPejabatPenilai,
+            "nip"               => $request->nipPejabatPenilai,
+            "jabatan"           => $request->jabatanPejabatPenilai,
+            "jabatan_id"        => $request->jabatanSimAsnPejabatPenilaiId,
+            "pangkat"           => $request->pangkatPejabatPenilai,
+            "golongan"          => $request->golonganPejabatPenilai,
+            "instansi"          => $request->instansiPejabatPenilai,
+        ];
+
+        $update  = SasaranKinerja::find($request->sasaranKinerjaId);
+
+        $update->pejabat_penilai  =  json_encode($pejabat_penilai);
+
+        if ($update->save()) {
+            return \Response::make("sukses", 200);
+        } else {
+            return \Response::make(['message' => "Terjadi kesalahan saat Update Data"], 500);
+        }
+    }
+
+    public function AtasanPejabatPenilaiStore(Request $request)
+    {
+
+        $messages = [
+
+                    'sasaranKinerjaId.required'              => 'Harus diisi',
+
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                    'sasaranKinerjaId'    => 'required',
+
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()], 422);
+        }
+
+        $atasan_pejabat_penilai = [
+            "nama"              => $request->namaLengkapAtasanPejabatPenilai,
+            "nip"               => $request->nipAtasanPejabatPenilai,
+            "jabatan"           => $request->jabatanAtasanPejabatPenilai,
+            "jabatan_id"        => $request->jabatanSimAsnAtasanPejabatPenilaiId,
+            "pangkat"           => $request->pangkatAtasanPejabatPenilai,
+            "golongan"          => $request->golonganAtasanPejabatPenilai,
+            "instansi"          => $request->instansiAtasanPejabatPenilai,
+        ];
+
+        $update  = SasaranKinerja::find($request->sasaranKinerjaId);
+
+        $update->atasan_pejabat_penilai  =  json_encode($atasan_pejabat_penilai);
+
+        if ($update->save()) {
+            return \Response::make("sukses", 200);
+        } else {
+            return \Response::make(['message' => "Terjadi kesalahan saat Update Data"], 500);
+        }
+    }
+
     public function PejabatSasaranKinerjaStore(Request $request)
     {
 
