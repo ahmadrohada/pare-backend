@@ -891,7 +891,7 @@ class MatrikPeranHasilController extends Controller
                                             foreach ($xa->children as $xb) {
                                                 //yang diinput tetap OUTCOME LEVEL S3
                                                 $oc['id']           = $last_id;
-                                                $oc['label']        = $xa['label']." ulang";
+                                                $oc['label']        = $xa['label'];
                                                 array_push($response['outcome'], $oc);
                                                 $count++;
                                             }

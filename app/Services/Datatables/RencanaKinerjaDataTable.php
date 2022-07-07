@@ -82,6 +82,7 @@ class RencanaKinerjaDataTable {
                 $i['target_min']                    = $y->target_min;
                 $i['target_max']                    = $y->target_max;
                 $i['perspektif']                    = $y->perspektif;
+                $i['aspek']                         = ucfirst($y->aspek);
                 array_push($response['data'], $i);
             }
         }else{
@@ -97,6 +98,7 @@ class RencanaKinerjaDataTable {
             $i['target_min']                    = "";
             $i['target_max']                    = "";
             $i['perspektif']                    = "";
+            $i['aspek']                         = "";
             array_push($response['data'], $i);
         }
 
