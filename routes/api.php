@@ -233,6 +233,13 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::put('manual_indikator_kinerja', [ManualIndikatorKinerjaController::class, 'Update']);
 
 
+    //========================================================================================================//
+	//====================      RENCANA HASIL KERJA PIMPINAN YANG DIINTERVENSI          ======================//
+	//========================================================================================================//
+
+    Route::get('rencana_hasil_kerja_pimpinan', [RencanaKinerjaController::class, 'RencanaHasilKerjaPimpinanList']);
+
+
 
     //========================================================================================================//
 	//========================                 MATRIK PERAN HASIL                   ==========================//

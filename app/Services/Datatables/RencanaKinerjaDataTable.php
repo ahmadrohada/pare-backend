@@ -77,6 +77,7 @@ class RencanaKinerjaDataTable {
                 $i['indikator_id']                  = $y->id;
                 $i['indikator_kinerja_individu']    = $y->label;
                 $i['manual_indikator_kinerja_id']   = $manual_indikator_id;
+                $i['parent_id']                     = $x->parent_id;
                 $i['target']                        = $target;
                 $i['satuan_target']                 = $y->satuan_target;
                 $i['target_min']                    = $y->target_min;
@@ -93,6 +94,7 @@ class RencanaKinerjaDataTable {
             $i['indikator_id']                  = "";
             $i['indikator_kinerja_individu']    = "";
             $i['manual_indikator_kinerja_id']   = "disabled";
+            $i['parent_id']                     = $x->parent_id;
             $i['target']                        = "";
             $i['satuan_target']                 = "";
             $i['target_min']                    = "";

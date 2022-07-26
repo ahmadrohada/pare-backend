@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\RencanaKinerja;
+use App\Models\SasaranKinerja;
 
 use App\Services\Datatables\RencanaKinerjaDataTable;
 
@@ -16,6 +17,17 @@ class RencanaKinerjaController extends Controller
     {
         $searchDatas = new RencanaKinerjaDataTable($request->all());
         $data = $searchDatas->search();
+        return $data;
+    }
+
+
+    public function RencanaHasilKerjaPimpinanList(Request $request)
+    {
+
+        //SASAran Kinerja
+        $data = SasaranKinerja::WHERE('id',$request->sasaran_kinerja_id)->get();
+
+
         return $data;
     }
 
