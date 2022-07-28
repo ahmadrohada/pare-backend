@@ -238,6 +238,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//========================================================================================================//
 
     Route::get('rencana_hasil_kerja_pimpinan', [RencanaKinerjaController::class, 'RencanaHasilKerjaPimpinanList']);
+    Route::post('rencana_hasil_kerja_pimpinan', [RencanaKinerjaController::class, 'RencanaHasilKerjaPimpinanStore']);
 
 
 

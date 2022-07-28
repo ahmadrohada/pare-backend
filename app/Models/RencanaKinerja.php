@@ -19,5 +19,10 @@ class RencanaKinerja extends Model
     return $this->hasMany(IndikatorKinerjaIndividu::class,'rencana_kinerja_id');
     }
 
+    public function Parent()
+    {
+        return $this->belongsTo(self::class,'parent_id');
+    }
+
 
 }

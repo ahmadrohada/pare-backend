@@ -25,10 +25,57 @@ class RencanaKinerjaController extends Controller
     {
 
         //SASAran Kinerja
-        $data = SasaranKinerja::WHERE('id',$request->sasaran_kinerja_id)->get();
+        $data = SasaranKinerja::SELECT("pejabat_penilai")->WHERE('id',$request->sasaran_kinerja_id)->first();
+
+        //PEJABAT PENILAI
+        $data_2 = SasaranKinerja::SELECT('id AS sasaran_kinerja_id')->WHERE('pegawai_yang_dinilai',$data->pejabat_penilai)->first();
 
 
-        return $data;
+        $response = array();
+        $response['rencana_kinerja'] = array();
+
+        $data = RencanaKinerja::WHERE('sasaran_kinerja_id',$data_2->sasaran_kinerja_id)->get();
+        foreach( $data AS $y ){
+            $r['id']            = $y->id;
+            $r['label']         = $y->label;
+
+            array_push($response['rencana_kinerja'], $r);
+        }
+        return $response;
+    }
+
+    public function RencanaHasilKerjaPimpinanStore(Request $request)
+    {
+
+        $messages = [
+            'rencanaKinerjaPimpinanId.required'         => 'Harus diisi',
+            'rencanaKinerjaId.required'                 => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'rencanaKinerjaPimpinanId'          => 'required',
+                'rencanaKinerjaId'                  => 'required',
+            ],
+            $messages
+        );
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = RencanaKinerja::find($request->rencanaKinerjaId);
+        if (is_null($update)) {
+            return \Response::make(['message' => "ID Rencana Kinerja tidak ditemukan"], 500);
+        }
+
+        $update->parent_id       = $request->rencanaKinerjaPimpinanId;
+
+        if ($update->save()) {
+            return \Response::make("Sukses", 200);
+        } else {
+            return \Response::make('error', 500);
+        }
     }
 
     public function SelectList(Request $request)
