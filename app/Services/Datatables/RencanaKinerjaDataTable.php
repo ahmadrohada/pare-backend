@@ -78,7 +78,7 @@ class RencanaKinerjaDataTable {
                 $i['indikator_kinerja_individu']    = $y->label;
                 $i['manual_indikator_kinerja_id']   = $manual_indikator_id;
                 $i['parent_id']                     = $x->parent_id;
-                $i['parent_label']                  = $x->Parent->label;
+                $i['parent_label']                  = ( $x->parent_id != null )?$x->Parent->label:"";
                 $i['target']                        = $target;
                 $i['satuan_target']                 = $y->satuan_target;
                 $i['target_min']                    = $y->target_min;
