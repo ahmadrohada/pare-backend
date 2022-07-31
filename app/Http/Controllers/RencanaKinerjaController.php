@@ -30,16 +30,18 @@ class RencanaKinerjaController extends Controller
         //PEJABAT PENILAI
         $data_2 = SasaranKinerja::SELECT('id AS sasaran_kinerja_id')->WHERE('pegawai_yang_dinilai',$data->pejabat_penilai)->first();
 
+        $data_3 = RencanaKinerja::WHERE('id',$request->rencana_kinerja_id)->first();
 
         $response = array();
-        $response['rencana_kinerja'] = array();
+        $response['rencana_hasil_kerja_pimpinan'] = array();
+        $response['rencana_kinerja_detail'] = $data_3;
 
         $data = RencanaKinerja::WHERE('sasaran_kinerja_id',$data_2->sasaran_kinerja_id)->get();
         foreach( $data AS $y ){
             $r['id']            = $y->id;
             $r['label']         = $y->label;
 
-            array_push($response['rencana_kinerja'], $r);
+            array_push($response['rencana_hasil_kerja_pimpinan'], $r);
         }
         return $response;
     }
