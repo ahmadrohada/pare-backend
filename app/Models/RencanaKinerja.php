@@ -24,5 +24,10 @@ class RencanaKinerja extends Model
         return $this->belongsTo(self::class,'parent_id');
     }
 
+    public function MatriksHasil()
+    {
+        return $this->belongsTo(MatriksHasil::class,'matriks_hasil_id');
+    }
+
 
 }

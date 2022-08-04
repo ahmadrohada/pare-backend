@@ -283,6 +283,7 @@ class SasaranKinerjaController extends Controller
                         $rk->sasaran_kinerja_id      = $ah->id;
                         $rk->label                   = $y->label;
                         $rk->jenis_rencana_kinerja   = "kinerja_utama";
+                        $rk->matriks_hasil_id        = $y->id;
                         $rk->save();
 
                     }

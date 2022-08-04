@@ -3,6 +3,9 @@ namespace App\Services\Datatables;
 
 use App\Models\RencanaKinerja;
 use App\Models\ManualIndikatorKinerja;
+use App\Models\SasaranStrategis;
+use App\Models\MatriksHasil;
+
 
 class RencanaKinerjaDataTable {
     private $search;
@@ -52,6 +55,20 @@ class RencanaKinerjaDataTable {
 
     foreach( $data AS $x ){
         $no = $no+1;
+
+        //cari kinerja atasan yang diintevensi,
+        //referensi dari $x->matriks_hasil,..
+        //jika level = S2 ( JA ) ambil label PK sasaran startegis
+        //jika level = selain JA , maka ambil parent
+
+        if ( $x->MatriksHasil->level == 'S2' ){
+            $ss_data  = SasaranStrategis::WHERE('id',$x->MatriksHasil->pk_ss_id)->first();
+            $rencana_kerja_pimpinan = ( $ss_data != null ) ? $ss_data->label : "";
+        }else{
+            $mh_data  = MatriksHasil::WHERE('id',$x->MatriksHasil->parent_id)->first();
+            $rencana_kerja_pimpinan = ( $mh_data != null ) ? $mh_data->label : "";
+        }
+
         //jika indikator nya tidak null
         if ( sizeof($x->IndikatorKinerjaIndividu) ){
             foreach( $x->IndikatorKinerjaIndividu AS $y ){
@@ -71,6 +88,9 @@ class RencanaKinerjaDataTable {
                     $target = $y->target_min.' - '.$y->target_max.' '.$y->satuan_target;
                 }
 
+
+
+
                 $i['id']                            = $x->id;
                 $i['no']                            = $no;
                 $i['rencana_kinerja']               = $x->label;
@@ -85,6 +105,8 @@ class RencanaKinerjaDataTable {
                 $i['target_max']                    = $y->target_max;
                 $i['perspektif']                    = $y->perspektif;
                 $i['aspek']                         = ucfirst($y->aspek);
+
+                $i['rencana_kerja_pimpinan']        = $rencana_kerja_pimpinan;
                 array_push($response['data'], $i);
             }
         }else{
@@ -103,6 +125,8 @@ class RencanaKinerjaDataTable {
             $i['target_max']                    = "";
             $i['perspektif']                    = "";
             $i['aspek']                         = "";
+
+            $i['rencana_kerja_pimpinan']        = $rencana_kerja_pimpinan;
             array_push($response['data'], $i);
         }
 
