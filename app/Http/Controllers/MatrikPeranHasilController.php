@@ -582,7 +582,7 @@ class MatrikPeranHasilController extends Controller
 
             $skp_jpt = SasaranKinerja::WHERE('perjanjian_kinerja_id', '=', $peran->perjanjian_kinerja_id)
                                 ->SELECT('id AS skp_id','pegawai_yang_dinilai->nama AS nama')
-                                ->WHERE('jenis_jabatan_skp','=','PEJABAT PIMPINAN TINGGI')
+                                ->WHERE('jenis_jabatan_skp','=','JABATAN PIMPINAN TINGGI')
                                 ->get();
 
         }else{

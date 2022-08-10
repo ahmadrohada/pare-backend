@@ -5,6 +5,7 @@ use App\Models\RencanaKinerja;
 use App\Models\ManualIndikatorKinerja;
 use App\Models\SasaranStrategis;
 use App\Models\MatriksHasil;
+use App\Models\SasaranKinerja;
 
 
 class RencanaKinerjaDataTable {
@@ -29,6 +30,12 @@ class RencanaKinerjaDataTable {
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';
         $this->jenis = isset( $parameters['jenis_rencana_kinerja'] ) ? $parameters['jenis_rencana_kinerja'] : 0;
+
+        //JENIS JABATAN SKP
+        $data = SasaranKinerja::WHERE('id',$this->sasaranKinerjaId)->first();
+        $this->jenisJabatan = $data->jenis_jabatan_skp;
+
+
     }
     // ... Other methods and set up
     public function search()
@@ -53,21 +60,23 @@ class RencanaKinerjaDataTable {
 
 
 
+
     foreach( $data AS $x ){
         $no = $no+1;
 
-        //cari kinerja atasan yang diintevensi,
-        //referensi dari $x->matriks_hasil,..
-        //jika level = S2 ( JA ) ambil label PK sasaran startegis
-        //jika level = selain JA , maka ambil parent
-
-        if ( $x->MatriksHasil->level == 'S2' ){
-            $ss_data  = SasaranStrategis::WHERE('id',$x->MatriksHasil->pk_ss_id)->first();
-            $rencana_kerja_pimpinan = ( $ss_data != null ) ? $ss_data->label : "";
+        if ( $this->jenisJabatan != "JABATAN PIMPINAN TINGGI"){
+            //JIKA BUKAN JPT
+            if ( $x->MatriksHasil->level == 'S2' ){
+                $ss_data  = SasaranStrategis::WHERE('id',$x->MatriksHasil->pk_ss_id)->first();
+                $rencana_kerja_pimpinan = ( $ss_data != null ) ? $ss_data->label : "";
+            }else{
+                $mh_data  = MatriksHasil::WHERE('id',$x->MatriksHasil->parent_id)->first();
+                $rencana_kerja_pimpinan = ( $mh_data != null ) ? $mh_data->label : "";
+            }
         }else{
-            $mh_data  = MatriksHasil::WHERE('id',$x->MatriksHasil->parent_id)->first();
-            $rencana_kerja_pimpinan = ( $mh_data != null ) ? $mh_data->label : "";
+            $rencana_kerja_pimpinan = null;
         }
+
 
         //jika indikator nya tidak null
         if ( sizeof($x->IndikatorKinerjaIndividu) ){
@@ -97,8 +106,8 @@ class RencanaKinerjaDataTable {
                 $i['indikator_id']                  = $y->id;
                 $i['indikator_kinerja_individu']    = $y->label;
                 $i['manual_indikator_kinerja_id']   = $manual_indikator_id;
-                $i['parent_id']                     = $x->parent_id;
-                $i['parent_label']                  = ( $x->parent_id != null )?$x->Parent->label:"";
+                //$i['parent_id']                     = $x->parent_id;
+                //$i['parent_label']                  = ( $x->parent_id != null )?$x->Parent->label:"";
                 $i['target']                        = $target;
                 $i['satuan_target']                 = $y->satuan_target;
                 $i['target_min']                    = $y->target_min;
@@ -107,6 +116,7 @@ class RencanaKinerjaDataTable {
                 $i['aspek']                         = ucfirst($y->aspek);
 
                 $i['rencana_kerja_pimpinan']        = $rencana_kerja_pimpinan;
+                $i['jenis_jabatan_skp']             = $this->jenisJabatan;
                 array_push($response['data'], $i);
             }
         }else{
@@ -117,8 +127,8 @@ class RencanaKinerjaDataTable {
             $i['indikator_id']                  = "";
             $i['indikator_kinerja_individu']    = "";
             $i['manual_indikator_kinerja_id']   = "disabled";
-            $i['parent_id']                     = $x->parent_id;
-            $i['parent_label']                  = ( $x->parent_id != null )?$x->Parent->label:"";
+            //$i['parent_id']                     = $x->parent_id;
+            //$i['parent_label']                  = ( $x->parent_id != null )?$x->Parent->label:"";
             $i['target']                        = "";
             $i['satuan_target']                 = "";
             $i['target_min']                    = "";
@@ -127,6 +137,7 @@ class RencanaKinerjaDataTable {
             $i['aspek']                         = "";
 
             $i['rencana_kerja_pimpinan']        = $rencana_kerja_pimpinan;
+            $i['jenis_jabatan_skp']             = $this->jenisJabatan;
             array_push($response['data'], $i);
         }
 

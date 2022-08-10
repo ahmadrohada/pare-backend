@@ -241,6 +241,7 @@ class SasaranKinerjaController extends Controller
                 $pk_id = $ah->perjanjian_kinerja_id;
                 //SELECT SEMUA data sasaran strategis nya
                 $sasaran = SasaranStrategis::WITH(['Indikator'])->WHERE('perjanjian_kinerja_id','=',$pk_id )->get();
+                $peran = "";
 
                 foreach( $sasaran AS $x ){
 
@@ -295,7 +296,7 @@ class SasaranKinerjaController extends Controller
 
 
 
-            return \Response::make($peran->MatriksHasil, 200);
+            return \Response::make("Sukses", 200);
         } else {
             return \Response::make(['message' => "Terjadi kesalahan saat menyimpan SKP"], 500);
         }
