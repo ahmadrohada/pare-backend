@@ -28,6 +28,9 @@ class SasaranKinerjaDataTable {
                                                 'atasan_pejabat_penilai->jabatan AS jabatan_atasan_pejabat_penilai',
                                                 'atasan_pejabat_penilai->nip AS nip_atasan_pejabat_penilai',
 
+                                                'pejabat_penilai',
+                                                'atasan_pejabat_penilai',
+
 
                                                 'jenis_jabatan_skp',
                                                 'status AS status',
@@ -84,6 +87,10 @@ class SasaranKinerjaDataTable {
         $i['nama_atasan_pejabat_penilai']     = $x->nama_atasan_pejabat_penilai;
         $i['jabatan_atasan_pejabat_penilai']  = $x->jabatan_atasan_pejabat_penilai;
         $i['nip_atasan_pejabat_penilai']      = $x->nip_atasan_pejabat_penilai;
+
+
+        $i['pejabat_penilai']                   = json_decode($x->pejabat_penilai);
+        $i['atasan_pejabat_penilai']            = json_decode($x->atasan_pejabat_penilai);
 
 
 
