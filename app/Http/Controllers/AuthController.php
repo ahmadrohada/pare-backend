@@ -39,14 +39,16 @@ class AuthController extends Controller
 
                 'grant_type'    => "authorization_code",
                 'client_id'     => "93ce4ca9-b473-4f37-bd34-1a03c5c61e58",
-                'client_secret' => "SoA6lCpauKqXWPsgfAgUecKJlEpRruAcPAFi8jmEZGpLLS1f7x",
-                'redirect_uri'  => (env('BACKEND_URL').'/api/login_simpeg'),
+                'client_secret' => "CsNQhGHdecgHjNg6nuKqMVRbeSnIFS9I3sidMjFL7VACQTEjxz",
+                'redirect_uri'  => env('BACKEND_URL').'/api/login_simpeg',
                 'scope'         => "*",
                 'code'          => $code
 
         ];
 
-        try{
+        return $form_params;
+
+        //try{
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
@@ -60,15 +62,16 @@ class AuthController extends Controller
             ]);
 
             $body = $response->getBody();
-            return json_decode($body,true);
+
+            /* return json_decode($body,true);
             if ( isset($body['access_token']) && ($body['access_token'] != null) ){
                 return $body;
             }else{
                 return null;
-            }
-        }catch(\GuzzleHttp\Exception\GuzzleException $e) {
-            return null;
-        }
+            } */
+        //}catch(\GuzzleHttp\Exception\GuzzleException $e) {
+            //return null;
+        //}
     }
 
 
@@ -233,10 +236,13 @@ class AuthController extends Controller
 
     }
 
-    public function login_simpeg(Request $request):RedirectResponse
+    public function login_simpeg(Request $request)/* :RedirectResponse */
     {
 
         $token = $this::get_token($request->code);
+        return $token;
+
+
 
         if ( $token != null ){
             if ( isset($token['access_token']) || $token['access_token'] != null  ){
