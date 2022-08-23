@@ -46,9 +46,9 @@ class AuthController extends Controller
 
         ];
 
-        return $form_params;
+        //return $form_params;
 
-        //try{
+        try{
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
@@ -63,15 +63,15 @@ class AuthController extends Controller
 
             $body = $response->getBody();
 
-            /* return json_decode($body,true);
+            return json_decode($body,true);
             if ( isset($body['access_token']) && ($body['access_token'] != null) ){
                 return $body;
             }else{
                 return null;
-            } */
-        //}catch(\GuzzleHttp\Exception\GuzzleException $e) {
+            }
+        }catch(\GuzzleHttp\Exception\GuzzleException $e) {
             //return null;
-        //}
+        }
     }
 
 
@@ -240,8 +240,6 @@ class AuthController extends Controller
     {
 
         $token = $this::get_token($request->code);
-        return $token;
-
 
 
         if ( $token != null ){
