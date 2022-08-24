@@ -108,7 +108,8 @@ class AuthController extends Controller
 
     //MENDAPATKAN peagwai detail from sim-ASN
     protected function detail_pegawai($nip){
-        $token = env('SIMPEG_APP_TOKEN');
+        //$token = env('SIMPEG_APP_TOKEN');
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5M2NlNGNhOS1iNDczLTRmMzctYmQzNC0xYTAzYzVjNjFlNTgiLCJqdGkiOiI3NmJhYjJkZDJjNWI1OGRlMTJiYWI3MWJiY2QxYzNjZTZhNzFmYTE0ZTJmODQ2YjBiNjRmODQyZGI2NTc4Zjc3NDBhY2I3ZTk4Njc3MTllNSIsImlhdCI6MTY1OTUwMTgwNywibmJmIjoxNjU5NTAxODA3LCJleHAiOjE2OTEwMzc4MDcsInN1YiI6IiIsInNjb3BlcyI6WyIqIl19.TQaQf6TEl852YMLYq2sR423EqabCKCPPtt9ZkgSv-DSX1hyZrhXNaRHRLDsIqKuXutenH-j26ncIxkBbVBx3MahAZwrFViw3vwnlOmHPIoOyxbjarm_FvLA2tHRq3MPFwjBoB53nkC6E9dclcLdtnJeNJnutfJldkkq-aQGTZz52GOjtzS4yizqnFvBKlOgEw3R-3UAUm5ieXI0p0msC-3V4IRpX7JNGSu0Sws9tcyCRcyg8I2Xk7RLe8J_3Oo9Ay8EpMUG7mahot1n4i-zRVDWB31OvcPyqPUtjSZ5Zx8b7N-uC9Px1_ShqOn0t6snai0DYbE8fW3AEuObiJ6QSXEc3Z2dnr_FtAwK7-cBvlBtZqpLkiGrFD1JjvsCWMxtPldpUHYn6Ug5fZdKrC5-4EqfxQIB1axb7sEufR95b7ZIcvs7SpU6MMwb3Jcsubi-en-jHRTrCZu0-K_LYEg0TXJHxAnhHNm4ArkppF-i7r6W5cvtx-NQXdkylB3JQMOP7gAXEraOBmLatYF0ELqKA1Bjw8MP9n8J5qosUgmTKbZtDoUR4a5E4v40rGW6_-XfYv59scmqjm4BoafyYDtFK0KidGsbyqVP4J9W6qb0kkdCtn1i3wpQ9SpRCMMZa9iRyaqrmzqzW3hZTJIPRI1IE42-HeaaKCrAL2RumgsznftA";
         $headers = [
             'Authorization' => 'Bearer ' . $token,
             'Accept'        => 'application/json',
@@ -140,7 +141,8 @@ class AuthController extends Controller
 
     //MENDAPATKAN detail atasan from sim-ASN
     protected function nip_atasan($nip){
-        $token = env('SIMPEG_APP_TOKEN');
+        //$token = env('SIMPEG_APP_TOKEN');
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5M2NlNGNhOS1iNDczLTRmMzctYmQzNC0xYTAzYzVjNjFlNTgiLCJqdGkiOiI3NmJhYjJkZDJjNWI1OGRlMTJiYWI3MWJiY2QxYzNjZTZhNzFmYTE0ZTJmODQ2YjBiNjRmODQyZGI2NTc4Zjc3NDBhY2I3ZTk4Njc3MTllNSIsImlhdCI6MTY1OTUwMTgwNywibmJmIjoxNjU5NTAxODA3LCJleHAiOjE2OTEwMzc4MDcsInN1YiI6IiIsInNjb3BlcyI6WyIqIl19.TQaQf6TEl852YMLYq2sR423EqabCKCPPtt9ZkgSv-DSX1hyZrhXNaRHRLDsIqKuXutenH-j26ncIxkBbVBx3MahAZwrFViw3vwnlOmHPIoOyxbjarm_FvLA2tHRq3MPFwjBoB53nkC6E9dclcLdtnJeNJnutfJldkkq-aQGTZz52GOjtzS4yizqnFvBKlOgEw3R-3UAUm5ieXI0p0msC-3V4IRpX7JNGSu0Sws9tcyCRcyg8I2Xk7RLe8J_3Oo9Ay8EpMUG7mahot1n4i-zRVDWB31OvcPyqPUtjSZ5Zx8b7N-uC9Px1_ShqOn0t6snai0DYbE8fW3AEuObiJ6QSXEc3Z2dnr_FtAwK7-cBvlBtZqpLkiGrFD1JjvsCWMxtPldpUHYn6Ug5fZdKrC5-4EqfxQIB1axb7sEufR95b7ZIcvs7SpU6MMwb3Jcsubi-en-jHRTrCZu0-K_LYEg0TXJHxAnhHNm4ArkppF-i7r6W5cvtx-NQXdkylB3JQMOP7gAXEraOBmLatYF0ELqKA1Bjw8MP9n8J5qosUgmTKbZtDoUR4a5E4v40rGW6_-XfYv59scmqjm4BoafyYDtFK0KidGsbyqVP4J9W6qb0kkdCtn1i3wpQ9SpRCMMZa9iRyaqrmzqzW3hZTJIPRI1IE42-HeaaKCrAL2RumgsznftA";
         $headers = [
             'Authorization' => 'Bearer ' . $token,
             'Accept'        => 'application/json',
@@ -150,8 +152,8 @@ class AuthController extends Controller
             $client = new Client([
                 'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
                 'verify' => false,
-                'timeout' => 6, // Response timeout
-                'connect_timeout' => 6, // Connection timeout
+                'timeout' => 10, // Response timeout
+                'connect_timeout' => 10, // Connection timeout
                 'peer' => false
             ]);
             $response = $client->request('GET', '/api/pegawai/'.$nip.'/hierarki',[
@@ -236,7 +238,7 @@ class AuthController extends Controller
 
     }
 
-    public function login_simpeg(Request $request)/* :RedirectResponse */
+    public function login_simpeg(Request $request):RedirectResponse
     {
 
         $token = $this::get_token($request->code);
@@ -254,7 +256,9 @@ class AuthController extends Controller
                             return $this->redirectLoginSimpeg($request->state, 'token', '' );
                         }
 
-                        /* if ( $user['pegawai'] === null ){
+
+
+                        //if ( $user['pegawai'] === null ){
                             $detail_pegawai                 = $this::detail_pegawai($profile['pegawai']['nip']);
                             //nip pejabat penilai
                             $nip_pejabat_penilai            = $this::nip_atasan($profile['pegawai']['nip']);
@@ -288,15 +292,15 @@ class AuthController extends Controller
                             $add_log->action            = "sync";
                             $add_log->label             = "sikronisasi data simpeg";
                             $add_log->save();
-                        } */
+                        //}
 
                         //LOGGER
-                        $add_log = new UserLogging;
+                        /* $add_log = new UserLogging;
                         $add_log->id_user           = $user->id;
                         $add_log->module            = "authentication";
                         $add_log->action            = "login";
                         $add_log->label             = "Login melalui akun simpeg";
-                        $add_log->save();
+                        $add_log->save(); */
 
 
                         return $this->redirectLoginSimpeg($request->state, 'token', $userToken );
