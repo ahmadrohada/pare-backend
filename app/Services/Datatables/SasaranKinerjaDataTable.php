@@ -165,7 +165,10 @@ class SasaranKinerjaDataTable {
             $search = urldecode( $this->search );
 
             $this->query->where(function( $query ) use ( $search ){
-                $query->where('periode_penilaian->tahun', 'LIKE', '%'.$search.'%');
+
+                $query->whereRaw('LOWER(JSON_EXTRACT(pegawai_yang_dinilai, "$.nama")) like ?', ['"%' . strtolower($search) . '%"'])
+                        ->orwhere('jenis_jabatan_skp', 'LIKE', '%'.$search.'%')
+                        ->orwhere('periode_penilaian->tahun', 'LIKE', '%'.$search.'%');
                       //->orWhere('username', 'LIKE', '%'.$search.'%');
             });
         }

@@ -20,7 +20,8 @@ class UserDataTable {
                                     'users.nip AS nip',
                                     'users.pegawai->nama_lengkap AS nama_lengkap',
                                     'users.pegawai->jabatan AS jabatan',
-                                    'users.pegawai->jabatan->referensi->id_referensi AS jabatan_id'
+                                    'users.pegawai->jabatan->referensi->id_referensi AS jabatan_id',
+                                    'users.pegawai->jabatan.nama AS nama_jabatan'
 
                                 );
     }
@@ -64,6 +65,10 @@ class UserDataTable {
             //diulang sesuai jumlah jabatan
             foreach( json_decode($x->jabatan) AS $y ){
                 //data pegawai
+
+                //$h['nama_jabatan']      = json_decode($x->jabatan);
+
+
                 $h['id']			= $x->id_user;
                 $h['username']      = $x->username;
                 $h['nip']           = $x->nip;
@@ -165,8 +170,9 @@ class UserDataTable {
             $search = urldecode( $this->search );
 
             $this->query->where(function( $query ) use ( $search ){
-                $query->where('users.pegawai->nama_lengkap', 'LIKE', '%'.$search.'%');
-                      //->orWhere('username', 'LIKE', '%'.$search.'%');
+
+                $query->whereRaw('LOWER(JSON_EXTRACT(users.pegawai, "$.nama_lengkap")) like ?', ['"%' . strtolower($search) . '%"']);
+
             });
         }
     }
