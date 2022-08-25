@@ -23,14 +23,16 @@ class UserDataTable {
                                     'users.pegawai->jabatan->referensi->id_referensi AS jabatan_id',
                                     'users.pegawai->jabatan.nama AS nama_jabatan'
 
-                                );
+                                    );
+                                //->orderByRaw('CAST(JSON_EXTRACT(users.pegawai, "$.jabatan") AS unsigned)', 'DESC');
+                                //->orderBY('users.id','DESC');
     }
 
     private function setLocalParameters( $parameters )
     {
         $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : 0;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
-        $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'jabatan_id';
+        $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : null;
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';
 
@@ -150,15 +152,15 @@ class UserDataTable {
 
     private function applyOrder()
     {
-        switch( $this->orderBy ){
+       /*  switch( $this->orderBy ){
             case 'likes':
                 $this->query->withCount('likes as liked')
                      ->orderByRaw('liked DESC');
             break;
             default:
-                $this->query->orderBy( 'users.pegawai->jabatan->referensi->id_referensi', 'asc' );
+                //$this->query->orderBy( 'users.pegawai->jabatan->referensi->id_referensi', 'asc' );
             break;
-        }
+        } */
     }
 
     public function applySearch()
