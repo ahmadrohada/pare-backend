@@ -45,14 +45,11 @@ class UserDataTable {
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
-        'currentPage'   => $cafes->currentPage(),
+        'current_page'  => $cafes->currentPage(),
         'total_page'    => ( ($cafes->perPage() != 0 ) && ($cafes->total() != 0 )  ) ? Floor($cafes->total()/$cafes->count()) : 0,
-
+        'per_page'      => $cafes->count(),
         'limit'         => (int)$cafes->perPage(),
         'total'         => $cafes->total(),
-
-        'pageSize'      => $cafes->count(),
-        'pageCount'     => ( ($cafes->perPage() != 0 ) && ($cafes->total() != 0 )  ) ? Floor($cafes->total()/$cafes->count()) : 0,
     );
 
     $data = $cafes->getCollection();
@@ -124,8 +121,8 @@ class UserDataTable {
 
     }
 
-    $response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
-    $response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
+    //$response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
+    //$response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
 
 
 
