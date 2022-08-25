@@ -58,11 +58,14 @@ class SasaranKinerjaDataTable {
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
-        'current_page'  => $cafes->currentPage(),
+        'currentPage'   => $cafes->currentPage(),
         'total_page'    => ( ($cafes->perPage() != 0 ) && ($cafes->total() != 0 )  ) ? Floor($cafes->total()/$cafes->count()) : 0,
-        'per_page'      => $cafes->count(),
+
         'limit'         => (int)$cafes->perPage(),
         'total'         => $cafes->total(),
+
+        'pageSize'      => $cafes->count(),
+        'pageCount'     => ( ($cafes->perPage() != 0 ) && ($cafes->total() != 0 )  ) ? Floor($cafes->total()/$cafes->count()) : 0,
     );
 
     $data = $cafes->getCollection();
