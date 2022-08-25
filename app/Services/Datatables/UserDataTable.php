@@ -92,9 +92,9 @@ class UserDataTable {
 
                 //golongan
 
-                $h['jabatan_golongan_id']           = isset($y->golongan)?$y->golongan->referensi->id:null;
-                $h['jabatan_golongan']              = isset($y->golongan)?$y->golongan->referensi->golongan:null;
-                $h['jabatan_golongan_pangkat']      = isset($y->golongan)?$y->golongan->referensi->pangkat:null;
+                $h['jabatan_golongan_id']           = isset($y->golongan)?$y->golongan->referensi->id:0;
+                $h['jabatan_golongan']              = isset($y->golongan)?$y->golongan->referensi->golongan:0;
+                $h['jabatan_golongan_pangkat']      = isset($y->golongan)?$y->golongan->referensi->pangkat:0;
 
 
                 //skpd
@@ -121,8 +121,8 @@ class UserDataTable {
 
     }
 
-    //$response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
-    //$response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
+    $response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
+    $response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
 
 
 
