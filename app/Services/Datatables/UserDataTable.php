@@ -14,6 +14,7 @@ class UserDataTable {
     public function __construct( $parameters )
     {
         $this->setLocalParameters( $parameters );
+        $querya = "CAST(id_golongan AS DECIMAL(10,2)) ASC";
         $this->query = User:: select(
                                     'users.username AS username',
                                     'users.id AS id_user',
@@ -21,10 +22,12 @@ class UserDataTable {
                                     'users.pegawai->nama_lengkap AS nama_lengkap',
                                     'users.pegawai->jabatan AS jabatan',
                                     'users.pegawai->jabatan->referensi->id_referensi AS jabatan_id',
-                                    'users.pegawai->jabatan.nama AS nama_jabatan'
+                                    'users.pegawai->jabatan.nama AS nama_jabatan',
+                                    'users.pegawai->golongan->referensi->id AS id_golongan',
 
-                                    );
-                                //->orderByRaw('CAST(JSON_EXTRACT(users.pegawai, "$.jabatan") AS unsigned)', 'DESC');
+                                )
+                                //->orderBY(CAST'users.pegawai->golongan->referensi->id AS FLOAT','ASC');
+                                ->orderBYRaw($querya);
                                 //->orderBY('users.id','DESC');
     }
 
@@ -67,7 +70,7 @@ class UserDataTable {
 
                 //$h['nama_jabatan']      = json_decode($x->jabatan);
 
-
+                $h['id_golongan']	= $x->id_golongan;
                 $h['id']			= $x->id_user;
                 $h['username']      = $x->username;
                 $h['nip']           = $x->nip;
@@ -94,7 +97,7 @@ class UserDataTable {
 
                 //golongan
 
-                $h['jabatan_golongan_id']           = isset($y->golongan)?$y->golongan->referensi->id:0;
+                $h['jabatan_golongan_id']           = isset($y->golongan)?$y->golongan->referensi->id:null;
                 $h['jabatan_golongan']              = isset($y->golongan)?$y->golongan->referensi->golongan:0;
                 $h['jabatan_golongan_pangkat']      = isset($y->golongan)?$y->golongan->referensi->pangkat:0;
 
@@ -123,8 +126,8 @@ class UserDataTable {
 
     }
 
-    $response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
-    $response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
+    //$response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
+    //$response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
 
 
 

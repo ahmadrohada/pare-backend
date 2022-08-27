@@ -1,0 +1,452 @@
+{
+    "id": "23823fe5-bc0c-4272-ad75-0f4343014c88",
+    "jenis": "pns",
+    "pns_id": "A8ACA78C42033912E040640A040269BB",
+    "nip_lama": "480118556",
+    "nip": "197309301998032002",
+    "photo": "https:\/\/api.sim-asn.bkpsdm.karawangkab.go.id\/pegawai\/197309301998032002\/photo\/934b1d41-7a69-4537-af99-5252968628cc",
+    "nama": "Gina Octavina",
+    "panggilan": "Gina",
+    "gelar_depan": null,
+    "gelar_belakang": "S.Sos",
+    "nama_lengkap": "Gina Octavina S.Sos",
+    "jenis_kelamin": "perempuan",
+    "tempat_lahir": "Bandung",
+    "tanggal_lahir": "1973-09-30",
+    "usia": 47,
+    "agama": "islam",
+    "status_pernikahan": "kawin",
+    "pendidikan_terakhir": {
+        "id": 1465,
+        "jenjang": "pendidikan_tinggi",
+        "tingkat": {
+            "id": 9,
+            "urutan": 7,
+            "nama": "Sarjana",
+            "singkatan": "S1",
+            "jenjang": "pendidikan_tinggi"
+        },
+        "jurusan": null,
+        "instansi": {
+            "nama": "STIA YPIAMI",
+            "jenis": "swasta",
+            "tingkat": {
+                "id": 9,
+                "urutan": 7,
+                "nama": "Sarjana",
+                "singkatan": "S1",
+                "jenjang": "pendidikan_tinggi"
+            },
+            "id_tingkat": 9,
+            "singkatan": null,
+            "id_sotk_request": 968
+        },
+        "tahun_masuk": 2001,
+        "tahun_lulus": 2005,
+        "dokumen": {
+            "id": 3732,
+            "jenis": "ijazah",
+            "label": "Ijazah S1",
+            "nomor": "006.51\/STIA-YPIAMI\/II\/2005",
+            "tanggal": "2005-06-01",
+            "lembaga_penerbit": "STIA YPIAMI",
+            "jabatan_penandatangan": "Rektor",
+            "pejabat_penandatangan": "Drs. Mey Sugiyanto, M.Si",
+            "file": null
+        }
+    },
+    "tanggal_mulai_bekerja": "1998-03-20",
+    "tanggal_selesai_bekerja": null,
+    "tanggal_pensiun": {
+        "bup": "58",
+        "tanggal_lahir": "1973-09-30",
+        "tanggal_pensiun": "2031-10-01"
+    },
+    "masa_kerja": 23,
+    "dokumen_masuk": null,
+    "dokumen_berhenti": null,
+    "skpd": {
+        "id": 29,
+        "nama": "Badan Pengelolaan Keuangan dan Aset Daerah",
+        "jenis": "badan",
+        "logo": "https:\/\/api.sotk.bkpsdm.karawangkab.go.id\/skpd\/29\/logo",
+        "singkatan": "BPKAD"
+    },
+    "unit_kerja": {
+        "id": 1924,
+        "nama": "Verifikasi Penerbitan Sp2d Belanja Langsung",
+        "singkatan": null,
+        "jenis": "sub_bidang",
+        "id_skpd": 29,
+        "id_parent": 1921,
+        "nama_lengkap": "Sub Bidang Verifikasi Penerbitan Sp2d Belanja Langsung"
+    },
+    "unit_kerja_parents": [
+        {
+            "id": 1921,
+            "nama": "Penatausahaan Keuangan",
+            "singkatan": null,
+            "jenis": "bidang",
+            "id_skpd": 29,
+            "id_parent": null,
+            "nama_lengkap": "Bidang Penatausahaan Keuangan"
+        }
+    ],
+    "jabatan": [
+        {
+            "id": 397,
+            "sotk_urutan": "01.32.03.03.01",
+            "jenis": "definitif",
+            "nama": "Analis Perbendaharaan",
+            "calon": 0,
+            "has_referensi": true,
+            "referensi": {
+                "id": 5462,
+                "jenis": "pelaksana",
+                "urutan": "01.32.03.03.01",
+                "id_referensi": 133,
+                "nama": "Analis Perbendaharaan",
+                "spesifikasi": null,
+                "nama_lengkap": "Analis Perbendaharaan",
+                "bup": {
+                    "id": 1,
+                    "bup": 58,
+                    "segmentasi": [
+                        {
+                            "id": 2,
+                            "label": "Jabatan Administrator",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "tingkat",
+                                        "operator": "eq",
+                                        "value": 4
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 2,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 3,
+                            "label": "Jabatan Pengawas",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "tingkat",
+                                        "operator": "eq",
+                                        "value": 5
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 3,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "label": "Jabatan Pelaksana",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "jenis_jabatan",
+                                        "operator": "eq",
+                                        "value": "pelaksana"
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 4,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 7,
+                            "label": "Jabatan Fungsional - Muda",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "jenis_jabatan",
+                                        "operator": "eq",
+                                        "value": "fungsional"
+                                    },
+                                    {
+                                        "relation": "jenjang_jabatan",
+                                        "operator": "eq",
+                                        "value": "ahli_muda"
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 7,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "label": "Jabatan Fungsional - Pratama",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "jenis_jabatan",
+                                        "operator": "eq",
+                                        "value": "fungsional"
+                                    },
+                                    {
+                                        "relation": "jenjang_jabatan",
+                                        "operator": "eq",
+                                        "value": "ahli_pratama"
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 8,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 9,
+                            "label": "Jabatan Fungsional - Penyelia",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "jenis_jabatan",
+                                        "operator": "eq",
+                                        "value": "fungsional"
+                                    },
+                                    {
+                                        "relation": "jenjang_jabatan",
+                                        "operator": "eq",
+                                        "value": "penyelia"
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 9,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 10,
+                            "label": "Jabatan Fungsional - Pelaksana Lanjutan \/ Mahir",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "jenis_jabatan",
+                                        "operator": "eq",
+                                        "value": "fungsional"
+                                    },
+                                    {
+                                        "relation": "jenjang_jabatan",
+                                        "operator": "eq",
+                                        "value": "pelaksana_lanjutan"
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 10,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 11,
+                            "label": "Jabatan Fungsional - Pelaksana \/ Trampil",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "jenis_jabatan",
+                                        "operator": "eq",
+                                        "value": "fungsional"
+                                    },
+                                    {
+                                        "relation": "jenjang_jabatan",
+                                        "operator": "eq",
+                                        "value": "pelaksana"
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 11,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        },
+                        {
+                            "id": 12,
+                            "label": "Jabatan Fungsional - Pemula",
+                            "queries": [
+                                [
+                                    {
+                                        "relation": "jenis_jabatan",
+                                        "operator": "eq",
+                                        "value": "fungsional"
+                                    },
+                                    {
+                                        "relation": "jenjang_jabatan",
+                                        "operator": "eq",
+                                        "value": "pelaksana_pemula"
+                                    }
+                                ]
+                            ],
+                            "status": "active",
+                            "pivot": {
+                                "id_bup": 1,
+                                "id_segmentasi": 12,
+                                "created_at": "2020-12-01T08:36:28.000000Z",
+                                "updated_at": "2020-12-01T08:36:28.000000Z"
+                            }
+                        }
+                    ]
+                },
+                "referensi": {
+                    "jenis": "pelaksana",
+                    "id": 133,
+                    "jabatan": "Analis Perbendaharaan",
+                    "id_jenis_jabatan_pelaksana": 1,
+                    "jenis_jabatan_pelaksana": {
+                        "id": 1,
+                        "jenis": "Perencanaan",
+                        "tugas_pokok": null
+                    },
+                    "tugas_pokok": null
+                },
+                "is_jabatan_kepala": false,
+                "id_jabatan_atasan": 1960,
+                "id_jabatan_group": null,
+                "jabatan_bawahan_group": null,
+                "has_bawahan": null,
+                "formasi": 2,
+                "filled": null,
+                "skpd": null,
+                "unit_kerja": null,
+                "unit_kerja_parents": null
+            },
+            "skpd": {
+                "id": 29,
+                "nama": "Badan Pengelolaan Keuangan dan Aset Daerah",
+                "jenis": "badan",
+                "logo": "https:\/\/api.sotk.bkpsdm.karawangkab.go.id\/skpd\/29\/logo",
+                "singkatan": "BPKAD"
+            },
+            "unit_kerja": {
+                "id": 1924,
+                "nama": "Verifikasi Penerbitan Sp2d Belanja Langsung",
+                "singkatan": null,
+                "jenis": "sub_bidang",
+                "id_skpd": 29,
+                "id_parent": 1921,
+                "nama_lengkap": "Sub Bidang Verifikasi Penerbitan Sp2d Belanja Langsung"
+            },
+            "unit_kerja_parents": [
+                {
+                    "id": 1921,
+                    "nama": "Penatausahaan Keuangan",
+                    "singkatan": null,
+                    "jenis": "bidang",
+                    "id_skpd": 29,
+                    "id_parent": null,
+                    "nama_lengkap": "Bidang Penatausahaan Keuangan"
+                }
+            ],
+            "is_jabatan_kepala": false,
+            "tanggal_mulai": "2019-01-01",
+            "tanggal_selesai": null,
+            "id_golongan": 1980,
+            "golongan": {
+                "id": 1980,
+                "referensi": {
+                    "id": 7,
+                    "urutan": 7,
+                    "golongan": "III\/c",
+                    "pangkat": "Penata"
+                },
+                "tanggal_mulai": "2014-10-01",
+                "tanggal_selesai": "2018-10-01",
+                "gaji_pokok": null,
+                "masa_kerja": {
+                    "tahun": null,
+                    "bulan": null
+                },
+                "dokumen": {
+                    "id": 3734,
+                    "jenis": "sk_golongan",
+                    "label": "SK Golongan III\/c",
+                    "nomor": "827\/kep.4023\/BKD\/2014",
+                    "tanggal": "2014-10-01",
+                    "lembaga_penerbit": "Pemerintah Daerah",
+                    "jabatan_penandatangan": "Bupati Karawang",
+                    "pejabat_penandatangan": "Bupati Karawang",
+                    "file": null
+                },
+                "is_active": false
+            },
+            "dokumen": {
+                "id": 3741,
+                "jenis": "sk_jabatan",
+                "label": "SK Jabatan Analis Perbendaharaan",
+                "nomor": "800\/4614.753\/Bangpeg ASN\/2018",
+                "tanggal": "2018-12-03",
+                "lembaga_penerbit": "Pemerintah Daerah",
+                "jabatan_penandatangan": "Bupati Karawang",
+                "pejabat_penandatangan": "BUPATI KARAWANG",
+                "file": null
+            },
+            "is_active": true
+        }
+    ],
+    "golongan": {
+        "id": 1979,
+        "referensi": {
+            "id": 6,
+            "urutan": 6,
+            "golongan": "III\/d",
+            "pangkat": "Penata Tk.I"
+        },
+        "tanggal_mulai": "2018-10-01",
+        "tanggal_selesai": null,
+        "gaji_pokok": null,
+        "masa_kerja": {
+            "tahun": null,
+            "bulan": null
+        },
+        "dokumen": {
+            "id": 3733,
+            "jenis": "sk_golongan",
+            "label": "SK Golongan III\/d",
+            "nomor": "823\/Kep.5022\/BKPSDM\/2018",
+            "tanggal": "2018-10-01",
+            "lembaga_penerbit": "Pemerintah Daerah",
+            "jabatan_penandatangan": "Bupati Karawang",
+            "pejabat_penandatangan": "SEKRETARIS DAERAH",
+            "file": null
+        },
+        "is_active": true
+    },
+    "status": "active"
+}
