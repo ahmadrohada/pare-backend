@@ -14,6 +14,7 @@ use App\Http\Resources\SasaranKinerja as SasaranKinerjaResource;
 
 
 use App\Services\Datatables\SasaranKinerjaDataTable;
+use App\Services\Datatables\SasaranKinerjaBawahanDataTable;
 
 use Validator;
 
@@ -60,6 +61,13 @@ class SasaranKinerjaController extends Controller
     public function SasaranKinerjaList(Request $request)
     {
         $searchDatas = new SasaranKinerjaDataTable($request->all());
+        $data = $searchDatas->search();
+        return $data;
+    }
+
+    public function SasaranKinerjaBawahanList(Request $request)
+    {
+        $searchDatas = new SasaranKinerjaBawahanDataTable($request->all());
         $data = $searchDatas->search();
         return $data;
     }

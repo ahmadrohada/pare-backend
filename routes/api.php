@@ -185,6 +185,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::delete('sasaran_kinerja', [SasaranKinerjaController::class, 'SasaranKinerjaDestroy']);
 
 
+    Route::get('sasaran_kinerja_bawahan_list', [SasaranKinerjaController::class, 'SasaranKinerjaBawahanList']);
+
+
     //========================================================================================================//
 	//========================        SASARAN KINERJA  PEJABAT PENILAI         ===============================//
 	//========================================================================================================//
@@ -222,6 +225,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::post('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Store']);
     Route::get('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Detail']);
     Route::put('indikator_kinerja_individu', [IndikatorKinerjaIndividuController::class, 'Update']);
+
+
+
 
 
     //========================================================================================================//
