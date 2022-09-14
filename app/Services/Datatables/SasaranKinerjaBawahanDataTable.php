@@ -91,6 +91,7 @@ class SasaranKinerjaBawahanDataTable {
         $i['pejabat_penilai']                   = json_decode($x->pejabat_penilai);
         $i['atasan_pejabat_penilai']            = json_decode($x->atasan_pejabat_penilai);
 
+        $i['rencana_kerja']                     = json_decode($x->RencanaKinerja);
 
 
         $i['jenis_jabatan_skp']         = $x->jenis_jabatan_skp;
