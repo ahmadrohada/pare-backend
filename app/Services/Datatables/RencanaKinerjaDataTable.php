@@ -64,18 +64,25 @@ class RencanaKinerjaDataTable {
     foreach( $data AS $x ){
         $no = $no+1;
 
-        if ( $this->jenisJabatan != "JABATAN PIMPINAN TINGGI"){
-            //JIKA BUKAN JPT
-            if ( $x->MatriksHasil->level == 'S2' ){
-                $ss_data  = SasaranStrategis::WHERE('id',$x->MatriksHasil->pk_ss_id)->first();
-                $rencana_kerja_pimpinan = ( $ss_data != null ) ? $ss_data->label : "";
+        //jika kinerja utama
+        if ( $x->jenis_rencana_kinerja == "kinerja_utama"){
+            if ( $this->jenisJabatan != "JABATAN PIMPINAN TINGGI"){
+                //JIKA BUKAN JPT
+                if ( $x->MatriksHasil->level == 'S2' ){
+                    $ss_data  = SasaranStrategis::WHERE('id',$x->MatriksHasil->pk_ss_id)->first();
+                    $rencana_kerja_pimpinan = ( $ss_data != null ) ? $ss_data->label : "";
+                }else{
+                    $mh_data  = MatriksHasil::WHERE('id',$x->MatriksHasil->parent_id)->first();
+                    $rencana_kerja_pimpinan = ( $mh_data != null ) ? $mh_data->label : "";
+                }
             }else{
-                $mh_data  = MatriksHasil::WHERE('id',$x->MatriksHasil->parent_id)->first();
-                $rencana_kerja_pimpinan = ( $mh_data != null ) ? $mh_data->label : "";
+                $rencana_kerja_pimpinan = null;
             }
         }else{
             $rencana_kerja_pimpinan = null;
         }
+
+
 
 
         //jika indikator nya tidak null
