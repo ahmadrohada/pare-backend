@@ -216,10 +216,17 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     //========================================================================================================//
 	//======================           SASARAN KINERJA - PERILAKU KERJA       ================================//
 	//========================================================================================================//
+
+
+
     Route::get('sasaran_kinerja_perilaku_kerja', [PerilakuKerjaController::class, 'List']);
     Route::post('sasaran_kinerja_perilaku_kerja', [PerilakuKerjaController::class, 'Store']);
     Route::put('sasaran_kinerja_perilaku_kerja', [PerilakuKerjaController::class, 'Update']);
     Route::delete('sasaran_kinerja_perilaku_kerja', [PerilakuKerjaController::class, 'Destroy']);
+
+    Route::get('list_perwujudan_perilaku', [PerilakuKerjaController::class, 'ListPerwujudanPerilaku']);
+
+
 
 
     //========================================================================================================//

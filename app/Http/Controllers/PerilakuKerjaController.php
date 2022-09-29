@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SasaranKinerja;
 use App\Models\RencanaKinerja;
-use App\Models\PerilakuKerja;
-use App\Models\PointPerilakuKerja;
+use App\Models\PerilakuKerjaCoreValues;
+use App\Models\PerilakuKerjaPanduan;
+use App\Models\PerilakuKerjaPerwujudan;
 use App\Models\SasaranKinerjaPerilakuKerja;
 
 
@@ -17,14 +18,37 @@ class PerilakuKerjaController extends Controller
 {
 
 
+    public function ListPerwujudanPerilaku(Request $request)
+    {
+
+        $perwujudan_perilaku =  PerilakuKerjaPerwujudan::WHERE('core_value_id','=',$request->core_value_id)->get();
+
+        $response['list_perwujudan_perilaku'] = array();
+        $no = 1;
+
+        foreach ($perwujudan_perilaku as $data) {
+            $dt['no']                   = $no;
+            $dt['label']                = $data['label'];
+            array_push($response['list_perwujudan_perilaku'], $dt);
+        }
+
+        return [
+            'list_perwujudan_perilaku'  => $response['list_perwujudan_perilaku']
+        ];
+
+
+    }
+
+
+
     public function List(Request $request)
     {
 
 
-        $perilaku_kerja = PerilakuKerja::
+        $perilaku_kerja = PerilakuKerjaCoreValues::
                 SELECT(
                         'id',
-                        'aspek'
+                        'label'
                         )
                 ->get();
 
@@ -37,16 +61,16 @@ class PerilakuKerjaController extends Controller
             $perilaku_kerja_id = $data['id'];
 
             $dt['no']                   = $no;
-            $dt['aspek']                = $data['aspek'];
+            $dt['label']                = $data['label'];
             $dt['point_penilaian']      = null;
             $dt['ekspektasi_pimpinan']  = null;
             $dt['id']                   = $data['id'];
             $dt['skp_id']               = $request->sasaran_kinerja_id;
 
             //point penilaian objet
-            $point = PointPerilakuKerja::SELECT('label')->WHERE('perilaku_kerja_id','=', $perilaku_kerja_id)->get();
+            $point = PerilakuKerjaPanduan::SELECT('label')->WHERE('core_value_id','=', $perilaku_kerja_id)->get();
 
-            $dt2['aspek']                    = null;
+            $dt2['label']                    = null;
             $dt2['point_penilaian']          = $point;
             $dt2['id']                       = $data['id'];
             $dt2['skp_id']                   = $request->sasaran_kinerja_id;
@@ -54,7 +78,7 @@ class PerilakuKerjaController extends Controller
             //Perilaku kerja
             $ekspektasi_pimpinan = SasaranKinerjaPerilakuKerja::SELECT('id','label')
                                                 ->WHERE('sasaran_kinerja_id','=', $request->sasaran_kinerja_id)
-                                                ->WHERE('perilaku_kerja_id','=', $perilaku_kerja_id)
+                                                ->WHERE('core_value_id','=', $perilaku_kerja_id)
                                                 ->get();
 
 
@@ -93,16 +117,40 @@ class PerilakuKerjaController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->messages()], 422);
         }
-        $ah    = new SasaranKinerjaPerilakuKerja;
-        $ah->sasaran_kinerja_id            = $request->sasaranKinerjaId;
-        $ah->perilaku_kerja_id             = $request->coreValueId;
-        $ah->label                         = $request->perilakuKerjaLabel;
 
-        if ($ah->save()) {
+        //jika array
+        $arrayPerilakuKerja = $request->perilakuKerjaLabel;
+        $no = 0 ;
+        if($request->option == 'pilihan') {
+            foreach ($arrayPerilakuKerja as $x) {
+                $ah    = new SasaranKinerjaPerilakuKerja;
+                $ah->sasaran_kinerja_id            = $request->sasaranKinerjaId;
+                $ah->core_value_id                 = $request->coreValueId;
+                $ah->label                         = $x['label'];
+
+                if ($x != null) {
+                    $ah->save();
+                    $no++;
+                }
+            }
+
+        }else {
+            $ah    = new SasaranKinerjaPerilakuKerja;
+            $ah->sasaran_kinerja_id            = $request->sasaranKinerjaId;
+            $ah->core_value_id                 = $request->coreValueId;
+            $ah->label                         = $request->perilakuKerjaLabel;
+            $ah->save();
+            $no++;
+
+
+        }
+        if ($no > 0) {
             return \Response::make("Sukses", 200);
         } else {
             return \Response::make('error', 500);
         }
+
+
     }
 
 
