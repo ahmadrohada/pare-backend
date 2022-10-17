@@ -33,7 +33,7 @@ class UserDataTable {
 
     private function setLocalParameters( $parameters )
     {
-        $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : 0;
+        $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : null;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : null;
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
@@ -70,7 +70,7 @@ class UserDataTable {
 
                 //$h['nama_jabatan']      = json_decode($x->jabatan);
 
-                $h['id_golongan']	= $x->id_golongan;
+                //$h['id_golongan']	= $x->id_golongan;
                 $h['id']			= $x->id_user;
                 $h['username']      = $x->username;
                 $h['nip']           = $x->nip;
@@ -143,7 +143,7 @@ class UserDataTable {
     }
     private function applySkpdId()
     {
-        if( $this->skpdId != '' ){
+        if( $this->skpdId != null ){
             $skpdId = urldecode( $this->skpdId );
 
             $this->query->where(function( $query ) use ( $skpdId ){
