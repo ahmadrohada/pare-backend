@@ -19,6 +19,7 @@ class SasaranKinerjaDataTable {
                                                 'pegawai_yang_dinilai->nama AS nama_pegawai',
                                                 'pegawai_yang_dinilai->jabatan AS jabatan_pegawai',
                                                 'pegawai_yang_dinilai->nip AS nip_pegawai',
+                                                'pegawai_yang_dinilai->instansi AS skpd',
 
                                                 'pejabat_penilai->nama AS nama_pejabat_penilai',
                                                 'pejabat_penilai->jabatan AS jabatan_pejabat_penilai',
@@ -82,6 +83,7 @@ class SasaranKinerjaDataTable {
         $i['nama_pegawai']              = $x->nama_pegawai;
         $i['jabatan_pegawai']           = $x->jabatan_pegawai;
         $i['nip_pegawai']               = $x->nip_pegawai;
+        $i['skpd']                      = $x->skpd;
 
         $i['nama_pejabat_penilai']            = $x->nama_pejabat_penilai;
         $i['jabatan_pejabat_penilai']         = $x->jabatan_pejabat_penilai;
