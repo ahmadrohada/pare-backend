@@ -96,7 +96,7 @@ class UserRoleController extends Controller
         }
 
         if ( $request->is_admin == false ){
-            $sr    = RoleUser::find($request->id)->WHERE('role_id','=','2');
+            $sr    = RoleUser::WHERE('role_id','=','2')->WHERE('user_id','=',$request->id);
             $sr->delete();
         }
 
