@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\RoleUser;
 
-class UserRole extends Controller
+use Validator;
+
+class UserRoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -65,10 +68,41 @@ class UserRole extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     *
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $messages = [
+            'id.required'         => 'Harus diisi',
+            'is_admin.required'    => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'id'              => 'required',
+                'is_admin'         => 'required',
+            ],
+            $messages
+        );
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        if ( $request->is_admin == true ){
+            $ah    = new RoleUser;
+            $ah->user_id            = $request->id;
+            $ah->role_id            = '2';
+            $ah->save();
+        }
+
+        if ( $request->is_admin == false ){
+            $sr    = RoleUser::find($request->id)->WHERE('role_id','=','2');
+            $sr->delete();
+        }
+
+
+
+
     }
 
     /**

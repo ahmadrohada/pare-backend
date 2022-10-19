@@ -21,6 +21,7 @@ use App\Http\Controllers\ManualIndikatorKinerjaController;
 use App\Http\Controllers\ManajemenKinerjaController;
 use App\Http\Controllers\MatrikPeranHasilController;
 use App\Http\Controllers\PerilakuKerjaController;
+use App\Http\Controllers\UserRoleController;
 
 
 
@@ -67,6 +68,12 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('user_jabatan_detail', [UserController::class, 'UserJabatanDetail']);
 
     Route::get('user_all', [UserController::class, 'UserAllList']);
+
+
+     //========================================================================================================//
+	//================================         U  S  E  R    R O L E       ====================================//
+	//========================================================================================================//
+    Route::post('update_role', [UserRoleController::class, 'update']);
 
     //========================================================================================================//
 	//===========================           PEGAWAI FROM SIM ASN          ====================================//

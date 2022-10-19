@@ -50,7 +50,7 @@ class UserDataTable {
 
     $cafes = $this->query->paginate( $this->take );
     $pagination = array(
-        'current_page'  => $cafes->currentPage(),
+        'current_page'  => ($cafes->total() != 0 )?$cafes->currentPage():0,
         'total_page'    => ( ($cafes->perPage() != 0 ) && ($cafes->total() != 0 )  ) ? ceil($cafes->total()/$cafes->perPage()) : 0,
         'per_page'      => $cafes->count(),
         'limit'         => (int)$cafes->perPage(),
