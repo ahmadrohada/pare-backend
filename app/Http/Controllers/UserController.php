@@ -11,6 +11,7 @@ use App\Http\Resources\User as UserResource;
 use Illuminate\Pagination\Paginator;
 
 use App\Services\Datatables\UserDataTable;
+use App\Services\Datatables\UserAllDataTable;
 
 use GuzzleHttp\Client;
 
@@ -168,6 +169,13 @@ class UserController extends Controller
 
     public function UserList(Request $request){
         $searchDatas = new UserDataTable($request->all());
+        $data = $searchDatas->search();
+        return $data;
+
+    }
+
+    public function UserAllList(Request $request){
+        $searchDatas = new UserAllDataTable($request->all());
         $data = $searchDatas->search();
         return $data;
 

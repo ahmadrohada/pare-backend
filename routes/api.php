@@ -66,6 +66,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('user_jabatan_list', [UserController::class, 'UserJabatanList']);
     Route::get('user_jabatan_detail', [UserController::class, 'UserJabatanDetail']);
 
+    Route::get('user_all', [UserController::class, 'UserAllList']);
+
     //========================================================================================================//
 	//===========================           PEGAWAI FROM SIM ASN          ====================================//
 	//========================================================================================================//
