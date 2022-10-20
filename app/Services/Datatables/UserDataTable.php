@@ -63,7 +63,53 @@ class UserDataTable {
 
     foreach( $data AS $x ){
 
+        //NEW MODEL
+        $h['jabatan']     = array();
+
+        //$h['id_golongan']	= $x->id_golongan;
+        $h['id']			= $x->id_user;
+        $h['username']      = $x->username;
+        $h['nip']           = $x->nip;
+        $h['nama_lengkap']  = $x->nama_lengkap;
+
+        //SKPD
+        $data_skpd          = json_decode($x->skpd);
+        $h['skpd']          = ($data_skpd != null )?$data_skpd->nama:null;
+
+        //is admin
+        $admin = RoleUser::WHERE('user_id',$x->id_user)->WHERE('role_id','2')->exists();
+        $h['is_admin'] = $admin;
+
+        //JABATAN
         if ($x->jabatan ){
+            foreach( json_decode($x->jabatan) AS $y ){
+
+                //mengetahui jenis jabatan
+                $jenis_jabatan = isset($y->referensi->referensi->jenis)?($y->referensi->referensi->jenis):null;
+                $h['jenis_jabatan']     = $jenis_jabatan;
+                $h['jabatan_referensi_id']  = $y->referensi->id_referensi;
+
+                if ( $jenis_jabatan == 'struktural'){
+                    //eselon
+                    $h['jabatan_eselon_id']     = $y->referensi->referensi->id;
+                    $h['jabatan_eselon']        = $y->referensi->referensi->eselon->eselon;
+
+                }else if ( $jenis_jabatan == 'pelaksana'){
+                    $h['jabatan_eselon_id']     = null;
+                    $h['jabatan_eselon']        = null;
+                }
+
+
+                $i['nama_jabatan']        = $y->nama;
+                $i['instansi']            = $y->skpd->nama;
+
+                array_push($h['jabatan'], $i);
+            }
+        }
+
+        array_push($response['data'], $h);
+
+        /* if ($x->jabatan ){
             //diulang sesuai jumlah jabatan
             foreach( json_decode($x->jabatan) AS $y ){
                 //data pegawai
@@ -122,16 +168,9 @@ class UserDataTable {
 
 
             }
-        }
+        } */
 
     }
-
-    //$response['data'] = collect($response['data'])->sortByDesc('jabatan_golongan_id')->values();
-    //$response['data'] = collect($response['data'])->sortBy('jabatan_referensi_id')->values();
-
-
-
-
 
     return [
         'data'          => $response['data'],
