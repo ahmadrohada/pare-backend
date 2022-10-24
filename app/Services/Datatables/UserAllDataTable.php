@@ -150,7 +150,8 @@ class UserAllDataTable {
             $this->query->where(function( $query ) use ( $search ){
 
                 $query->whereRaw('LOWER(JSON_EXTRACT(users.pegawai, "$.nama_lengkap")) like ?', ['"%' . strtolower($search) . '%"']);
-                $query->orwhere('users.pegawai->skpd->nama','LIKE', '%'.$search.'%');
+                $query->orwhere('users.pegawai->skpd->nama','like', '%'.ucfirst($search).'%');
+                $query->orwhere('users.nip','LIKE', '%'.$search.'%');
 
             });
         }
