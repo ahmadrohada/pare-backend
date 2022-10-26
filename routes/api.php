@@ -69,6 +69,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::get('user_all', [UserController::class, 'UserAllList']);
 
+    Route::post('addPegawai', [UserController::class, 'addPegawai']);
+
 
      //========================================================================================================//
 	//================================         U  S  E  R    R O L E       ====================================//
