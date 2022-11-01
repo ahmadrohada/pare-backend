@@ -21,6 +21,7 @@ class UserAllDataTable {
                                     'users.username AS username',
                                     'users.id AS id_user',
                                     'users.nip AS nip',
+                                    'users.updated_at',
                                     'users.pegawai AS pegawai',
                                     'users.pegawai->skpd AS skpd',
                                     'users.pegawai->skpd->id AS skpd_id',
@@ -80,6 +81,9 @@ class UserAllDataTable {
                 $h['username']      = $x->username;
                 $h['nip']           = $x->nip;
                 $h['nama_lengkap']  = $x->nama_lengkap;
+
+                //LAST update
+                $h['updated_at']   = $x->updated_at;
 
                 //SKPD
                 $data_skpd          = json_decode($x->skpd);
