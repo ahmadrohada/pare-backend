@@ -59,6 +59,7 @@ class PerjanjianKinerjaDataTable {
 
         $i['id']                = $x->perjanjian_kinerja_id;
         $i['periode']           = $x->periode;
+        $i['skpd_id']           = $x->skpd_id;
         $i['nama_skpd']         = $x->nama_skpd;
         $i['nama_kepala_skpd']  = $x->nama_kepala_skpd;
         $i['nama_admin']        = $x->nama_admin;
