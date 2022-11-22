@@ -57,6 +57,12 @@ class PerjanjianKinerjaDataTable {
     foreach( $data AS $x ){
         $no = $no+1;
 
+        if($x->status == 'open'){
+            $is_open = true;
+        }else{
+            $is_open = false;
+        }
+
         $i['id']                = $x->perjanjian_kinerja_id;
         $i['periode']           = $x->periode;
         $i['skpd_id']           = $x->skpd_id;
@@ -65,6 +71,7 @@ class PerjanjianKinerjaDataTable {
         $i['nama_admin']        = $x->nama_admin;
         $i['singkatan_skpd']    = $x->singkatan_skpd;
         $i['status']            = $x->status;
+        $i['is_open']           = $is_open;
         $i['created_at']        = $x->created_at;
         array_push($response['data'], $i);
 

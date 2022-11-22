@@ -415,6 +415,45 @@ class PerjanjianKinerjaController extends Controller
         }
     }
 
+    public function PerjanjianKinerjaUpdateStatus(Request $request)
+    {
+        $messages = [
+            'id'                                => 'Harus diisi',
+            'is_open'                           => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'id'                           => 'required',
+                'is_open'                      => 'required'
+            ],
+            $messages
+        );
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = PerjanjianKinerja::find($request->id);
+
+        if ( $request->is_open == true ){
+            $status = 'open';
+        }else{
+            $status = 'close';
+        }
+
+        $update->status            = $status;
+
+        if ($update->save()) {
+            $data = array(
+                        'id'        => $update->id,
+                    );
+            return \Response::make($data, 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
+
     public function PerjanjianKinerjaDetail(Request $request)
     {
         $pk = PerjanjianKinerja::with(array('Periode' => function($query) {

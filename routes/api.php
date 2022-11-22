@@ -166,6 +166,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::put('submit_perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaSubmit']);
     Route::delete('perjanjian_kinerja', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaDestroy']);
 
+    Route::put('update_pk_status', [PerjanjianKinerjaController::class, 'PerjanjianKinerjaUpdateStatus']);
+
+
 
     // ======= SASARAN STRATEGIS ===============//
     Route::get('sasaran_strategis_skpd', [PerjanjianKinerjaController::class, 'SasaranStrategis']);
