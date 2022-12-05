@@ -436,6 +436,7 @@ class MatrikPeranHasilController extends Controller
         if (!isset($request->role)) {
             //nyari jneis jabatan atasan
             $jj_atasan = MatriksPeran::WHERE('jabatan->id', '=', $jabatan_atasan_id)->SELECT('role')->first();
+            return $jj_atasan->role;
             switch ($jj_atasan->role) {
                 case "koordinator":
                     $role =  "ketua";
@@ -447,7 +448,7 @@ class MatrikPeranHasilController extends Controller
                     break;
                 case "anggota":
                     $role = null;
-                    $level =  "S5";
+                    //$level =  "S5";
                     break;
             }
         } else {
