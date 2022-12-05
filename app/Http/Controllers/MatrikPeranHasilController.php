@@ -447,6 +447,7 @@ class MatrikPeranHasilController extends Controller
                     break;
                 case "anggota":
                     $role = null;
+                    $level =  "S5";
                     break;
             }
         } else {
