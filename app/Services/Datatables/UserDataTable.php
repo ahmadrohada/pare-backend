@@ -14,21 +14,23 @@ class UserDataTable {
     public function __construct( $parameters )
     {
         $this->setLocalParameters( $parameters );
-        $querya = "CAST(id_golongan AS DECIMAL(10,2)) ASC";
+        //$querya = "CAST(id_golongan AS DECIMAL(10,2)) ASC";
+        //$querya = "CAST(id_jabatan AS DECIMAL(10,2)) ASC";
         $this->query = User:: select(
-                                    'users.username AS username',
-                                    'users.id AS id_user',
-                                    'users.nip AS nip',
-                                    'users.pegawai->nama_lengkap AS nama_lengkap',
-                                    'users.pegawai->jabatan AS jabatan',
-                                    'users.pegawai->jabatan->referensi->id_referensi AS jabatan_id',
-                                    'users.pegawai->jabatan.nama AS nama_jabatan',
-                                    'users.pegawai->golongan->referensi->id AS id_golongan',
+                                    'username AS username',
+                                    'id AS id_user',
+                                    'nip AS nip',
+                                    'pegawai->nama_lengkap AS nama_lengkap',
+                                    'pegawai->jabatan AS jabatan',
+                                    'pegawai->jabatan->referensi->id_referensi AS jabatan_id',
+                                    'pegawai->jabatan.nama AS nama_jabatan',
+                                    'pegawai->golongan->referensi->id AS id_golongan',
 
-                                )
-                                //->orderBY(CAST'users.pegawai->golongan->referensi->id AS FLOAT','ASC');
-                                ->orderBYRaw($querya);
-                                //->orderBY('users.id','DESC');
+        );
+                                //->where('pegawai->jabatan->id', '>=', 1000);
+                                //->WHERE('pegawai->jabatan','!=','null')
+                                //->orderBYRaw($querya);
+                                //->orderBY('users.pegawai->jabatan->id','ASC');
     }
 
     private function setLocalParameters( $parameters )
@@ -71,6 +73,7 @@ class UserDataTable {
         $h['username']      = $x->username;
         $h['nip']           = $x->nip;
         $h['nama_lengkap']  = $x->nama_lengkap;
+
 
         //SKPD
         $data_skpd          = json_decode($x->skpd);
