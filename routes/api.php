@@ -227,6 +227,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('rencana_kinerja', [RencanaKinerjaController::class, 'Detail']);
     Route::delete('rencana_kinerja', [RencanaKinerjaController::class, 'Destroy']);
 
+
+    Route::post('rencana_kinerja_from_outcome', [RencanaKinerjaController::class, 'StoreFromOutcome']);
+
     //========================================================================================================//
 	//======================           SASARAN KINERJA - PERILAKU KERJA       ================================//
 	//========================================================================================================//
@@ -300,6 +303,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::get('list_outcome_atasan', [MatrikPeranHasilController::class, 'ListOutcomeAtasan']);
     Route::get('list_pejabat_penilai_mph', [MatrikPeranHasilController::class, 'ListPejabatPenilai']);
+
+    Route::get('list_outcome_jabatan', [MatrikPeranHasilController::class, 'ListOutcomeJabatan']);
+
 
 
 

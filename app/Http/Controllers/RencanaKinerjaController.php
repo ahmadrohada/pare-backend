@@ -136,6 +136,49 @@ class RencanaKinerjaController extends Controller
         }
     }
 
+
+    public function StoreFromOutcome(Request $request)
+    {
+        $messages = [
+            'sasaranKinerjaId.required'         => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'sasaranKinerjaId'                  => 'required',
+            ],
+            $messages
+        );
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+
+        $selectedOutcome = $request->selectedOutcome;
+        $no = 0;
+
+        foreach ($selectedOutcome as $x) {
+
+            $rk    = new RencanaKinerja;
+            $rk->sasaran_kinerja_id                     = $request->sasaranKinerjaId;
+            $rk->label                                  = $x['label'];
+            $rk->jenis_rencana_kinerja                  = 'kinerja_utama';
+            $rk->matriks_hasil_id                       = $x['id'];
+            $rk->save();
+
+            if ($rk->save()) {
+                $no++;
+            }
+        }
+
+        if ($no > 0) {
+            return \Response::make($no . "data berhasil tersimpan", 200);
+        } else {
+            return \Response::make("data tidak berhasil tersimpan", 400);
+        }
+    }
+
     public function Detail(Request $request)
     {
         $sk = RencanaKinerja::SELECT(

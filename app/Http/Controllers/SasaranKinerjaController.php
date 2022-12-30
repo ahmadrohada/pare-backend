@@ -288,6 +288,7 @@ class SasaranKinerjaController extends Controller
                                         ->WHERE('periode','=',$request->periodeLabel)
                                         ->first();
 
+                if ( $peran->MatriksHasil ){
                     foreach( $peran->MatriksHasil AS $y ){
                         $rk    = new RencanaKinerja;
                         $rk->sasaran_kinerja_id      = $ah->id;
@@ -297,6 +298,10 @@ class SasaranKinerjaController extends Controller
                         $rk->save();
 
                     }
+                }else{
+                    return \Response::make(['message' => "Jabatan tidak ditemukan pada matrik"], 500);
+                }
+
 
 
 

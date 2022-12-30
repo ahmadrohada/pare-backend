@@ -381,8 +381,9 @@ class UserController extends Controller
 
                         'jabatan_aktif_id'          => $x['id'],
                         'jabatan'                   => $x['nama'],
-                        'jenis_jabatan'             => $x['referensi']['referensi']['eselon']['tingkat']['tingkat'],
-                        'eselon'                    => $x['referensi']['referensi']['eselon']['eselon'],
+                        //'jenis_jabatan'             => $x['referensi']['referensi']['eselon']['tingkat']['tingkat'],
+                        //'eselon'                    => $x['referensi']['referensi']['eselon']['eselon'],
+                        'jenis_jabatan'             => $x['referensi'],
                         'skpd'                      => $x['skpd']['nama'],
                         'skpd_id'                   => $x['skpd']['id'],
                         'pangkat'                   => $x['golongan']['referensi']['pangkat'],

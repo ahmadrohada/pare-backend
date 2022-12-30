@@ -7,6 +7,7 @@ use App\Models\MatriksPeran;
 use App\Models\MatriksHasil;
 use App\Models\PerjanjianKinerja;
 use App\Models\SasaranKinerja;
+use App\Models\RencanaKinerja;
 
 use Validator;
 
@@ -641,6 +642,61 @@ class MatrikPeranHasilController extends Controller
             array_push($response['outcomeAtasan'], $r);
         }
         return $response;
+    }
+
+    public function ListOutcomeJabatan(Request $request)
+    {
+
+        $jabatan_id  = $request->jabatanId;
+        $periode     = $request->periode;
+        $skp_id      = $request->skpId;
+
+        //Cari list id outcome yang sudah ada di skp
+        $rk = RencanaKinerja::WHERE('sasaran_kinerja_id',$skp_id)->pluck('matriks_hasil_id')->toArray();
+        //return $rk;
+
+
+
+        $dt = MatriksPeran::WHERE('jabatan->id', '=', $jabatan_id)
+            ->WHERE('periode', '=', $periode)
+            ->SELECT('id AS id')
+            ->first();
+        if ($dt) {
+            $peran_id = $dt->id;
+        }
+
+        $response = array();
+        $response['outcome'] = array();
+        $response['last_update'] = '2020-01-01';
+
+        $data = MatriksHasil::WHERE('matriks_peran_id', $peran_id)->get();
+        foreach ($data as $y) {
+            $r['id']            = $y->id;
+            $r['label']         = $y->label;
+
+
+            //apakah sudah ada di skp
+            if ( in_array($r['id'], $rk )  ){
+                $r['status']        = '1';
+            }else{
+                $r['status']        = '0';
+            }
+
+            //last update
+            if ( $y->updated_at > $response['last_update'] ){
+                $response['last_update'] = $y->updated_at;
+            }
+
+
+
+            array_push($response['outcome'], $r);
+        }
+
+
+
+
+        return $response;
+
     }
 
 
