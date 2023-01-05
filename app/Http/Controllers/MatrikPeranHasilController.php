@@ -471,9 +471,24 @@ class MatrikPeranHasilController extends Controller
         }
 
 
+        //uji coba karena BPKAD atasan nya dari sekre
+        if ($skpd_id == 27 ){
+            //get list jabatan from SOTK
+            $a     = $this::list_jabatan($jabatan_atasan_id);
+            $b     = $this::list_jabatan(1915);
+            $list_jabatan_sotk = array_merge($a,$b);
 
-        //get list jabatan from SOTK
-        $list_jabatan_sotk     = $this::list_jabatan($jabatan_atasan_id);
+
+
+        }else{
+            //get list jabatan from SOTK
+            $list_jabatan_sotk     = $this::list_jabatan($jabatan_atasan_id);
+        }
+
+
+
+
+        //return $jabatan_atasan_id;
 
         //list jabatan dikurangi list jabatan yang sudah ada di role matrik
         $response['role'] = array();
