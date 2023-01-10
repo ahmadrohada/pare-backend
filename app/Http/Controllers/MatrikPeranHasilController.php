@@ -50,6 +50,39 @@ class MatrikPeranHasilController extends Controller
         }
     }
 
+    protected function list_jabatan_skpd($id_skpd)
+    {
+        //$token = env('SIMPEG_APP_TOKEN');
+        //$token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5M2NlNGNhOS1iNDczLTRmMzctYmQzNC0xYTAzYzVjNjFlNTgiLCJqdGkiOiI1Y2ZmYjcwNDgzNmVkZDMzZGM2MzlmNjYyN2RlNzRhNTkyY2I0OWU0NGJlNjEwZjY5MDBlYzRiZGFiZWZmNjMyNTliMTBkZmY4MjIzMmUxNSIsImlhdCI6MTYyNzgyNDU4NSwibmJmIjoxNjI3ODI0NTg1LCJleHAiOjE2NTkzNjA1ODUsInN1YiI6IiIsInNjb3BlcyI6WyIqIl19.GlE2yf4WJDtYvkThAjLYp37qxzN0NLqcS05YHFaMrQre4sY1izm1mVgO9Y-yCDasTz_0iZNrBOz1vMbw_PxsFxV9cBdPjIhuepcnk4vmN-iSe2fn0NP5rR3l2S-ZQmaT7HmPoABEcgGpTbKx_nOa43I6Y2UIzZsxPxQlDaRqfuSMBAtjm7QreGeD23K0CQQ4BMT3Nxe0iwqOwrYCjYTmu2m4JAhjmWN7amcJ95p_RdyrG0i-L9C-vGK1rO8LGtkAm4JjUmZLpGELjMpYMhIO11h2ok-TcBqaAJH_l92izQ5SHoR4UGmsyUiIygCmr8BD541zEOr4g6ITgk729lmXB_8faR0BQsbiGPA3NKq8YrHiJA63DP-iWmglE_QS4KTgSej6oU_5IM77kSXV90HTgPgzDTGgnDhtxWObcKTvCFsFlMR_aOePYEPTJj5qUIvy2lGgFJODwnr25Fc2m043tRDL_oQqBNXAl5rhTvjQxOWNylTqJw0rceuBCOOQZxPTw5L5OdOciecMfeRw3-E4dhPF7aWHwAdY4U71VAv78ACVG5NO2q4pxAoRBKEtS2pv0TgoAbkM3D-bH-C5b4XgUpylFUzIZlx4CN29FoMlwbuEbqi1hMUPu_GXOGXORXAzGHFoOIQAf8KHlO09RrQ2LUnB6-xPSvAJ-LbYZEwBGHg";
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5M2NlNGNhOS1iNDczLTRmMzctYmQzNC0xYTAzYzVjNjFlNTgiLCJqdGkiOiI3NmJhYjJkZDJjNWI1OGRlMTJiYWI3MWJiY2QxYzNjZTZhNzFmYTE0ZTJmODQ2YjBiNjRmODQyZGI2NTc4Zjc3NDBhY2I3ZTk4Njc3MTllNSIsImlhdCI6MTY1OTUwMTgwNywibmJmIjoxNjU5NTAxODA3LCJleHAiOjE2OTEwMzc4MDcsInN1YiI6IiIsInNjb3BlcyI6WyIqIl19.TQaQf6TEl852YMLYq2sR423EqabCKCPPtt9ZkgSv-DSX1hyZrhXNaRHRLDsIqKuXutenH-j26ncIxkBbVBx3MahAZwrFViw3vwnlOmHPIoOyxbjarm_FvLA2tHRq3MPFwjBoB53nkC6E9dclcLdtnJeNJnutfJldkkq-aQGTZz52GOjtzS4yizqnFvBKlOgEw3R-3UAUm5ieXI0p0msC-3V4IRpX7JNGSu0Sws9tcyCRcyg8I2Xk7RLe8J_3Oo9Ay8EpMUG7mahot1n4i-zRVDWB31OvcPyqPUtjSZ5Zx8b7N-uC9Px1_ShqOn0t6snai0DYbE8fW3AEuObiJ6QSXEc3Z2dnr_FtAwK7-cBvlBtZqpLkiGrFD1JjvsCWMxtPldpUHYn6Ug5fZdKrC5-4EqfxQIB1axb7sEufR95b7ZIcvs7SpU6MMwb3Jcsubi-en-jHRTrCZu0-K_LYEg0TXJHxAnhHNm4ArkppF-i7r6W5cvtx-NQXdkylB3JQMOP7gAXEraOBmLatYF0ELqKA1Bjw8MP9n8J5qosUgmTKbZtDoUR4a5E4v40rGW6_-XfYv59scmqjm4BoafyYDtFK0KidGsbyqVP4J9W6qb0kkdCtn1i3wpQ9SpRCMMZa9iRyaqrmzqzW3hZTJIPRI1IE42-HeaaKCrAL2RumgsznftA";
+        $headers = [
+            'Authorization' => 'Bearer ' . $token,
+            'Accept'        => 'application/json',
+        ];
+
+        try {
+            $client = new Client([
+                'base_uri' => 'https://api.sim-asn.bkpsdm.karawangkab.go.id',
+                'verify' => false,
+                'timeout' => 20, // Response timeout
+                'connect_timeout' => 20, // Connection timeout
+                'peer' => false
+            ]);
+            $response = $client->request('GET', '/api/sotk/jabatan?id_skpd=' . $id_skpd.'&limit=200', [
+                'headers' => $headers
+            ]);
+            $body = $response->getBody();
+            $arr_body = json_decode($body, true);
+            if (isset($arr_body['data']) && ($arr_body['data'] != null)) {
+                return $arr_body['data'];
+            } else {
+                return null;
+            }
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            return \Response::make(['message' => "Terjadi Kesalahan , SIM ASN not response"], 500);
+        }
+    }
+
     protected function detail_jabatan($id_jabatan)
     {
         //$token = env('SIMPEG_APP_TOKEN');
@@ -472,7 +505,7 @@ class MatrikPeranHasilController extends Controller
 
 
         //uji coba karena BPKAD atasan nya dari sekre
-        if ($skpd_id == 27 ){
+        /* if ($skpd_id == 27 ){
             //get list jabatan from SOTK
             $a     = $this::list_jabatan($jabatan_atasan_id);
             $b     = $this::list_jabatan(1915);
@@ -483,8 +516,9 @@ class MatrikPeranHasilController extends Controller
         }else{
             //get list jabatan from SOTK
             $list_jabatan_sotk     = $this::list_jabatan($jabatan_atasan_id);
-        }
+        } */
 
+        $list_jabatan_sotk     = $this::list_jabatan_skpd($skpd_id);
 
 
 
@@ -535,7 +569,7 @@ class MatrikPeranHasilController extends Controller
                                     ->SELECT('jabatan->id AS id')
                                     ->get();
 
-
+        //return $existing;
 
 
 
@@ -551,15 +585,20 @@ class MatrikPeranHasilController extends Controller
         //get detail jabatan pribadi from SOTK
         $jabatan_self     = $this::detail_jabatan($jabatan_atasan_id);
         //get list bawahan from SOTK
-        $list_jabatan_sotk     = $this::list_jabatan($jabatan_atasan_id);
-        array_push($list_jabatan_sotk, $jabatan_self);
+        //$list_jabatan_sotk     = $this::list_jabatan($jabatan_atasan_id);
+
+        //munculin semua aja deh 11/01/2023
+        $list_jabatan_sotk     = $this::list_jabatan_skpd($skpd_id);
+
+
+        //array_push($list_jabatan_sotk, $jabatan_self);
         $list_jabatan_sotk = collect($list_jabatan_sotk)->sortBy('id')->toArray();
 
         //list jabatan yang muncul hanya yang sudah ada di matrik peran hasil
 
         $response['role'] = array();
         foreach ($list_jabatan_sotk as $x) {
-            if (($x['is_jabatan_kepala'] === true) & (in_array($x['id'], $response['existing']))) {
+            if (/* ($x['is_jabatan_kepala'] === true) & */ (in_array($x['id'], $response['existing']))) {
                 //JABATAN LIST
                 $i['id']                = $x['id'];
                 $i['singkatan']         = $x['singkatan'];
@@ -678,6 +717,8 @@ class MatrikPeranHasilController extends Controller
             ->first();
         if ($dt) {
             $peran_id = $dt->id;
+        }else{
+            return null;
         }
 
         $response = array();
