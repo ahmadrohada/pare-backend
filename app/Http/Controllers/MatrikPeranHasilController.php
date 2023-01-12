@@ -566,7 +566,7 @@ class MatrikPeranHasilController extends Controller
                                         $query->WHERE('id', '=', $jabatan_atasan_id)
                                             ->orWhere('parent_id', '=', $jabatan_atasan_id);
                                     })
-                                    ->SELECT('jabatan->id AS id')
+                                    ->SELECT('role','jabatan->id AS id')
                                     ->get();
 
         //return $existing;
@@ -605,6 +605,51 @@ class MatrikPeranHasilController extends Controller
                 $i['nama_lengkap']      = $x['nama_lengkap'];
                 array_push($response['role'], $i);
             }
+        }
+
+
+        return [
+            'list_jabatan'          => $response['role'],
+        ];
+    }
+
+    public function ListRoleAtasan(Request $request)
+    {
+
+
+
+
+
+        $skpd_id = $request->skpd_id;
+        $periode = $request->periode;
+
+        //existing jabatan
+        //get list jabatan yang sudah terdaftar pada matrik peran
+
+
+        $jabatan_atasan_id = $request->role_id;
+        $existing = MatriksPeran::WHERE('periode', '=', $periode)
+                                    ->WHERE('skpd_id', '=', $skpd_id)
+                                    ->where(function ($query) use ($jabatan_atasan_id) {
+                                        $query->WHERE('id', '=', $jabatan_atasan_id)
+                                            ->orWhere('parent_id', '=', $jabatan_atasan_id);
+                                    })
+                                    ->SELECT('role','jabatan->id AS id')
+                                    ->get();
+
+
+
+
+
+        $response['role'] = array();
+
+        foreach ($existing as $x) {
+
+                $i['id']                = $x['id'];
+                $i['singkatan']         = $x['role'];
+                $i['nama_lengkap']      = $x['role'];
+                array_push($response['role'], $i);
+
         }
 
 
@@ -1169,6 +1214,67 @@ class MatrikPeranHasilController extends Controller
 
         if ($no > 0) {
             return \Response::make($no . "data berhasil tersimpan", 200);
+        } else {
+            return \Response::make("data tidak berhasil tersimpan", 400);
+        }
+    }
+
+    public function peranStore(Request $request)
+    {
+        $messages = [
+
+            'skpdId.required'               => 'Harus diisi',
+            'periode.required'              => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+
+                'skpdId'                => 'required',
+                'periode'               => 'required',
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        //nyari ID parent nya
+        $parent = MatriksPeran::SELECT('id')
+            ->WHERE('periode', '=', $request->periode)
+            ->WHERE('skpd_id', '=', $request->skpdId)
+            ->WHERE('jabatan->id', '=', $request->parentId)
+            ->first();
+        if ($parent) {
+            $parent_id = $parent->id;
+        } else {
+            $parent_id = null;
+        }
+
+
+
+
+
+            $rp    = new MatriksPeran;
+            $rp->skpd_id             = $request->skpdId;
+            $rp->periode             = $request->periode;
+            $rp->role                = $request->role;
+            $rp->level               = $request->level;
+            $rp->parent_id           = $parent_id;
+
+
+
+
+
+
+        if ($rp->save()) {
+            return \Response::make("data berhasil tersimpan", 200);
         } else {
             return \Response::make("data tidak berhasil tersimpan", 400);
         }
