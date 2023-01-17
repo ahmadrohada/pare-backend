@@ -453,8 +453,9 @@ class MatrikPeranHasilController extends Controller
 
         $skpd_id = $request->skpd_id;
         $periode = $request->periode;
+        $jabatan_atasan_id = $request->jabatan_atasan_id;
 
-        if (!isset($request->jabatan_atasan_id)) {
+       /*  if (!isset($request->jabatan_atasan_id)) {
             //cari id jabatan atasan di sotk
             $skpd = $this::detail_skpd($skpd_id);
             if ($skpd == null) {
@@ -464,12 +465,12 @@ class MatrikPeranHasilController extends Controller
             }
         } else {
             $jabatan_atasan_id = $request->jabatan_atasan_id;
-        }
+        } */
 
 
         if (!isset($request->role)) {
             //nyari jneis jabatan atasan
-            $jj_atasan = MatriksPeran::WHERE('jabatan->id', '=', $jabatan_atasan_id)->SELECT('role')->first();
+            $jj_atasan = MatriksPeran::WHERE('id', '=', $jabatan_atasan_id)->SELECT('role')->first();
 
             switch ($jj_atasan->role) {
                 case "koordinator":
@@ -493,10 +494,10 @@ class MatrikPeranHasilController extends Controller
 
 
         //get list jabatan yang sudah terdaftar pada matrik peran
-        $existing_list = MatriksPeran::WHERE('jabatan->id_jabatan_atasan', '=', $jabatan_atasan_id)
+        $existing_list = MatriksPeran::WHERE('id', '=', $jabatan_atasan_id)
             ->WHERE('periode', '=', $periode)
             ->WHERE('skpd_id', '=', $skpd_id)
-            ->SELECT('jabatan->id AS id')
+            ->SELECT('id AS id')
             ->get();
         $response['existing_list'] = array();
         foreach ($existing_list as $x) {
@@ -518,7 +519,7 @@ class MatrikPeranHasilController extends Controller
             $list_jabatan_sotk     = $this::list_jabatan($jabatan_atasan_id);
         } */
 
-        $list_jabatan_sotk     = $this::list_jabatan_skpd($skpd_id);
+        //$list_jabatan_sotk     = $this::list_jabatan_skpd($skpd_id);
 
 
 
@@ -526,7 +527,7 @@ class MatrikPeranHasilController extends Controller
 
         //list jabatan dikurangi list jabatan yang sudah ada di role matrik
         $response['role'] = array();
-        foreach ($list_jabatan_sotk as $x) {
+     /*    foreach ($list_jabatan_sotk as $x) {
             //if (!in_array($x['id'], $response['existing_list'])) {
                 //KOORDINATOR
                 $i['id']                = $x['id'];
@@ -534,7 +535,7 @@ class MatrikPeranHasilController extends Controller
                 $i['nama_lengkap']      = $x['nama_lengkap'];
                 array_push($response['role'], $i);
             //}
-        }
+        } */
 
 
         return [
@@ -634,7 +635,7 @@ class MatrikPeranHasilController extends Controller
                                         $query->WHERE('id', '=', $jabatan_atasan_id)
                                             ->orWhere('parent_id', '=', $jabatan_atasan_id);
                                     })
-                                    ->SELECT('role','jabatan->id AS id')
+                                    ->SELECT('role','id')
                                     ->get();
 
 
@@ -644,12 +645,12 @@ class MatrikPeranHasilController extends Controller
         $response['role'] = array();
 
         foreach ($existing as $x) {
-
+            if( $x['role'] != 'anggota'){
                 $i['id']                = $x['id'];
                 $i['singkatan']         = $x['role'];
                 $i['nama_lengkap']      = $x['role'];
                 array_push($response['role'], $i);
-
+            }
         }
 
 
@@ -1246,13 +1247,22 @@ class MatrikPeranHasilController extends Controller
         }
 
         //nyari ID parent nya
-        $parent = MatriksPeran::SELECT('id')
+
+
+
+        if ( $request->parentId != null ) {
+
+            $parent = MatriksPeran::SELECT('id')
             ->WHERE('periode', '=', $request->periode)
             ->WHERE('skpd_id', '=', $request->skpdId)
-            ->WHERE('jabatan->id', '=', $request->parentId)
+            ->WHERE('id', '=', $request->parentId)
             ->first();
-        if ($parent) {
-            $parent_id = $parent->id;
+
+            if ( $parent) {
+                $parent_id = $parent->id;
+            } else {
+                $parent_id = null;
+            }
         } else {
             $parent_id = null;
         }
