@@ -299,6 +299,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::post('jabatan', [MatrikPeranHasilController::class, 'jabatanStore']);
 
     Route::post('peran', [MatrikPeranHasilController::class, 'peranStore']);
+    Route::put('peran', [MatrikPeranHasilController::class, 'peranUpdate']);
+    Route::get('peran', [MatrikPeranHasilController::class, 'peranDetail']);
+
 
     Route::post('hasil', [MatrikPeranHasilController::class, 'hasilStore']);
     Route::get('hasil', [MatrikPeranHasilController::class, 'hasilDetail']);
@@ -349,7 +352,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::get('add_tim_kerja_referensi', [TimKerjaController::class, 'add_tim_kerja_referensi']);
 
-    Route::post('add_tim_kerja', [TimKerjaController::class, 'store']);
+    //Route::post('add_tim_kerja', [TimKerjaController::class, 'store']);
     Route::delete('hapus_tim_kerja', [TimKerjaController::class, 'destroy']);
 
 

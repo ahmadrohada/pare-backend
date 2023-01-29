@@ -155,6 +155,8 @@ class MatrikPeranHasilController extends Controller
     {
         $skpd_id = $request->skpd_id;
         $periode = $request->periode;
+        $romawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X"];
+
 
         //SKP JPT
         $response['skp_jpt'] = array();
@@ -193,15 +195,16 @@ class MatrikPeranHasilController extends Controller
                 'jabatan->nama_lengkap AS jabatan',
                 'pegawai->nama AS nama_pegawai',
                 'parent_id',
-                'level'
+                'level',
+                'label'
             )
-            ->ORDERBY('jabatan->id', 'ASC')
+            ->ORDERBY('label', 'ASC')
             ->get();
 
 
         $response['role'] = array();
         $response['outcome'] = array();
-        $no = 1;
+        $no = 0;
         foreach ($koordinator as $x) {
 
             //Hasil / outcome
@@ -227,7 +230,7 @@ class MatrikPeranHasilController extends Controller
 
             //KOORDINATOR
             $i['id']                    = $x->id;
-            $i['role']                  = strtoupper($x->role);
+            $i['role']                  = strtoupper($x->role).' '.$romawi[$x->label-1];
             $i['id_jabatan']            = $x->id_jabatan;
             $i['parent_id']             = $x->parent_id;
             $i['jabatan']               = $x->jabatan;
@@ -1275,6 +1278,7 @@ class MatrikPeranHasilController extends Controller
             $rp->skpd_id             = $request->skpdId;
             $rp->periode             = $request->periode;
             $rp->role                = $request->role;
+            $rp->label               = $request->label?$request->label:null;
             $rp->level               = $request->level;
             $rp->parent_id           = $parent_id;
 
@@ -1289,6 +1293,58 @@ class MatrikPeranHasilController extends Controller
             return \Response::make("data tidak berhasil tersimpan", 400);
         }
     }
+
+    public function peranDetail(Request $request)
+    {
+        $new_outcome = MatriksPeran::WHERE('id', '=', $request->role_id)->first();
+
+        return [
+            'data'     => $new_outcome,
+        ];
+
+    }
+
+
+    public function peranUpdate(Request $request)
+    {
+        $messages = [
+
+            'label.required'       => 'Harus diisi',
+            'roleId.required'          => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'label'     => 'required',
+                'roleId'        => 'required',
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = MatriksPeran::find($request->roleId);
+        if (is_null($update)) {
+            return \Response::make(['message' => "Role ID  tidak ditemukan"], 500);
+        }
+
+        $update->label              = $request->label;
+
+        if ($update->save()) {
+            $data = array('id'=> $update->id);
+            return \Response::make($data, 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
+
 
 
     public function hasilStore(Request $request)
