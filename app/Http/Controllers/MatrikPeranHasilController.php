@@ -808,8 +808,8 @@ class MatrikPeranHasilController extends Controller
     public function matrikPeranHasilList(Request $request)
     {
 
-        $skpd_id = $request->skpd_id;
-        $periode = $request->periode;
+        $skpd_id        = $request->skpd_id;
+        $periode        = $request->periode;
         $koordinator_id = $request->koordinator_id ? $request->koordinator_id : null;
 
 
@@ -829,7 +829,8 @@ class MatrikPeranHasilController extends Controller
                 'pegawai->nama AS nama_pegawai',
                 'level',
                 'skpd_id',
-                'periode'
+                'periode',
+                'label'
             )
             ->ORDERBY('jabatan->id', 'ASC');
 
@@ -850,11 +851,12 @@ class MatrikPeranHasilController extends Controller
         $no = 1;
 
         $array_style = array('style4', 'style5', 'style6', 'style1', 'style2', 'style3');
+        $romawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X"];
         foreach ($koordinator as $x) {
             $row_style = $array_style[rand(0, count($array_style) - 3)];
             //KOORDINATOR
             $i['id']                = $x->id;
-            $i['role']              = ($koordinator_id != null) ? strtoupper($x->role) : strtoupper($x->role)/*  . ' ' . $no */;
+            $i['role']              = ($koordinator_id != null) ? strtoupper($x->role). ' ' . $romawi[$x->label-1] : strtoupper($x->role). ' ' . $romawi[$x->label-1];
             $i['id_jabatan']        = $x->id_jabatan;
             $i['jabatan']           = $x->jabatan;
             $i['nama_pegawai']      = $x->nama_pegawai;
@@ -1253,7 +1255,7 @@ class MatrikPeranHasilController extends Controller
 
 
 
-        if ( $request->parentId != null ) {
+       /*  if ( $request->parentId != null ) {
 
             $parent = MatriksPeran::SELECT('id')
             ->WHERE('periode', '=', $request->periode)
@@ -1268,7 +1270,7 @@ class MatrikPeranHasilController extends Controller
             }
         } else {
             $parent_id = null;
-        }
+        } */
 
 
 
@@ -1280,7 +1282,7 @@ class MatrikPeranHasilController extends Controller
             $rp->role                = $request->role;
             $rp->label               = $request->label?$request->label:null;
             $rp->level               = $request->level;
-            $rp->parent_id           = $parent_id;
+            $rp->parent_id           = $request->roleParentId?$request->roleParentId:null;
 
 
 
