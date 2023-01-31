@@ -230,6 +230,7 @@ class MatrikPeranHasilController extends Controller
 
             //KOORDINATOR
             $i['id']                    = $x->id;
+            $i['roleName']              = strtoupper($x->role);
             $i['role']                  = strtoupper($x->role).' '.$romawi[$x->label-1];
             $i['id_jabatan']            = $x->id_jabatan;
             $i['parent_id']             = $x->parent_id;
@@ -487,7 +488,7 @@ class MatrikPeranHasilController extends Controller
                 case "anggota":
                     $role = null;
                     //$role =  "anggota";
-                    //$level =  "S4";
+                    $level =  null;
                     break;
             }
         } else {
@@ -529,7 +530,7 @@ class MatrikPeranHasilController extends Controller
         //return $jabatan_atasan_id;
 
         //list jabatan dikurangi list jabatan yang sudah ada di role matrik
-        $response['role'] = array();
+        //$response['role'] = array();
      /*    foreach ($list_jabatan_sotk as $x) {
             //if (!in_array($x['id'], $response['existing_list'])) {
                 //KOORDINATOR
@@ -542,7 +543,7 @@ class MatrikPeranHasilController extends Controller
 
 
         return [
-            'list_jabatan'          => $response['role'],
+            //'list_jabatan'          => $response['role'],
             'existing_list'         => $response['existing_list'],
             'role'                  => $role,
             'level'                 => $level
@@ -856,6 +857,7 @@ class MatrikPeranHasilController extends Controller
             $row_style = $array_style[rand(0, count($array_style) - 3)];
             //KOORDINATOR
             $i['id']                = $x->id;
+            $i['roleName']          = ($koordinator_id != null) ? strtoupper($x->role) : strtoupper($x->role);
             $i['role']              = ($koordinator_id != null) ? strtoupper($x->role). ' ' . $romawi[$x->label-1] : strtoupper($x->role). ' ' . $romawi[$x->label-1];
             $i['id_jabatan']        = $x->id_jabatan;
             $i['jabatan']           = $x->jabatan;
@@ -883,7 +885,8 @@ class MatrikPeranHasilController extends Controller
             foreach ($ketua as $y) {
                 //KETUA
                 $i['id']                = $y->id;
-                $i['role']              = strtoupper($y->role)/*  . ' ' . $no . '.' . $s_no */;
+                $i['roleName']          = strtoupper($y->role);
+                $i['role']              = strtoupper($y->role). '   ' . $x->label . '.' . $s_no;
                 $i['id_jabatan']        = $y->id_jabatan;
                 $i['jabatan']           = $y->jabatan;
                 $i['nama_pegawai']      = $y->nama_pegawai;
@@ -916,7 +919,8 @@ class MatrikPeranHasilController extends Controller
                 foreach ($anggota as $z) {
                     //KETUA
                     $i['id']                = $z->id;
-                    $i['role']              = strtoupper($z->role) . ' ' . $no . '.' . $ss_no . '.' . $sss_no;
+                    $i['roleName']          = strtoupper($z->role);
+                    $i['role']              = strtoupper($z->role) . ' ' . $x->label . '.' . $ss_no . '.' . $sss_no;
                     $i['id_jabatan']        = $z->id_jabatan;
                     $i['jabatan']           = $z->jabatan;
                     $i['nama_pegawai']      = $z->nama_pegawai;
@@ -1083,6 +1087,7 @@ class MatrikPeranHasilController extends Controller
             }
 
             $k['id']                        = $role['id'];
+            $k['roleName']                  = $role['roleName'];
             $k['role']                      = $role['role'];
             $k['id_jabatan']                = $role['id_jabatan'];
             $k['jabatan']                   = $role['jabatan'];
