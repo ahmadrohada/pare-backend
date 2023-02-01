@@ -57,6 +57,64 @@ class SasaranKinerjaController extends Controller
         }
     }
 
+    public function PkMphSkp(Request $request)
+    {
+
+
+        $response['role'] = array();
+        $response['outcome'] = array();
+
+
+        $pk = PerjanjianKinerja::with(array('Periode' => function($query) {
+                //$query->select('id','label');
+            }))
+            ->SELECT(
+                'perjanjian_kinerja.periode->tahun AS periodePk',
+                'perjanjian_kinerja.skpd->nama AS namaSkpd',
+                'perjanjian_kinerja.kepala_skpd->pegawai->nama_lengkap AS namaKepalaSkpd',
+                'perjanjian_kinerja.jabatan_kepala_skpd->nama AS jabatanKepalaSkpd',
+                'perjanjian_kinerja.admin->pegawai->nama_lengkap AS createdBy',
+                'perjanjian_kinerja.created_at AS createdAt',
+                'perjanjian_kinerja.status'
+            )
+            ->WHERE('id', $request->perjanjian_kinerja_id)
+            ->first();
+
+
+
+        $h['id']                    = $request->perjanjian_kinerja_id;
+        $h['periodePk']             = $pk->periodePk;
+        $h['namaSkpd']              = $pk->namaSkpd;
+        $h['namaKepalaSkpd']        = $pk->namaKepalaSkpd;
+        $h['jabatanKepalaSkpd']     = $pk->jabatanKepalaSkpd;
+        $h['createdBy']             = $pk->createdBy;
+        $h['createdAt']             = $pk->createdAt;
+        $h['status']                = $pk->status;
+        $h['jumlahSasaranStrategis']= SasaranStrategis::WHERE('perjanjian_kinerja_id','=',$request->perjanjian_kinerja_id)->count();
+
+        //ROle
+        $romawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X"];
+        $response['role'] = array();
+        $role = MatriksPeran::WHERE('pegawai->nip', '=', $request->nip_pegawai_yang_dinilai)
+                            ->WHERE('periode', '=', $pk->periodePk)
+                            ->get();
+        foreach ($role as $x) {
+            $i['id']                = $x->id;
+            $i['roleName']          = strtoupper($x->role);
+            $i['role']              = strtoupper($x->role). ' ' . $romawi[$x->label-1];
+            $i['outcome']           = $x->MatriksHasil->count();
+
+            array_push($response['role'], $i);
+        }
+
+
+        return [
+            'pk'       => $h,
+            'role'     => $response['role'],
+        ];
+
+    }
+
 
     public function SasaranKinerjaList(Request $request)
     {

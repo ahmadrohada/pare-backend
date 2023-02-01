@@ -189,6 +189,10 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     //========================================================================================================//
 	//===========================             SASARAN KINERJA                 ================================//
 	//========================================================================================================//
+
+    Route::get('pk_mph_skp', [SasaranKinerjaController::class, 'PkMphSkp']);
+
+
     Route::get('sasaran_kinerja_list', [SasaranKinerjaController::class, 'SasaranKinerjaList']);
     Route::get('sasaran_kinerja_id', [SasaranKinerjaController::class, 'SasaranKinerjaId']);
 
@@ -312,6 +316,9 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     Route::get('list_pejabat_penilai_mph', [MatrikPeranHasilController::class, 'ListPejabatPenilai']);
 
     Route::get('list_outcome_jabatan', [MatrikPeranHasilController::class, 'ListOutcomeJabatan']);
+    Route::get('list_outcome_pegawai', [MatrikPeranHasilController::class, 'ListOutcomePegawai']);
+
+
 
 
 
