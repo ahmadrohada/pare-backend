@@ -157,20 +157,22 @@ class RencanaKinerjaController extends Controller
 
         $selectedOutcome = $request->selectedOutcome;
         $no = 0;
+        if ( $selectedOutcome != null ){
+            foreach ($selectedOutcome as $x) {
 
-        foreach ($selectedOutcome as $x) {
-
-            $rk    = new RencanaKinerja;
-            $rk->sasaran_kinerja_id                     = $request->sasaranKinerjaId;
-            $rk->label                                  = $x['label'];
-            $rk->jenis_rencana_kinerja                  = 'kinerja_utama';
-            $rk->matriks_hasil_id                       = $x['id'];
-            $rk->save();
-
-            if ($rk->save()) {
-                $no++;
+                $rk    = new RencanaKinerja;
+                $rk->sasaran_kinerja_id                     = $request->sasaranKinerjaId;
+                $rk->label                                  = $x['label'];
+                $rk->jenis_rencana_kinerja                  = 'kinerja_utama';
+                $rk->matriks_hasil_id                       = $x['id'];
+                $rk->save();
+    
+                if ($rk->save()) {
+                    $no++;
+                }
             }
         }
+        
 
         if ($no > 0) {
             return \Response::make($no . "data berhasil tersimpan", 200);

@@ -192,7 +192,7 @@ class MatrikPeranHasilController extends Controller
                 'id',
                 'role',
                 'jabatan->id AS id_jabatan',
-                'jabatan->nama_lengkap AS jabatan',
+                'pegawai->jabatan AS jabatan',
                 'pegawai->nama AS nama_pegawai',
                 'parent_id',
                 'level',
