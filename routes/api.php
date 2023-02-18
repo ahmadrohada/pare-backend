@@ -22,6 +22,7 @@ use App\Http\Controllers\ManajemenKinerjaController;
 use App\Http\Controllers\MatrikPeranHasilController;
 use App\Http\Controllers\PerilakuKerjaController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\RencanaAksiController;
 
 
 
@@ -247,6 +248,11 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 
     Route::get('list_perwujudan_perilaku', [PerilakuKerjaController::class, 'ListPerwujudanPerilaku']);
 
+    //========================================================================================================//
+	//======================           SASARAN KINERJA - RENCANA AKSI ( BULANAN )       ================================//
+	//========================================================================================================//
+    Route::get('sasaran_kinerja_rencana_aksi', [RencanaAksiController::class, 'List']);
+   
 
 
 
