@@ -9,15 +9,18 @@ use App\Models\IndikatorKinerjaIndividu;
 use App\Models\SasaranStrategis;
 use App\Models\PerjanjianKinerja;
 use App\Models\MatriksPeran;
+use App\Models\MatriksHasil;
 
 use App\Http\Resources\SasaranKinerja as SasaranKinerjaResource;
-
 
 use App\Services\Datatables\SasaranKinerjaDataTable;
 use App\Services\Datatables\SasaranKinerjaBawahanDataTable;
 
-use Validator;
+use App\Helpers\Pustaka;
 
+use Validator;
+use PDF;
+use iio\libmergepdf\Merger;
 use GuzzleHttp\Client;
 
 class SasaranKinerjaController extends Controller
@@ -621,6 +624,7 @@ class SasaranKinerjaController extends Controller
         $sr    = SasaranKinerja::find($request->id);
         if (is_null($sr)) {
             return \Response::make(['message' => "Sasaran Kinerja tidak ditemukan"], 500);
+            //return response('Hello World', 200)->header('Content-Type', 'text/plain');
         }
 
 
@@ -631,6 +635,150 @@ class SasaranKinerjaController extends Controller
         }
 
 
+    }
+
+    public function print(Request $request)
+    {
+        //kita siapkan data nya dulu kang
+        $id_skp = 1529;
+        $skp = SasaranKinerja::WHERE('id',$id_skp)->first();
+
+        //PERIODE PENILAIAN
+        $pp = json_decode($skp->periode_penilaian);
+        $periode_penilaian = Pustaka::fullCapitalDate($pp->tgl_mulai).' s.d '.Pustaka::fullCapitalDate($pp->tgl_selesai);
+
+
+        //return response()->json($detail_skp, 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
+        //PEGAWAI YANG DINILAI 
+        $data_a = $skp->pegawai_yang_dinilai;
+        $pegawai_yang_dinilai = array(
+            "nama"          => ($data_a)?json_decode($data_a)->nama:'-',
+            "nip"           => ($data_a)?json_decode($data_a)->nip:'-',
+            "pangkat"       => ($data_a)?json_decode($data_a)->pangkat:'-',
+            "jabatan"       => ($data_a)?json_decode($data_a)->jabatan:'-',
+            "unit_kerja"    => ($data_a)?json_decode($data_a)->instansi:'-',
+          );
+        //PEJABAT PENILAI
+        $data_b = $skp->pejabat_penilai;
+        $pejabat_penilai = array(
+            "nama"          => ($data_b)?json_decode($data_b)->nama:'-',
+            "nip"           => ($data_b)?json_decode($data_b)->nip:'-',
+            "pangkat"       => ($data_b)?json_decode($data_b)->pangkat:'-',
+            "jabatan"       => ($data_b)?json_decode($data_b)->jabatan:'-',
+            "unit_kerja"    => ($data_b)?json_decode($data_b)->instansi:'-',
+          );
+        //ATASAN PEJABAT PENILAI
+        $data_c = $skp->atasan_pejabat_penilai;
+        $atasan_pejabat_penilai = array(
+            "nama"          => ($data_c)?json_decode($data_c)->nama:'-',
+            "nip"           => ($data_c)?json_decode($data_c)->nip:'-',
+            "pangkat"       => ($data_c)?json_decode($data_c)->pangkat:'-',
+            "jabatan"       => ($data_c)?json_decode($data_c)->jabatan:'-',
+            "unit_kerja"    => ($data_c)?json_decode($data_c)->instansi:'-',
+          );
+
+        //RENCANA KERJA
+        $rencana_kerja = array();
+        $data = RencanaKinerja::with(['IndikatorKinerjaIndividu','Parent'])
+                            ->WHERE('sasaran_kinerja_id',$id_skp)
+                            ->get();
+
+        foreach( $data AS $x ){
+             //jika kinerja utama
+            if ( $x->jenis_rencana_kinerja == "kinerja_utama"){
+                if ( $skp->jenisJabatan != "JABATAN PIMPINAN TINGGI"){
+                    //JIKA BUKAN JPT
+                    if ( $x->MatriksHasil != null  ){
+                        if ( $x->MatriksHasil->level == 'S2' ){
+                            $ss_data  = SasaranStrategis::WHERE('id',$x->MatriksHasil->pk_ss_id)->first();
+                            $rencana_kerja_pimpinan = ( $ss_data != null ) ? $ss_data->label : "";
+                        }else{
+                            $mh_data  = MatriksHasil::WHERE('id',$x->MatriksHasil->parent_id)->first();
+                            $rencana_kerja_pimpinan = ( $mh_data != null ) ? $mh_data->label : "";
+                        }
+                    }else{
+                        $rencana_kerja_pimpinan = null;
+                    }
+
+
+                }else{
+                    $rencana_kerja_pimpinan = null;
+                }
+            }else{
+                $rencana_kerja_pimpinan = null;
+            }
+
+            if ( sizeof($x->IndikatorKinerjaIndividu) ){
+                foreach( $x->IndikatorKinerjaIndividu AS $y ){
+                    //type target
+                    if ( $y->type_target == '1' ){
+                        $target = $y->target_max.' '.$y->satuan_target;
+                    }else if ( $y->type_target == '2' ){
+                        $target = $y->target_min.' - '.$y->target_max.' '.$y->satuan_target;
+                    }
+
+                    $rencana_kerja[] = array(
+                        'rencana_hasil_kerja_atasan'   => $rencana_kerja_pimpinan,
+                        'rencana_hasil_kerja'          => $x->label,
+                        'aspek'                        => ucfirst($y->aspek),
+                        'indikator_kinerja_individu'   => $y->label,
+                        'target'                       => $target,
+                        'perspektif'                   => $y->perspektif,
+                        'jenis_jabatan_skp'            => $skp->jenisJabatan,
+                    );
+                }
+            }else{
+    
+                $rencana_kerja[] = array(
+                    'rencana_hasil_kerja_atasan'   => $rencana_kerja_pimpinan,
+                    'rencana_hasil_kerja'          => $x->label,
+                    'aspek'                        => '',
+                    'indikator_kinerja_individu'   => '',
+                    'target'                       => '',
+                    'perspektif'                   => '',
+                    'jenis_jabatan_skp'            => $skp->jenisJabatan,
+                );
+            }
+        }                  
+                           
+
+
+
+        //return response()->json($rencana_kerja, 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
+
+
+        //COVER
+        $m = new Merger();
+        $pdf = PDF::loadView('printouts.skp_cover',
+                        [ 
+                            'pegawai_yang_dinilai'  => $pegawai_yang_dinilai,
+                            'pejabat_penilai'       => $pejabat_penilai,
+                            'atasan_pejabat_penilai'=> $atasan_pejabat_penilai,
+
+                            'periode_penilaian'     => $periode_penilaian,
+                                                    
+                        ])->setPaper('a4', 'potrait');
+
+        $m->addRaw($pdf->output());
+
+        $pdf2 = PDF::loadView('printouts.skp_hasil_kerja',
+                            [ 
+                                'pegawai_yang_dinilai'  => $pegawai_yang_dinilai,
+                                'pejabat_penilai'       => $pejabat_penilai,
+                                'periode_penilaian'     => $periode_penilaian,
+                                'rencana_hasil_kerja'   => $rencana_kerja,
+                                                        
+                            ])->setPaper('a4', 'landscape');
+
+        //$nama_file = 'file_name.pdf';
+        $m->addRaw($pdf2->output());
+        return response($m->merge())
+                ->withHeaders([
+                    'Content-Type' => 'application/pdf',
+                    'Cache-Control' => 'no-store, no-cache',
+                    //untuk download
+                    //'Content-Disposition' => 'attachment; filename="'.$nama_file,
+                ]); 
     }
 
 

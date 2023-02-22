@@ -32,8 +32,8 @@ class RencanaKinerjaDataTable {
         $this->jenis = isset( $parameters['jenis_rencana_kinerja'] ) ? $parameters['jenis_rencana_kinerja'] : 0;
 
         //JENIS JABATAN SKP
-        $data = SasaranKinerja::WHERE('id',$this->sasaranKinerjaId)->first();
-        $this->jenisJabatan = $data->jenis_jabatan_skp;
+        $jbt = SasaranKinerja::WHERE('id',$this->sasaranKinerjaId)->first();
+        $this->jenisJabatan = $jbt->jenis_jabatan_skp;
 
 
     }
