@@ -365,20 +365,20 @@
 
 	<table width="100%" style="margin-top:50px; border:none;">
 		<tr>
-			<td width="10%">
+			<td width="8%">
 				
 			</td>
 			<td style="text-align:center; vertical-align:bottom;">
 				Pegawai Yang Dinilai,
 			</td>
-			<td width="30%">
+			<td width="20%">
 				
 			</td>
 			<td style="text-align:center; vertical-align:bottom;">
 				<p>{{$tanggal}}</p>
 				Pejabat Penilai Kinerja,
 			</td>
-			<td width="10%">
+			<td width="8%">
 				
 			</td>
 		</tr>
