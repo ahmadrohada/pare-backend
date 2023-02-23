@@ -87,7 +87,21 @@
 	padding:5px 3px 5px 3px !important;
 	font-weight:bold;
 }
-
+ul {
+	margin-left: -10px;
+	margin-top:5px;
+  }
+  ul.dashed {
+	list-style-type: none;
+  }
+  ul.dashed > li {
+	text-indent: -8px;
+	margin-left: -20px;
+  }
+  ul.dashed > li:before {
+	content: "- ";
+	text-indent: -5px;
+  }
 
 
 /* 

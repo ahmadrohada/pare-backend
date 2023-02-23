@@ -10,6 +10,7 @@ use App\Models\SasaranStrategis;
 use App\Models\PerjanjianKinerja;
 use App\Models\MatriksPeran;
 use App\Models\MatriksHasil;
+use App\Models\SasaranKinerjaPerilakuKerja;
 
 use App\Http\Resources\SasaranKinerja as SasaranKinerjaResource;
 
@@ -20,6 +21,8 @@ use App\Helpers\Pustaka;
 
 use Validator;
 use PDF;
+
+
 use iio\libmergepdf\Merger;
 use GuzzleHttp\Client;
 
@@ -647,6 +650,10 @@ class SasaranKinerjaController extends Controller
         $pp = json_decode($skp->periode_penilaian);
         $periode_penilaian = Pustaka::fullCapitalDate($pp->tgl_mulai).' s.d '.Pustaka::fullCapitalDate($pp->tgl_selesai);
 
+        //TANGGAL footnote
+        $tanggal = 'Karawang, '.Pustaka::CapitalDate($skp->created_at);
+
+        
 
         //return response()->json($detail_skp, 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
         //PEGAWAI YANG DINILAI 
@@ -658,6 +665,9 @@ class SasaranKinerjaController extends Controller
             "jabatan"       => ($data_a)?json_decode($data_a)->jabatan:'-',
             "unit_kerja"    => ($data_a)?json_decode($data_a)->instansi:'-',
           );
+
+     
+
         //PEJABAT PENILAI
         $data_b = $skp->pejabat_penilai;
         $pejabat_penilai = array(
@@ -739,12 +749,26 @@ class SasaranKinerjaController extends Controller
                     'jenis_jabatan_skp'            => $skp->jenisJabatan,
                 );
             }
-        }                  
-                           
+        }            
+        
+        
+
+        //===================== PERILAKU KERJA ==========================//
+         //Perilaku kerja
+        //pengulangan core  value dari 1 s.d 7
+        $perilaku_kerja = array();
+        for ($i = 1; $i <= 7; $i++) {
+            $ekspektasi_pimpinan = SasaranKinerjaPerilakuKerja::SELECT('id','label')
+                                ->WHERE('sasaran_kinerja_id','=', $id_skp)
+                                ->WHERE('core_value_id','=', $i)
+                                ->get();
+
+            
+            array_push($perilaku_kerja, $ekspektasi_pimpinan);
+        }
 
 
-
-        //return response()->json($rencana_kerja, 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
+        //return response()->json($perilaku_kerja, 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
 
 
         //COVER
@@ -758,6 +782,7 @@ class SasaranKinerjaController extends Controller
                             'periode_penilaian'     => $periode_penilaian,
                                                     
                         ])->setPaper('a4', 'potrait');
+        
 
         $m->addRaw($pdf->output());
 
@@ -767,9 +792,12 @@ class SasaranKinerjaController extends Controller
                                 'pejabat_penilai'       => $pejabat_penilai,
                                 'periode_penilaian'     => $periode_penilaian,
                                 'rencana_hasil_kerja'   => $rencana_kerja,
+                                'perilaku_kerja'        => $perilaku_kerja,
+                                'tanggal'               => $tanggal,
                                                         
                             ])->setPaper('a4', 'landscape');
 
+      
         //$nama_file = 'file_name.pdf';
         $m->addRaw($pdf2->output());
         return response($m->merge())

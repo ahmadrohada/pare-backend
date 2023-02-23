@@ -13,6 +13,7 @@
         "iio/libmergepdf": "^4.0",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
+        "simplesoftwareio/simple-qrcode": "~4",
         "tymon/jwt-auth": "^1.0",
         "yajra/laravel-datatables": "^1.5"
     },

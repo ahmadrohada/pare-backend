@@ -4,7 +4,24 @@
 <head>
 	<title>Sasaran Kinerja Pegawai</title>
 	<link href="{{public_path('css/printout_style.css') }}" rel="stylesheet" type="text/css" />
+	
 </head>
+<style>
+
+#footer {
+    position: fixed;
+    left: 0px;
+    bottom: -40px;
+    text-align: center;
+    }
+#footer .page:after {
+    content: counter(page);
+}
+</style>
+<body>
+<div id="footer">
+    <p class="page"></p>
+</div>
 
 <body>
 
@@ -190,13 +207,19 @@
 		<tr>
 			<td style="border-top: 1px dotted #ffffff;"></td>
 			<td colspan="2" style="vertical-align:top;">
-				- Memahami dan memenuhi kebutuhan masyarakat<br>
-				- Ramah, cekatan, solutif dan dapat diandalkan<br>
-				- melakukan perbaikan tiada henti
+				<ul class="dashed">
+					<li>Memahami dan memenuhi kebutuhan masyarakat</li>
+					<li>Ramah, cekatan, solutif dan dapat diandalkan</li>
+					<li>Melakukan perbaikan tiada henti</li>
+				</ul>
 			</td>
 			<td colspan="5" style="vertical-align:top;">
 				Ekspektasi Khusus Pimpinan:<br>
-				Senantiasa mengutamakan kepuasan penerima layanan inspektoprat
+				
+				@foreach($perilaku_kerja[0] as $dt)
+					<li style="margin-top:3px; list-style-type: none; margin-left:5px;">- {{ $dt['label'] }}</li>
+				@endforeach
+				
 			</td>
 		</tr>
 
@@ -207,13 +230,19 @@
 		<tr>
 			<td style="border-top: 1px dotted #ffffff;"></td>
 			<td colspan="2" style="vertical-align:top;">
-				- Melaksanakan tugas dengan jujur, bertanggungjawab, cermat, disiplin dan berintegritas tinggi <br>
-				- Ramah, cekatan, solutif dan dapat diandalkan<br>
-				- melakukan perbaikan tiada henti
+				<ul class="dashed">
+					<li>Melaksanakan tugas dengan jujur, bertanggungjawab, cermat, disiplin dan berintegritas tinggi</li>
+					<li>Menggunakan kekayaan dan BMN secara bertanggung jawab efektif dan efisien</li>
+					<li>Tidak menyalahgunakan kewenangan jabatan</li>
+				</ul>
 			</td>
 			<td colspan="5" style="vertical-align:top;">
 				Ekspektasi Khusus Pimpinan:<br>
-				Menjadi role model/panutan dalam menjunjung komitmen dan integritas pagawai di lingkungan kerjanya
+				<ul class="dashed">
+				@foreach($perilaku_kerja[1] as $dt)
+					<li>{{ $dt['label'] }}</li>
+				@endforeach
+				</ul>
 			</td>
 		</tr>
 
@@ -224,14 +253,19 @@
 		<tr>
 			<td style="border-top: 1px dotted #ffffff;"></td>
 			<td colspan="2" style="vertical-align:top;">
-				- Meningkatkan kompetensi diri untukmmenjawab tantangan yang sellau berubah<br>
-				- Membantu orang lain belajar<br>
-				- Melaksanakan tugas dengan kualitas terbaik<br>
-				- tes
+				<ul class="dashed">
+					<li>Meningkatkan kompetensi diri untukmmenjawab tantangan yang sellau berubah</li>
+					<li>Membantu orang lain belajar</li>
+					<li>Melaksanakan tugas dengan kualitas terbaik</li>
+				</ul>
 			</td>
 			<td colspan="5" style="vertical-align:top;">
 				Ekspektasi Khusus Pimpinan:<br>
-				Menyelesaiakna setiap pekerjaan dengan target dan standar kulaitas yang suidah ditetapkan
+				<ul class="dashed">
+					@foreach($perilaku_kerja[2] as $dt)
+						<li>{{ $dt['label'] }}</li>
+					@endforeach
+					</ul>
 			</td>
 		</tr>
 
@@ -242,13 +276,19 @@
 		<tr>
 			<td style="border-top: 1px dotted #ffffff;"></td>
 			<td colspan="2" style="vertical-align:top;">
-				- Menghargai setiap orang apaapun latar belakang nya<br>
-				- Suka menolomn orang lain<br>
-				- Membangun lingkungan kerja yang kondusif
+				<ul class="dashed">
+					<li>Menghargai setiap orang apaapun latar belakang nya</li>
+					<li>Suka menolong orang lain</li>
+					<li>Membangun lingkungan kerja yang kondusif</li>
+				</ul>
 			</td>
 			<td colspan="5" style="vertical-align:top;">
 				Ekspektasi Khusus Pimpinan:<br>
-				Membangun komunikasi yang lebih terbuka
+				<ul class="dashed">
+					@foreach($perilaku_kerja[3] as $dt)
+						<li>{{ $dt['label'] }}</li>
+					@endforeach
+				</ul>
 			</td>
 		</tr>
 
@@ -259,13 +299,63 @@
 		<tr>
 			<td style="border-top: 1px dotted #ffffff;"></td>
 			<td colspan="2" style="vertical-align:top;">
-				- Menghargai setiap orang apaapun latar belakang nya<br>
-				- Suka menolomn orang lain<br>
-				- Membangun lingkungan kerja yang kondusif
+				<ul class="dashed">
+					<li>Memegang teguh ideologi Pancasila, Undang-Undang Dasar Negara Republik Indonesia Tahun 1945, setia pada NKRI serta pemerintahan yang sah</li>
+					<li>Menjaga nama baik sesama ASN, Pimpinan, Instansi, dan Negara</li>
+					<li>Menjaga rahasia jabatan dan negara</li>
+				</ul>
 			</td>
 			<td colspan="5" style="vertical-align:top;">
 				Ekspektasi Khusus Pimpinan:<br>
-				Membangun komunikasi yang lebih terbuka
+				<ul class="dashed">
+					@foreach($perilaku_kerja[4] as $dt)
+						<li>{{ $dt['label'] }}</li>
+					@endforeach
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; border-bottom: 1px dotted #ffffff;">6</td>
+			<td colspan="7">Adaptif</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px dotted #ffffff;"></td>
+			<td colspan="2" style="vertical-align:top;">
+				<ul class="dashed">
+					<li>Cepat menyesuaikan diri menghadapi perubahan</li>
+					<li>Terus berinovasi dan mengembangkan kreativitas</li>
+					<li>Bertindak proaktif</li>
+				</ul>
+			</td>
+			<td colspan="5" style="vertical-align:top;">
+				Ekspektasi Khusus Pimpinan:<br>
+				<ul class="dashed">
+					@foreach($perilaku_kerja[5] as $dt)
+						<li>{{ $dt['label'] }}</li>
+					@endforeach
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center; border-bottom: 1px dotted #ffffff;">7</td>
+			<td colspan="7">Kolaboratif</td>
+		</tr>
+		<tr>
+			<td style="border-top: 1px dotted #ffffff;"></td>
+			<td colspan="2" style="vertical-align:top;">
+				<ul class="dashed">
+					<li>Memberi kesempatan kepada berbagai pihak untuk berkontribusi</li>
+					<li>Terbuka dalam bekerja sama untuk menghasilkan nilai tambah</li>
+					<li>Menggerakkan pemanfaatan berbagai sumberdaya untuk tujuan bersama</li>
+				</ul>
+			</td>
+			<td colspan="5" style="vertical-align:top;">
+				Ekspektasi Khusus Pimpinan:<br>
+				<ul class="dashed">
+					@foreach($perilaku_kerja[6] as $dt)
+						<li>{{ $dt['label'] }}</li>
+					@endforeach
+				</ul>
 			</td>
 		</tr>
 		
@@ -273,25 +363,57 @@
 	</table>
 
 
-	<table class="table-hasil_kerja-skp">
+	<table width="100%" style="margin-top:50px; border:none;">
 		<tr>
 			<td width="10%">
-				null
+				
 			</td>
-			<td>
-				TTD
+			<td style="text-align:center; vertical-align:bottom;">
+				Pegawai Yang Dinilai,
 			</td>
 			<td width="40%">
-				null
+				
 			</td>
-			<td>
-				TTD
+			<td style="text-align:center; vertical-align:bottom;">
+				<p>{{$tanggal}}</p>
+				Pejabat Penilai Kinerja,
 			</td>
 			<td width="10%">
-				null
+				
+			</td>
+		</tr>
+		<tr>
+			<td style="height:70px;"></td>
+			<td style="padding:8px; text-align:center; vertical-align:middle;">
+				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(80)->generate($pegawai_yang_dinilai['nama'].' NIP.'.$pegawai_yang_dinilai['nip'])) }} ">
+			</td>
+			<td></td>
+			<td style="padding:8px; text-align:center; vertical-align:middle;">
+				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(80)->generate($pejabat_penilai['nama'].' NIP.'.$pejabat_penilai['nip'])) }} ">
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>
+				
+			</td>
+			<td style="text-align:center; vertical-align:bottom;">
+				<u>{{$pegawai_yang_dinilai['nama']}}</u><br>
+				{{$pegawai_yang_dinilai['nip']}}
+			</td>
+			<td>
+				
+			</td>
+			<td style="text-align:center; vertical-align:bottom;">
+				<u>{{$pejabat_penilai['nama']}}</u><br>
+				{{$pejabat_penilai['nip']}}
+			</td>
+			<td>
+				
 			</td>
 		</tr>
 	</table>
+
 
 </body>
 

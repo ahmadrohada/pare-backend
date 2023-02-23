@@ -6,6 +6,48 @@ use Illuminate\Support\Facades\DB;
 class Pustaka {
 
 
+	public static function CapitalDate($data){
+		$tanggal = substr($data,8,2); 
+		$bulan = substr($data,5,2); 
+		$tahun = substr($data,0,4); 
+
+
+		//ubah angka ke nama bulan
+				switch($bulan)
+					{
+				case 01 : $nm_bulan='Januari';
+						break;
+				case 02 : $nm_bulan='Februari';
+						break;
+				case 03 : $nm_bulan='Maret';
+						break;
+				case 04 : $nm_bulan='April';
+						break;
+				case 05 : $nm_bulan='Mei';
+						break;
+				case 06 : $nm_bulan='Juni';
+						break;
+				case 07 : $nm_bulan='Juli';
+						break;
+				case 8 : $nm_bulan='Agustus';
+						break;
+				case 9 : $nm_bulan='September';
+						break;
+				case 10 : $nm_bulan='Oktober';
+						break;
+				case 11 : $nm_bulan='November';
+						break;
+				case 12 : $nm_bulan='Desember';
+						break;
+					}
+
+		$tanggal = isset($tanggal) ? $tanggal : '';
+		$nm_bulan = isset($nm_bulan) ? $nm_bulan : '';
+		$tahun = isset($tahun) ? $tahun : '';
+		$data=$tanggal.' '.$nm_bulan.' '.$tahun;
+	return $data;
+	}
+
 	public static function fullCapitalDate($data){
 		$tanggal = substr($data,8,2); 
 		$bulan = substr($data,5,2); 
