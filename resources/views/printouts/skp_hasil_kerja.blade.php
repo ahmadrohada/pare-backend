@@ -371,7 +371,7 @@
 			<td style="text-align:center; vertical-align:bottom;">
 				Pegawai Yang Dinilai,
 			</td>
-			<td width="40%">
+			<td width="30%">
 				
 			</td>
 			<td style="text-align:center; vertical-align:bottom;">
