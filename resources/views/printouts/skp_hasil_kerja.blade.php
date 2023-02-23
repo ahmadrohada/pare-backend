@@ -377,7 +377,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td style="style="height:70px;" padding:8px; text-align:center; vertical-align:middle;">
+			<td style="height:70px; padding:8px; text-align:center; vertical-align:middle;">
 				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('svg')->size(80)->generate($pegawai_yang_dinilai['nama'].' NIP.'.$pegawai_yang_dinilai['nip'])) }} ">
 			</td>
 			<td></td>
