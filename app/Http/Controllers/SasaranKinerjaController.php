@@ -645,8 +645,12 @@ class SasaranKinerjaController extends Controller
     public function print(Request $request)
     {
         //kita siapkan data nya dulu kang
-        $id_skp = 1529;
+        $id_skp = $request->id_skp;
         $skp = SasaranKinerja::WHERE('id',$id_skp)->first();
+
+        if (!$skp){
+            return response()->json("SKP tidak ditemukan", 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
+        }
 
         //PERIODE PENILAIAN
         $pp = json_decode($skp->periode_penilaian);
@@ -800,14 +804,14 @@ class SasaranKinerjaController extends Controller
                             ])->setPaper('a4', 'landscape');
 
       
-        //$nama_file = 'file_name.pdf';
+        $nama_file = 'skp_'.json_decode($data_a)->nip.'.pdf';
         $m->addRaw($pdf2->output());
         return response($m->merge())
                 ->withHeaders([
                     'Content-Type' => 'application/pdf',
                     'Cache-Control' => 'no-store, no-cache',
                     //untuk download
-                    //'Content-Disposition' => 'attachment; filename="'.$nama_file,
+                    'Content-Disposition' => 'attachment; filename="'.$nama_file,
                 ]); 
     }
 
