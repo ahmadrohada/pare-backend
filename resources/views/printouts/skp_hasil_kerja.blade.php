@@ -382,17 +382,17 @@
 				
 			</td>
 		</tr>
-		{{-- <tr>
+		<tr>
 			<td style="height:70px;"></td>
 			<td style="padding:8px; text-align:center; vertical-align:middle;">
-				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(80)->generate($pegawai_yang_dinilai['nama'].' NIP.'.$pegawai_yang_dinilai['nip'])) }} ">
+				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('svg')->size(80)->generate($pegawai_yang_dinilai['nama'].' NIP.'.$pegawai_yang_dinilai['nip'])) }} ">
 			</td>
 			<td></td>
 			<td style="padding:8px; text-align:center; vertical-align:middle;">
-				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(80)->generate($pejabat_penilai['nama'].' NIP.'.$pejabat_penilai['nip'])) }} ">
+				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('svg')->size(80)->generate($pejabat_penilai['nama'].' NIP.'.$pejabat_penilai['nip'])) }} ">
 			</td>
 			<td></td>
-		</tr> --}}
+		</tr>
 		<tr>
 			<td>
 				
