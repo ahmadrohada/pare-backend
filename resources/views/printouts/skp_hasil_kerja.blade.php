@@ -365,38 +365,27 @@
 
 	<table width="100%" style="margin-top:50px; border:none;">
 		<tr>
-			<td width="8%">
-				
-			</td>
 			<td style="text-align:center; vertical-align:bottom;">
 				Pegawai Yang Dinilai,
 			</td>
-			<td width="20%">
+			<td width="30%">
 				
 			</td>
 			<td style="text-align:center; vertical-align:bottom;">
 				<p>{{$tanggal}}</p>
 				Pejabat Penilai Kinerja,
 			</td>
-			<td width="8%">
-				
-			</td>
 		</tr>
 		<tr>
-			<td style="height:70px;"></td>
-			<td style="padding:8px; text-align:center; vertical-align:middle;">
+			<td style="style="height:70px;" padding:8px; text-align:center; vertical-align:middle;">
 				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('svg')->size(80)->generate($pegawai_yang_dinilai['nama'].' NIP.'.$pegawai_yang_dinilai['nip'])) }} ">
 			</td>
 			<td></td>
 			<td style="padding:8px; text-align:center; vertical-align:middle;">
 				<img src="data:image/png;base64, {{ base64_encode(QrCode::format('svg')->size(80)->generate($pejabat_penilai['nama'].' NIP.'.$pejabat_penilai['nip'])) }} ">
 			</td>
-			<td></td>
 		</tr>
 		<tr>
-			<td>
-				
-			</td>
 			<td style="text-align:center; vertical-align:bottom;">
 				<u>{{$pegawai_yang_dinilai['nama']}}</u><br>
 				{{$pegawai_yang_dinilai['nip']}}
@@ -407,9 +396,6 @@
 			<td style="text-align:center; vertical-align:bottom;">
 				<u>{{$pejabat_penilai['nama']}}</u><br>
 				{{$pejabat_penilai['nip']}}
-			</td>
-			<td>
-				
 			</td>
 		</tr>
 	</table>
