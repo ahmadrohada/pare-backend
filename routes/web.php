@@ -20,4 +20,5 @@ Route::get('/', function () {
 });
 
 Route::get('cetak_skp/{id_skp}', [SasaranKinerjaController::class, 'print']);
+Route::get('cetak_skp_jpt/{id_skp}', [SasaranKinerjaController::class, 'print_jpt']);
 

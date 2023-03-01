@@ -33,14 +33,20 @@
 		</tr>
 		<tr>
 			<td colspan="2" style="height:20px;">
+				<span class="header-hasil_kerja">PEJABAT PIMPINAN TINGGI PRATAMA</span>
+			</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" style="height:20px;">
 				<span class="header-hasil_kerja">PENDEKATAN HASIL KERJA KUANTITATIF</span>
 			</td>
 		</tr>
-		<tr>
+		{{-- <tr>
 			<td colspan="2" style="height:20px;">
 				<span class="header-hasil_kerja">{{Str::upper($pegawai_yang_dinilai['unit_kerja'])}}</span>
 			</td>
-		</tr>
+		</tr> --}}
 		<tr>
 			<td width="55%" style="height:40px; text-align:left; vertical-align:bottom;">
 				<span class="header-hasil_kerja2">{{Str::upper($pegawai_yang_dinilai['unit_kerja'])}}</span>
@@ -63,6 +69,7 @@
 			//TARGET
 			$temp['aspek'] 						= $dbValue['aspek'];
 			$temp['target'] 					= $dbValue['target'];
+			$temp['perspektif'] 				= $dbValue['perspektif'];
 			
 			if(!isset($arrayForTable[$dbValue['rencana_hasil_kerja']])){
 			$arrayForTable[$dbValue['rencana_hasil_kerja']] = [];
@@ -130,19 +137,17 @@
 		</tr>
 		<tr>
 			<td class="table-header">NO</td>
-			<td class="table-header" style="width:180px;">RENCANA HASIL KERJA ATASAN YANG DIINTERVENSI</td>
 			<td class="table-header" colspan="2">RENCANA HASIL KERJA</td>
-			<td class="table-header" style="width:120px;">ASPEK</td>
-			<td class="table-header" colspan="2">INDIKATOR KINERJA INDIVIDU</td>
+			<td class="table-header" colspan="3">INDIKATOR KINERJA INDIVIDU</td>
 			<td class="table-header" style="width:120px;">TARGET</td>
+			<td class="table-header" style="width:120px;">PERSPEKTIF</td>
 		</tr>
 		<tr>
 			<td style="background:#F5FFFA; text-align:center;">(1)</td>
-			<td style="background:#F5FFFA; text-align:center;">(2)</td>
-			<td colspan="2" style="background:#F5FFFA;text-align:center;">(3)</td>
+			<td colspan="2" style="background:#F5FFFA;text-align:center;">(2)</td>
+			<td colspan="3" style="background:#F5FFFA;text-align:center;">(3)</td>
 			<td style="background:#F5FFFA;text-align:center;">(4)</td>
-			<td colspan="2" style="background:#F5FFFA;text-align:center;">(5)</td>
-			<td style="background:#F5FFFA;text-align:center;">(6)</td>
+			<td style="background:#F5FFFA;text-align:center;">(5)</td>
 		</tr>
 
 		<tr>
@@ -159,22 +164,15 @@
 				@else
 					<td style="border-top: 1px dotted #ffffff; border-bottom: 1px dotted #ffffff;"></td>
 				@endif
-
-				@if ($key == 0) :
-					<td style="border-bottom: 1px dotted #ffffff;">{{ $value['rencana_hasil_kerja_atasan']}}</td>
-				@else
-					<td style="border-top: 1px dotted #ffffff; border-bottom: 1px dotted #ffffff;"></td>
-				@endif
-
 				@if ($key == 0) :
 					<td colspan="2" style="border-bottom: 1px dotted #ffffff;">{{  $value['rencana_hasil_kerja']}}</td>
 				@else
 					<td colspan="2" style="border-top: 1px dotted #ffffff; border-bottom: 1px dotted #ffffff;"></td>
 				@endif
 
-				<td style="text-align:center;">{{  $value['aspek'] }}</td>
-				<td colspan="2"  >{{  $value['indikator_kinerja_individu'] }}</td>
+				<td  colspan="3"  >{{  $value['indikator_kinerja_individu'] }}</td>
 				<td style="text-align:center;"  >{{  $value['target'] }}</td>
+				<td style="text-align:center;"  >{{  $value['perspektif'] }}</td>
 			</tr>
 			@endforeach
 			@endforeach
@@ -187,10 +185,9 @@
 
 		<tr>
 			<td style="text-align:center;">1</td>
-			<td>-</td>
 			<td colspan="2">-</td>
+			<td colspan="3">-</td>
 			<td>-</td>
-			<td colspan="2">-</td>
 			<td>-</td>
 		</tr>
 

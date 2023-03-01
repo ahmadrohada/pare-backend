@@ -125,7 +125,7 @@ class RencanaKinerjaDataTable {
                 $i['satuan_target']                 = $y->satuan_target;
                 $i['target_min']                    = $y->target_min;
                 $i['target_max']                    = $y->target_max;
-                $i['perspektif']                    = $y->perspektif;
+                $i['perspektif']                    = ucwords($y->perspektif);
                 $i['aspek']                         = ucfirst($y->aspek);
 
                 $i['rencana_kerja_pimpinan']        = $rencana_kerja_pimpinan;
