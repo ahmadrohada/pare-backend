@@ -30,7 +30,7 @@ class PerjanjianKinerjaDataTable {
         $this->status = isset( $parameters['status'] ) ? $parameters['status'] : null;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
-        $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
+        $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'ASC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';
     }
     // ... Other methods and set up
@@ -118,7 +118,7 @@ class PerjanjianKinerjaDataTable {
                      ->orderByRaw('liked DESC');
             break;
             default:
-                $this->query->orderBy( $this->orderBy, $this->orderDirection );
+                //$this->query->orderBy( $this->orderBy, $this->orderDirection );
             break;
         }
     }
