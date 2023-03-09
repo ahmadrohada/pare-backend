@@ -104,7 +104,7 @@ class UserDataTable {
 
 
                 $i['nama_jabatan']        = $y->nama;
-                $i['instansi']            = $y->skpd->nama;
+                $i['instansi']            = ($y->skpd != null )?$y->skpd->nama:null;
 
                 array_push($h['jabatan'], $i);
             }

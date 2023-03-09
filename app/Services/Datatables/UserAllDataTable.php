@@ -97,7 +97,7 @@ class UserAllDataTable {
                 if ($x->jabatan ){
                     foreach( json_decode($x->jabatan) AS $y ){
                         $i['nama_jabatan']        = $y->nama;
-                        $i['instansi']            = $y->skpd->nama;
+                        $i['instansi']            = ($y->skpd != null )?$y->skpd->nama:null;
 
                         array_push($h['jabatan'], $i);
                     }

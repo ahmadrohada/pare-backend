@@ -14,8 +14,8 @@ class PerjanjianKinerjaDataTable {
     {
         $this->setLocalParameters( $parameters );
         $this->query = PerjanjianKinerja::SELECT(   'id AS perjanjian_kinerja_id',
-                                        'periode->tahun AS periode',
-                                        'skpd->id AS skpd_id',
+                                        'periode->tahun AS periode_tahun',
+                                        'skpd_id',
                                         'skpd->nama AS nama_skpd',
                                         'skpd->singkatan AS singkatan_skpd',
                                         'kepala_skpd->pegawai->nama_lengkap AS nama_kepala_skpd',
@@ -30,7 +30,7 @@ class PerjanjianKinerjaDataTable {
         $this->status = isset( $parameters['status'] ) ? $parameters['status'] : null;
         $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
-        $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'ASC';
+        $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';
     }
     // ... Other methods and set up
@@ -64,7 +64,7 @@ class PerjanjianKinerjaDataTable {
         }
 
         $i['id']                = $x->perjanjian_kinerja_id;
-        $i['periode']           = $x->periode;
+        $i['periode_tahun']     = $x->periode_tahun;
         $i['skpd_id']           = $x->skpd_id;
         $i['nama_skpd']         = $x->nama_skpd;
         $i['nama_kepala_skpd']  = $x->nama_kepala_skpd;
@@ -118,7 +118,7 @@ class PerjanjianKinerjaDataTable {
                      ->orderByRaw('liked DESC');
             break;
             default:
-                //$this->query->orderBy( $this->orderBy, $this->orderDirection );
+                $this->query->orderBy( $this->orderBy, $this->orderDirection );
             break;
         }
     }
