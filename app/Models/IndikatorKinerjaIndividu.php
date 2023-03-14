@@ -16,5 +16,10 @@ class IndikatorKinerjaIndividu extends Model
         return $this->belongsTo(RencanaKinerja::class);
     }
 
+    public function RencanaAksi()
+    {
+    return $this->hasMany(RencanaAksi::class,'indikator_id');
+    }
+
 
 }

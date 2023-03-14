@@ -90,6 +90,46 @@ class Pustaka {
 	return $data;
 	}
 
+	public static function bulan($data){
+		
+		$bulan = $data; 
+
+		//ubah angka ke nama bulan
+				switch($bulan)
+					{
+				case 1 : $nm_bulan='Januari';
+						break;
+				case 2 : $nm_bulan='Februari';
+						break;
+				case 3 : $nm_bulan='Maret';
+						break;
+				case 4 : $nm_bulan='April';
+						break;
+				case 5 : $nm_bulan='Mei';
+						break;
+				case 6 : $nm_bulan='Juni';
+						break;
+				case 7 : $nm_bulan='Juli';
+						break;
+				case 8 : $nm_bulan='Agustus';
+						break;
+				case 9 : $nm_bulan='September';
+						break;
+				case 10 : $nm_bulan='Oktober';
+						break;
+				case 11 : $nm_bulan='November';
+						break;
+				case 12 : $nm_bulan='Desember';
+						break;
+					}
+
+					
+		
+		$data=$nm_bulan;
+	return $data;
+
+	}
+
 
 
 

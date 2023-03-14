@@ -2,10 +2,9 @@
 namespace App\Services\Datatables;
 
 use App\Models\RencanaAksi;
-use App\Models\ManualIndikatorKinerja;
-use App\Models\SasaranStrategis;
-use App\Models\MatriksHasil;
+use App\Models\RencanaKinerja;
 use App\Models\SasaranKinerja;
+use App\Helpers\Pustaka;
 
 
 class RencanaAksiDataTable {
@@ -18,7 +17,11 @@ class RencanaAksiDataTable {
     public function __construct( $parameters )
     {
         $this->setLocalParameters( $parameters );
-        $this->query = RencanaAksi::with(['RencanaKinerja']);
+        $query_01 = RencanaKinerja::where('sasaran_kinerja_id','=',$parameters['sasaran_kinerja_id'])->SELECT('id')->get();
+        $this->query = RencanaAksi::with(['IndikatorKinerjaIndividu','RencanaKinerja'])
+                                    ->WHEREIN('rencana_kinerja_id',$query_01);
+
+
     }
 
     private function setLocalParameters( $parameters )
@@ -62,9 +65,9 @@ class RencanaAksiDataTable {
         $no = $no+1;
         $i['id']                = $x->id;
         $i['no']                = $no;
-        $i['rencana_kerja']     = "tes";
+        $i['rencana_kerja']     = $x->RencanaKinerja->label;
         $i['label']             = $x->label;
-        $i['target']            = "ini target";
+        $i['bulan']             = Pustaka::bulan($x->bulan_pelaksanaan);
        
         array_push($response['data'], $i);
            
