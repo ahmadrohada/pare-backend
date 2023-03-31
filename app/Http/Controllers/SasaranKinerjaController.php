@@ -811,7 +811,7 @@ class SasaranKinerjaController extends Controller
                     'Content-Type' => 'application/pdf',
                     'Cache-Control' => 'no-store, no-cache',
                     //untuk download
-                    'Content-Disposition' => 'attachment; filename="'.$nama_file,
+                    //'Content-Disposition' => 'attachment; filename="'.$nama_file,
                 ]); 
     }
 
@@ -984,7 +984,7 @@ class SasaranKinerjaController extends Controller
                     'Content-Type' => 'application/pdf',
                     'Cache-Control' => 'no-store, no-cache',
                     //untuk download
-                    'Content-Disposition' => 'attachment; filename="'.$nama_file,
+                    //'Content-Disposition' => 'attachment; filename="'.$nama_file,
                 ]); 
     }
 
