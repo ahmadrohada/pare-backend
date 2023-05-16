@@ -348,13 +348,13 @@ class SasaranKinerjaController extends Controller
             } else  if (($ah->jenis_jabatan_skp == "JABATAN ADMINISTRASI")|($ah->jenis_jabatan_skp == "JABATAN FUNGSIONAL")){
                 //mau coba memasukan rencana hasil kerja pada matrik
 
-                $peran = MatriksPeran::
-                                        WHERE('pegawai->nip', '=', $request->nipPegawaiYangDinilai)
+                $peran = MatriksPeran::with('MatriksHasil')
+                                        ->WHERE('pegawai->nip', '=', $request->nipPegawaiYangDinilai)
                                         ->WHERE('skpd_id','=',$request->skpdId)
                                         ->WHERE('periode','=',$request->periodeLabel)
                                         ->first();
-
-                if ( $peran->MatriksHasil ){
+                
+                if ( $peran ){
                     foreach( $peran->MatriksHasil AS $y ){
                         $rk    = new RencanaKinerja;
                         $rk->sasaran_kinerja_id      = $ah->id;
@@ -365,7 +365,7 @@ class SasaranKinerjaController extends Controller
 
                     }
                 }else{
-                    return \Response::make(['message' => "Jabatan tidak ditemukan pada matrik"], 500);
+                    return \Response::make(['message' => "Jabatan tidak ditemukan pada matrik"], 200);
                 }
 
 
