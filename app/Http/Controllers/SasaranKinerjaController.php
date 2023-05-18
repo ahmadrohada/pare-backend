@@ -106,10 +106,13 @@ class SasaranKinerjaController extends Controller
         $role = MatriksPeran::WHERE('pegawai->nip', '=', $request->nip_pegawai_yang_dinilai)
                             ->WHERE('periode', '=', $pk->periodePk)
                             ->get();
+        
         foreach ($role as $x) {
+            //label
+            $label = $x->label != ''?$romawi[$x->label-1]:'';
             $i['id']                = $x->id;
             $i['roleName']          = strtoupper($x->role);
-            $i['role']              = strtoupper($x->role). ' ' . $romawi[$x->label-1];
+            $i['role']              = strtoupper($x->role). ' ' .$label;
             $i['outcome']           = $x->MatriksHasil->count();
 
             array_push($response['role'], $i);

@@ -151,6 +151,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//===========================           MANAJEMEN KINERJA                 ================================//
 	//========================================================================================================//
     Route::get('manajemen_kinerja', [ManajemenKinerjaController::class, 'list']);
+    Route::get('manajemen_kinerja_list', [ManajemenKinerjaController::class, 'ManajemenKinerjalist']);
     Route::get('manajemen_kinerja_menu', [ManajemenKinerjaController::class, 'ManajemenKinerjaMenu']);
 
 

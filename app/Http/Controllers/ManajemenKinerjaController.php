@@ -9,12 +9,22 @@ use App\Models\PerjanjianKinerja;
 use App\Models\SasaranKinerja;
 use App\Models\MatriksPeran;
 
+use App\Services\Datatables\ManajemenKinerjaDataTable;
 
 use Validator;
 
 class ManajemenKinerjaController extends Controller
 {
 
+
+    public function ManajemenKinerjaList(Request $request)
+    {
+
+        $searchDatas = new ManajemenKinerjaDataTable($request->all());
+        $data = $searchDatas->search();
+        return $data;
+
+    }
 
 
     public function List(Request $request)
