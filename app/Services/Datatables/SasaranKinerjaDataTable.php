@@ -43,7 +43,7 @@ class SasaranKinerjaDataTable {
         $this->userId = isset( $parameters['user_id'] ) ? $parameters['user_id'] : 0;
         $this->skpdId = isset( $parameters['skpd_id'] ) ? $parameters['skpd_id'] : 0;
         $this->periode = isset( $parameters['periode'] ) ? $parameters['periode'] : 0;
-        $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
+        $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 20;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';

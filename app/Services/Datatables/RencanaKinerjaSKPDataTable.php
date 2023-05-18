@@ -19,7 +19,7 @@ class RencanaKinerjaSKPDataTable {
     private function setLocalParameters( $parameters )
     {
         $this->skpId = isset( $parameters['sasaran_kinerja_id'] ) ? $parameters['sasaran_kinerja_id'] : 0;
-        $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 10;
+        $this->take = isset( $parameters['take'] ) ? $parameters['take'] : 20;
         $this->orderBy = isset( $parameters['order_by'] ) ? $parameters['order_by'] : 'created_at';
         $this->orderDirection = isset( $parameters['order_direction'] ) ? $parameters['order_direction'] : 'DESC';
         $this->search = isset( $parameters['search'] ) ? $parameters['search'] : '';
