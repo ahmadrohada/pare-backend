@@ -252,7 +252,8 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
     //========================================================================================================//
 	//======================           SASARAN KINERJA - RENCANA AKSI ( BULANAN )       ================================//
 	//========================================================================================================//
-    Route::get('sasaran_kinerja_rencana_aksi', [RencanaAksiController::class, 'List']);
+    Route::get('bulan_rencana_aksi', [RencanaAksiController::class, 'BulanList']);
+    Route::post('rencana_aksi', [RencanaAksiController::class, 'Store']);
    
 
 
