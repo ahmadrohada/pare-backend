@@ -371,7 +371,7 @@ class UserController extends Controller
 
 
         $detail_pegawai                 = $this::detail_pegawai($nip_pegawai);
-
+        //return $detail_pegawai;
 
         if ( $detail_pegawai != null ){
             foreach( $detail_pegawai['jabatan'] AS $x ){
@@ -384,10 +384,18 @@ class UserController extends Controller
                         //'jenis_jabatan'             => $x['referensi']['referensi']['eselon']['tingkat']['tingkat'],
                         //'eselon'                    => $x['referensi']['referensi']['eselon']['eselon'],
                         'jenis_jabatan'             => $x['referensi'],
-                        'skpd'                      => $x['skpd']['nama'],
-                        'skpd_id'                   => $x['skpd']['id'],
-                        'pangkat'                   => $x['golongan']['referensi']['pangkat'],
-                        'golongan'                  => $x['golongan']['referensi']['golongan'],
+
+                        //08062023 skpd ambil dari referensi, perubahan struktur API sim-asn
+                        //'skpd'                      => $x['skpd']['nama'],
+                        //'skpd_id'                   => $x['skpd']['id'],
+                        'skpd'                      => $x['referensi']['skpd']['nama'],
+                        'skpd_id'                   => $x['referensi']['skpd']['id'],
+
+                        ////08062023 pangkat golongan dari luar, perubahan struktur API sim-asn
+                        //'pangkat'                   => $x['golongan']['referensi']['pangkat'],
+                        //'golongan'                  => $x['golongan']['referensi']['golongan'],
+                        'pangkat'                   => $detail_pegawai['golongan']['referensi']['pangkat'],
+                        'golongan'                  => $detail_pegawai['golongan']['referensi']['golongan'],
 
                     ];
 
