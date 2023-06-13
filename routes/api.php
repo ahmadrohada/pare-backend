@@ -254,6 +254,7 @@ Route::group(['prefix' => '/','middleware'=> 'auth'], function () {
 	//========================================================================================================//
     Route::get('bulan_rencana_aksi', [RencanaAksiController::class, 'BulanList']);
     Route::post('rencana_aksi', [RencanaAksiController::class, 'Store']);
+    Route::get('rencana_aksi_detail', [RencanaAksiController::class, 'Detail']);
    
 
 

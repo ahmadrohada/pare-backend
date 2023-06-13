@@ -21,7 +21,7 @@ class RencanaAksiController extends Controller
 
 
         $bulan = RencanaAksi::
-                            SELECT('bulan_pelaksanaan','sasaran_kinerja_id','rencana_kinerja_id')
+                            SELECT('bulan_pelaksanaan','sasaran_kinerja_id')
                             ->orderBy('bulan_pelaksanaan','asc')
                             ->WHERE('sasaran_kinerja_id','=',$sasaran_kinerja_id)
                             ->distinct()
@@ -34,7 +34,7 @@ class RencanaAksiController extends Controller
             //Rencana Aksi
             $rencana_aksi = RencanaAksi:: SELECT( 'id','label')
                                         ->WHERE('sasaran_kinerja_id','=',$x->sasaran_kinerja_id)
-                                        ->WHERE('rencana_kinerja_id','=',$x->rencana_kinerja_id)
+                                        //->WHERE('rencana_kinerja_id','=',$x->rencana_kinerja_id)
                                         ->WHERE('bulan_pelaksanaan','=',$x->bulan_pelaksanaan)
                                         ->get();
 
@@ -56,6 +56,7 @@ class RencanaAksiController extends Controller
 
         return [
             'bulanList'       => $response['bulan_pelaksanaan'],
+            //'tes' => $bulan
         ];
     }
 
@@ -98,6 +99,27 @@ class RencanaAksiController extends Controller
             return \Response::make('error', 500);
         } 
     }
+
+
+    public function Detail(Request $request)
+    {
+        $data = RencanaAksi::WHERE('id', '=', $request->id)->first();
+
+        $response = [
+                    'id'                                => $data->id,
+                    'label'                             => $data->label,
+                    'sasaran_kinerja_id'                => $data->sasaran_kinerja_id,
+                    'rencana_kinerja_id'                => $data->rencana_kinerja_id,
+                    'bulan_pelaksanaan'                 => Pustaka::bulan($data->bulan_pelaksanaan),
+                    ];
+
+
+        return [
+            'data'     => $response,
+        ];
+    }
+
+    
 
 
 
