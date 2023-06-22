@@ -119,6 +119,85 @@ class RencanaAksiController extends Controller
         ];
     }
 
+    public function Update(Request $request)
+    {
+        $messages = [
+
+            'rencanaAksiId.required'         => 'Harus diisi',
+            'sasaranKinerjaId.required'      => 'Harus diisi',
+            'rencanaKinerjaId.required'      => 'Harus diisi',
+            'rencanaAksiLabel.required'      => 'Harus diisi',
+            'bulanPelaksanaanId.required'    => 'Harus diisi',
+
+        ];
+
+
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'rencanaAksiId'        => 'required',
+                'sasaranKinerjaId'     => 'required',
+                'rencanaKinerjaId'     => 'required',
+                'rencanaAksiLabel'     => 'required',
+                'bulanPelaksanaanId'   => 'required',
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            //$messages = $validator->messages();
+            return response()->json(['errors' => $validator->messages()], 422);
+        }
+
+        $update  = RencanaAksi::find($request->rencanaAksiId);
+        if (is_null($update)) {
+            return \Response::make(['message' => "Outcome ID  tidak ditemukan"], 500);
+        }
+
+
+        $update->sasaran_kinerja_id          = $request->sasaranKinerjaId;
+        $update->rencana_kinerja_id          = $request->rencanaKinerjaId;
+        $update->label                       = $request->rencanaAksiLabel;
+
+        if ($update->save()) {
+            $data = array('id'=> $update->id);
+            return \Response::make($data, 200);
+        } else {
+            return \Response::make('error', 500);
+        }
+    }
+
+    public function Destroy(Request $request)
+    {
+        $messages = [
+            'id.required'   => 'Harus diisi',
+        ];
+        $validator = Validator::make(
+                        $request->all(),
+                        array(
+                            'id'   => 'required',
+                        ),
+                        $messages
+        );
+        if ( $validator->fails() ){
+            return response()->json(['errors'=>$validator->messages()],422);
+        }
+
+
+        $rk    = RencanaAksi::find($request->id);
+        if (is_null($rk)) {
+            return \Response::make(['message' => "ID Rencana Aksi tidak ditemukan"], 500);
+        }
+
+
+        if ( $rk->delete()){
+            return \Response::make('sukses', 200);
+        }else{
+            return \Response::make('error', 500);
+        }
+    }
+
     
 
 
