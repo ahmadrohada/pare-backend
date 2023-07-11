@@ -14,9 +14,8 @@ class ViewController extends Controller
 
     public function bukuPanduan(Request $request)
     {
-        $headers  = "";
-        $pathToFile = "{{public_path('files/E-book Penyusunan SKP.pdf') }}";
-        return response()->file($pathToFile, $headers);
+       return "tes";
+        //return response()->file({{public_path('files/lambang-pancasila.png')}});
     }
 
 
