@@ -1,7 +1,7 @@
 <?php
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SasaranKinerjaController;
+use App\Http\Controllers\ViewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +22,4 @@ Route::get('/', function () {
 Route::get('cetak_skp/{id_skp}', [SasaranKinerjaController::class, 'print']);
 Route::get('cetak_skp_jpt/{id_skp}', [SasaranKinerjaController::class, 'print_jpt']);
 
+Route::get('buku-panduan', [ViewController::class, 'bukuPanduan']);
