@@ -127,11 +127,19 @@ class PerjanjianKinerjaDataTable {
     {
         if( $this->search != '' ){
             $search = urldecode( $this->search );
-
             $this->query->where(function( $query ) use ( $search ){
+
+                $query->whereRaw('LOWER(JSON_EXTRACT(skpd, "$.nama")) like ?', ['"%' . strtolower($search) . '%"']);
+
+            });
+            /* $this->query->where(function( $query ) use ( $search ){
+                $query->where('skpd->nama', 'LIKE', '%'.$search.'%')
+                      ->orWhere('skpd->singkatan', 'LIKE', '%'.$search.'%');
+            }); */
+            /* $this->query->where(function( $query ) use ( $search ){
                 $query->where('kepala_skpd->pegawai->nama_lengkap', 'LIKE', '%'.$search.'%')
                       ->orWhere('periode->tahun', 'LIKE', '%'.$search.'%');
-            });
+            }); */
         }
     }
 }
