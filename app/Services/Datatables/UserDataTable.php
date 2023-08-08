@@ -90,7 +90,8 @@ class UserDataTable {
                 //mengetahui jenis jabatan
                 $jenis_jabatan = isset($y->referensi->referensi->jenis)?($y->referensi->referensi->jenis):null;
                 $h['jenis_jabatan']     = $jenis_jabatan;
-                $h['jabatan_referensi_id']  = $y->referensi->id_referensi;
+                //$h['jabatan_referensi_id']  = $y->referensi->id_referensi;
+                $h['jabatan_referensi_id']  = $y->referensi->id;
 
                 if ( $jenis_jabatan == 'struktural'){
                     //eselon
