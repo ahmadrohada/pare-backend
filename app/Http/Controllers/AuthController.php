@@ -261,7 +261,9 @@ class AuthController extends Controller
                         //if ( $user['pegawai'] === null ){
                             $detail_pegawai                 = $this::detail_pegawai($profile['pegawai']['nip']);
                             //nip pejabat penilai
-                            $nip_pejabat_penilai            = $this::nip_atasan($profile['pegawai']['nip']);
+
+                            //ada error ..hapus dulu 08 08 2023
+                            /* $nip_pejabat_penilai            = $this::nip_atasan($profile['pegawai']['nip']);
                             if ( $nip_pejabat_penilai != null ){
                                 //detail pejabata penilai
                                 $pejabat_penilai                = $this::detail_pegawai($nip_pejabat_penilai);
@@ -272,7 +274,7 @@ class AuthController extends Controller
                                         $atasan_pejabat_penilai = $this::detail_pegawai($nip_atasan_pejabat_penilai);
                                     }
                                 }
-                            }
+                            } */
 
                             //UPDATE USER PARE with SIM-ASN PROFILE
                             $update                             = User::find($user->id);
